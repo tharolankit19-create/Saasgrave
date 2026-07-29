@@ -6,13 +6,15 @@ import { toast } from "sonner";
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui";
+import { ImageUpload } from "@/components/image-upload";
+import { GalleryUpload } from "@/components/gallery-upload";
 import { slugify } from "@/lib/utils";
 
 const CATEGORIES = ["SaaS", "Mobile app", "Chrome extension", "Marketplace", "AI tool", "DevTool", "Consumer", "Other"];
 const REASONS = ["No market need", "Ran out of cash", "Competition", "Wrong team", "Bad timing", "Lost focus", "Other"];
 const CHANNELS = ["SEO", "Twitter/X", "Cold email", "Product Hunt", "Reddit", "Ads", "Content", "Word of mouth"];
 
-const STEPS = ["Identity", "Autopsy", "Money & sale"];
+const STEPS = ["The product", "What happened", "Money & sale"];
 
 export function ListingForm() {
   const supabase = createClient();
@@ -22,6 +24,7 @@ export function ListingForm() {
   const [f, setF] = useState({
     name: "",
     logo_url: "",
+    screenshot_urls: [] as string[],
     tagline: "",
     about: "",
     category: "SaaS",
@@ -79,6 +82,7 @@ export function ListingForm() {
         slug,
         name: f.name.trim(),
         logo_url: f.logo_url.trim() || null,
+        screenshot_urls: f.screenshot_urls,
         tagline: f.tagline.trim() || null,
         about: f.about.trim() || null,
         category: f.category,
@@ -108,7 +112,7 @@ export function ListingForm() {
       setLoading(false);
       return toast.error(error.message);
     }
-    toast.success("Draft saved. One step left: publish it.");
+    toast.success("Saved as a draft. Publish it from your dashboard.");
     router.push("/dashboard");
     router.refresh();
   }
@@ -135,9 +139,9 @@ export function ListingForm() {
       {/* Step 1 — Identity */}
       {step === 0 && (
         <div className="space-y-4">
-          <Text label="Startup name" required value={f.name} onChange={(v) => set("name", v)} placeholder="Deadpixel" />
-          <Text label="Logo URL" optional value={f.logo_url} onChange={(v) => set("logo_url", v)} placeholder="https://…/logo.png" />
-          <Text label="Tagline" optional value={f.tagline} onChange={(v) => set("tagline", v)} placeholder="The Figma for tombstones." />
+          <Text label="Startup name" required value={f.name} onChange={(v) => set("name", v)} placeholder="Acme Analytics" />
+          <ImageUpload bucket="logos" label="Logo" hint="optional" value={f.logo_url} onChange={(v) => set("logo_url", v)} />
+          <Text label="Tagline" optional value={f.tagline} onChange={(v) => set("tagline", v)} placeholder="One line on what it did." />
           <Area label="About" optional value={f.about} onChange={(v) => set("about", v)} placeholder="What did it do? Who was it for?" />
           <Select label="Category" value={f.category} onChange={(v) => set("category", v)} options={CATEGORIES} />
           <Text label="Tech stack" optional value={f.tech_stack} onChange={(v) => set("tech_stack", v)} placeholder="Next.js, Supabase, Stripe (comma separated)" />
@@ -160,6 +164,7 @@ export function ListingForm() {
               ))}
             </div>
           </div>
+          <GalleryUpload value={f.screenshot_urls} onChange={(v) => set("screenshot_urls", v)} />
         </div>
       )}
 
@@ -171,7 +176,7 @@ export function ListingForm() {
             <Text label="Ended / pivoted" type="date" value={f.ended_at} onChange={(v) => set("ended_at", v)} />
           </div>
           <Select label="Outcome" value={f.outcome} onChange={(v) => set("outcome", v)} options={["shutdown", "pivot"]} />
-          <Select label="Cause of death" value={f.failure_reason} onChange={(v) => set("failure_reason", v)} options={REASONS} />
+          <Select label="Why it ended" value={f.failure_reason} onChange={(v) => set("failure_reason", v)} options={REASONS} />
           <Area label="What actually happened" optional value={f.failure_detail} onChange={(v) => set("failure_detail", v)} placeholder="The honest post-mortem." />
           <Area label="Lessons learned" optional value={f.lessons_learned} onChange={(v) => set("lessons_learned", v)} placeholder="What would you tell the next founder?" />
           <div className="grid gap-4 sm:grid-cols-2">
@@ -194,7 +199,7 @@ export function ListingForm() {
           <label className="flex cursor-pointer items-center justify-between rounded-xl border border-white/8 bg-ink-800/50 p-4">
             <div>
               <div className="text-sm font-medium text-bone-100">Put it up for sale</div>
-              <div className="text-xs text-bone-500">Sell the code, domain, users — or just list it as a memorial.</div>
+              <div className="text-xs text-bone-500">Sell the code, domain and users — or list it as a public record only.</div>
             </div>
             <input
               type="checkbox"

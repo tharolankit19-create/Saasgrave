@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui";
+import { ImageUpload } from "@/components/image-upload";
 
 type Defaults = {
   full_name: string;
@@ -56,7 +57,7 @@ export function OnboardingForm({ defaults }: { defaults: Defaults }) {
       setLoading(false);
       return;
     }
-    toast.success("Welcome to the graveyard.");
+    toast.success("Profile saved.");
     router.push("/dashboard");
     router.refresh();
   }
@@ -70,12 +71,13 @@ export function OnboardingForm({ defaults }: { defaults: Defaults }) {
         onChange={(v) => set("full_name", v)}
         placeholder="Jane Founder"
       />
-      <Field
-        label="Profile picture URL"
-        optional
+      <ImageUpload
+        bucket="avatars"
+        shape="circle"
+        label="Profile picture"
+        hint="optional"
         value={form.avatar_url}
         onChange={(v) => set("avatar_url", v)}
-        placeholder="https://…/avatar.jpg"
       />
       <div className="grid gap-4 sm:grid-cols-2">
         <Field
@@ -94,26 +96,26 @@ export function OnboardingForm({ defaults }: { defaults: Defaults }) {
         />
       </div>
       <Field
-        label="How many startups have you buried?"
+        label="How many startups have you shut down?"
         type="number"
         value={String(form.failed_count)}
         onChange={(v) => set("failed_count", Number(v))}
       />
       <label className="block">
         <span className="mb-1.5 flex text-xs font-medium text-bone-500">
-          Why did they die? <span className="ml-auto text-bone-500/60">optional</span>
+          What usually went wrong? <span className="ml-auto text-bone-500/60">optional</span>
         </span>
         <textarea
           value={form.fail_reasons}
           onChange={(e) => set("fail_reasons", e.target.value)}
           rows={3}
           placeholder="No market need, ran out of runway, co-founder split…"
-          className="w-full rounded-xl border border-white/10 bg-ink-900 p-4 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-ember-500/50"
+          className="w-full rounded-xl border border-white/10 bg-ink-900 p-4 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-accent-500/50"
         />
       </label>
 
       <Button type="submit" size="lg" className="w-full" disabled={loading}>
-        {loading ? "Saving…" : "Enter the graveyard"}
+        {loading ? "Saving…" : "Save & continue"}
       </Button>
     </form>
   );

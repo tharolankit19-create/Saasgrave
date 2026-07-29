@@ -19,17 +19,17 @@ export default async function SellPage() {
   if (!profile?.onboarded) redirect("/onboarding");
 
   return (
-    <div className="grave-grid min-h-[calc(100vh-4rem)] px-5 py-14">
+    <div className="min-h-[calc(100vh-4rem)] px-5 py-14">
       <div className="mx-auto max-w-2xl">
         <div className="mb-8 text-center">
-          <p className="text-xs font-medium uppercase tracking-[0.22em] text-ember-500">
-            Write the autopsy
+          <p className="text-xs font-medium uppercase tracking-[0.22em] text-accent-500">
+            List a startup
           </p>
           <h1 className="mt-3 font-serif text-4xl tracking-tight text-bone-100">
-            Lay your startup to rest
+            Tell us what you built
           </h1>
           <p className="mt-2 text-sm text-bone-500">
-            Honest listings sell. Tell the whole story — the fewer secrets, the more trust.
+            Honest listings sell. The more of the story you share, the more buyers trust it.
           </p>
         </div>
         <ListingForm />

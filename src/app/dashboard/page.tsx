@@ -68,9 +68,9 @@ export default async function Dashboard() {
       {/* listings */}
       <h2 className="mb-4 text-sm font-medium uppercase tracking-widest text-bone-500">Your listings</h2>
       {list.length === 0 ? (
-        <Card className="grave-grid p-12 text-center">
-          <p className="font-serif text-xl text-bone-300">No graves dug yet.</p>
-          <p className="mt-2 text-sm text-bone-500">List your first failed startup to get started.</p>
+        <Card className="p-12 text-center">
+          <p className="font-serif text-xl text-bone-300">No listings yet.</p>
+          <p className="mt-2 text-sm text-bone-500">List your first startup to get started.</p>
           <div className="mt-6">
             <LinkButton href="/sell">List a startup</LinkButton>
           </div>

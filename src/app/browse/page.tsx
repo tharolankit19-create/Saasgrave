@@ -43,10 +43,10 @@ export default async function BrowsePage({
   return (
     <div className="mx-auto max-w-[1400px] px-5 py-12">
       <div className="mb-10">
-        <Eyebrow>The graveyard</Eyebrow>
-        <h1 className="font-serif text-4xl tracking-tight text-bone-100">Every startup left to rest</h1>
+        <Eyebrow>Browse</Eyebrow>
+        <h1 className="font-serif text-4xl tracking-tight text-bone-100">Every listed startup</h1>
         <p className="mt-2 text-sm text-bone-500">
-          Browse what founders built and buried. Some are for sale. All have a story.
+          Products founders shipped and moved on from. Some are for sale — all come with the story.
         </p>
       </div>
 
@@ -62,7 +62,7 @@ export default async function BrowsePage({
               ))}
             </div>
           ) : (
-            <div className="grave-grid rounded-2xl border border-white/8 p-16 text-center">
+            <div className="rounded-2xl border border-white/8 p-16 text-center">
               <p className="font-serif text-2xl text-bone-300">Nothing matches — yet.</p>
               <p className="mt-2 text-sm text-bone-500">Try clearing your filters.</p>
             </div>
