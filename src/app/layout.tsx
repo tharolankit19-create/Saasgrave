@@ -10,14 +10,14 @@ const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-serif", displa
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   title: {
-    default: "Graveyard — Where dead startups find new life",
-    template: "%s · Graveyard",
+    default: "Saasgrave — The resting place for dead SaaS",
+    template: "%s · Saasgrave",
   },
   description:
-    "A quiet marketplace for failed and zero-revenue startups. List what you built, browse what others left behind, and give a dead product a second life.",
+    "A marketplace for failed and zero-revenue software startups. List what you built, study what others learned, and buy a product worth reviving.",
   openGraph: {
-    title: "Graveyard",
-    description: "Where dead startups find new life.",
+    title: "Saasgrave",
+    description: "The resting place for dead SaaS.",
     type: "website",
   },
 };

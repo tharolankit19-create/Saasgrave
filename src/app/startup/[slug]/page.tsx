@@ -36,7 +36,7 @@ export default async function StartupPage({ params }: { params: { slug: string }
     <div className="mx-auto max-w-4xl px-5 py-12">
       <ViewTracker slug={s.slug} />
       <Link href="/browse" className="text-sm text-bone-500 hover:text-bone-300">
-        ← Back to the graveyard
+        ← Back to listings
       </Link>
 
       {/* header */}
@@ -86,7 +86,7 @@ export default async function StartupPage({ params }: { params: { slug: string }
             </>
           ) : (
             <div className="text-sm text-bone-500">
-              Not for sale — listed as a memorial. Learn from its autopsy below.
+              Not for sale — listed as a public record. Read the story below.
             </div>
           )}
           {isOwner && <VerifyRevenueButton startupId={s.id} className="mt-3 w-full" />}
@@ -109,12 +109,20 @@ export default async function StartupPage({ params }: { params: { slug: string }
       {/* body */}
       <div className="mt-10 grid gap-8 md:grid-cols-3">
         <div className="space-y-8 md:col-span-2">
+          {s.screenshot_urls?.length > 0 && (
+            <div className="grid grid-cols-2 gap-3">
+              {s.screenshot_urls.map((url: string) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img key={url} src={url} alt="" className="w-full rounded-xl border border-white/8 object-cover" />
+              ))}
+            </div>
+          )}
           {s.about && (
             <Section title="What it was">
               <p className="whitespace-pre-line leading-relaxed text-bone-300">{s.about}</p>
             </Section>
           )}
-          <Section title={`Why it ${s.outcome === "pivot" ? "pivoted" : "died"}`}>
+          <Section title={`Why it ${s.outcome === "pivot" ? "pivoted" : "shut down"}`}>
             <Badge className="mb-3 border-ember-500/30 text-ember-400">{s.failure_reason}</Badge>
             {s.failure_detail && (
               <p className="whitespace-pre-line leading-relaxed text-bone-300">{s.failure_detail}</p>
@@ -185,7 +193,7 @@ export default async function StartupPage({ params }: { params: { slug: string }
             </div>
           </Card>
           <div className="mt-4 flex items-center gap-1.5 text-xs text-bone-500">
-            <Eye size={13} /> {s.view_count} visits to this grave
+            <Eye size={13} /> {s.view_count} views
           </div>
         </div>
       </div>

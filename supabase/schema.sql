@@ -36,6 +36,7 @@ create table if not exists public.startups (
   -- basics
   name                text not null,
   logo_url            text,
+  screenshot_urls     text[] default '{}',
   tagline             text,
   about               text,
   marketing_channels  text[],             -- e.g. {seo, twitter, coldemail}
@@ -224,3 +225,46 @@ create or replace function public.increment_view(startup_slug text)
 returns void language sql security definer set search_path = public as $$
   update public.startups set view_count = view_count + 1 where slug = startup_slug;
 $$;
+
+-- Backfill for projects created before screenshot_urls existed.
+alter table public.startups add column if not exists screenshot_urls text[] default '{}';
+
+-- ─────────────────────────────────────────────────────────────
+--  STORAGE  (image uploads: avatars, logos, screenshots)
+--  Public-read buckets; authenticated users write to their own
+--  {user_id}/… folder only.
+-- ─────────────────────────────────────────────────────────────
+insert into storage.buckets (id, name, public)
+values ('avatars','avatars',true), ('logos','logos',true), ('screenshots','screenshots',true)
+on conflict (id) do nothing;
+
+-- anyone can read
+drop policy if exists "storage public read" on storage.objects;
+create policy "storage public read" on storage.objects
+  for select using (bucket_id in ('avatars','logos','screenshots'));
+
+-- authenticated users can upload into a folder named after their uid
+drop policy if exists "storage user upload" on storage.objects;
+create policy "storage user upload" on storage.objects
+  for insert to authenticated
+  with check (
+    bucket_id in ('avatars','logos','screenshots')
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+-- and update/delete their own files
+drop policy if exists "storage user update" on storage.objects;
+create policy "storage user update" on storage.objects
+  for update to authenticated
+  using (
+    bucket_id in ('avatars','logos','screenshots')
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+drop policy if exists "storage user delete" on storage.objects;
+create policy "storage user delete" on storage.objects
+  for delete to authenticated
+  using (
+    bucket_id in ('avatars','logos','screenshots')
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );

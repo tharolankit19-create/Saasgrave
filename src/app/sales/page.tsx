@@ -24,16 +24,16 @@ export default async function SalesPage() {
   return (
     <div className="mx-auto max-w-4xl px-5 py-12">
       <div className="mb-10">
-        <Eyebrow>The auction floor</Eyebrow>
-        <h1 className="font-serif text-4xl tracking-tight text-bone-100">Startups for sale</h1>
+        <Eyebrow>For sale</Eyebrow>
+        <h1 className="font-serif text-4xl tracking-tight text-bone-100">Startups on the market</h1>
         <p className="mt-2 text-sm text-bone-500">
           Code, domains, users and revenue — priced outright or as a multiple of what they last earned.
         </p>
       </div>
 
       {rows.length === 0 ? (
-        <Card className="grave-grid p-16 text-center">
-          <p className="font-serif text-2xl text-bone-300">Nothing on the block right now.</p>
+        <Card className="p-16 text-center">
+          <p className="font-serif text-2xl text-bone-300">Nothing on the market right now.</p>
           <p className="mt-2 text-sm text-bone-500">Check back soon — or list yours for sale.</p>
         </Card>
       ) : (

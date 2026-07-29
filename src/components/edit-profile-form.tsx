@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui";
+import { ImageUpload } from "@/components/image-upload";
 
 type Defaults = {
   full_name: string;
@@ -60,7 +61,13 @@ export function EditProfileForm({ defaults }: { defaults: Defaults }) {
   return (
     <form onSubmit={save} className="space-y-4 rounded-2xl border border-white/8 bg-ink-900/60 p-7">
       <Field label="Full name" value={f.full_name} onChange={(v) => set("full_name", v)} />
-      <Field label="Profile picture URL" value={f.avatar_url} onChange={(v) => set("avatar_url", v)} placeholder="https://…" />
+      <ImageUpload
+        bucket="avatars"
+        shape="circle"
+        label="Profile picture"
+        value={f.avatar_url}
+        onChange={(v) => set("avatar_url", v)}
+      />
       <label className="block">
         <span className="mb-1.5 block text-xs font-medium text-bone-500">Bio</span>
         <textarea

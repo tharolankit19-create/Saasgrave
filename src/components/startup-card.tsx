@@ -54,7 +54,7 @@ export function StartupCard({ startup: s }: { startup: Startup }) {
           </div>
 
           <p className="mb-5 line-clamp-2 min-h-[2.5rem] text-sm text-bone-500">
-            {s.tagline || "No epitaph left behind."}
+            {s.tagline || "No description yet."}
           </p>
 
           <div className="flex items-center justify-between border-t border-white/8 pt-4">

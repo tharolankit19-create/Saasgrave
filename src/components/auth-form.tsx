@@ -71,11 +71,11 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
     <div className="w-full max-w-sm">
       <div className="mb-8 text-center">
         <h1 className="font-serif text-3xl tracking-tight text-bone-100">
-          {isRegister ? "Join the graveyard" : "Welcome back"}
+          {isRegister ? "Create your account" : "Welcome back"}
         </h1>
         <p className="mt-2 text-sm text-bone-500">
           {isRegister
-            ? "Give a dead product its second life."
+            ? "List a startup or make an offer in minutes."
             : "Sign in to manage your listings."}
         </p>
       </div>
@@ -106,7 +106,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
             required
           />
         )}
-        <Field label="Email" type="email" value={email} onChange={setEmail} placeholder="you@startup.dead" required />
+        <Field label="Email" type="email" value={email} onChange={setEmail} placeholder="you@company.com" required />
         <Field label="Password" type="password" value={password} onChange={setPassword} placeholder="••••••••" required />
 
         <Button type="submit" size="lg" className="w-full" disabled={loading}>

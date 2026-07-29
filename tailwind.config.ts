@@ -19,18 +19,25 @@ const config: Config = {
           600: "#26262e",
         },
         bone: {
-          100: "#f5f4f1",
-          300: "#c9c7c1",
-          500: "#8b8983",
+          100: "#f4f3f0",
+          300: "#c4c2bc",
+          500: "#83817b",
+        },
+        // Single restrained accent — a premium muted bronze. `ember` kept as an
+        // alias so older class usages keep resolving to the same value.
+        accent: {
+          400: "#d3b287",
+          500: "#bd9560",
+          600: "#9c7846",
         },
         ember: {
-          400: "#e8a56b",
-          500: "#d98a45",
-          600: "#c2732f",
+          400: "#d3b287",
+          500: "#bd9560",
+          600: "#9c7846",
         },
         moss: {
-          400: "#7ea88a",
-          500: "#5f8a6b",
+          400: "#89a892",
+          500: "#6c8a76",
         },
       },
       fontFamily: {
