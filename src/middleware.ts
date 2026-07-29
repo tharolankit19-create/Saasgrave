@@ -43,6 +43,9 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
+// Only run middleware (which does a network auth check) on routes that
+// actually need protection. Public pages — landing, browse, sales, startup —
+// skip it entirely, so navigating around the site stays fast.
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
+  matcher: ["/dashboard/:path*", "/sell/:path*", "/onboarding/:path*", "/profile/edit/:path*"],
 };

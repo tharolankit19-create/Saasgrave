@@ -51,11 +51,6 @@ export async function POST(req: Request) {
       .from("ad_slots")
       .update({ active: true, starts_at: now.toISOString(), ends_at: ends.toISOString() })
       .eq("id", referenceId);
-  } else if (kind === "listing") {
-    await admin
-      .from("startups")
-      .update({ listing_paid: true, status: "listed" })
-      .eq("id", referenceId);
   } else if (kind === "sale_listing") {
     await admin
       .from("startups")

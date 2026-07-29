@@ -25,8 +25,7 @@ export async function POST(req: Request) {
   }
 
   const amounts: Record<CheckoutKind, number> = {
-    ad_slot: 4900,
-    listing: 0, // listing a startup is free — this kind is no longer charged
+    ad_slot: 4900, // $49 / 30 days
     sale_listing: 900, // $9 one-time fee to list a startup for sale
   };
 
