@@ -18,10 +18,9 @@ export default async function Dashboard() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("full_name, onboarded")
+    .select("full_name")
     .eq("id", user.id)
     .single();
-  if (!profile?.onboarded) redirect("/onboarding");
 
   const { data: startups } = await supabase
     .from("startups")
@@ -49,7 +48,7 @@ export default async function Dashboard() {
         <div>
           <p className="text-sm text-bone-500">Welcome back,</p>
           <h1 className="font-serif text-3xl tracking-tight text-bone-100">
-            {profile.full_name || "Founder"}
+            {profile?.full_name || "Founder"}
           </h1>
         </div>
         <LinkButton href="/sell">
@@ -93,8 +92,8 @@ export default async function Dashboard() {
                   <span className="inline-flex items-center gap-1">
                     <Eye size={12} /> {s.view_count}
                   </span>
-                  {s.status === "draft" && s.for_sale && !s.sale_listing_paid && (
-                    <span className="text-accent-400">Not listed yet — $9 to list for sale</span>
+                  {s.status === "draft" && (
+                    <span className="text-accent-400">Draft — not live yet</span>
                   )}
                 </div>
               </div>

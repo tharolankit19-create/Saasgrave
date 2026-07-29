@@ -74,6 +74,10 @@ export function ListingForm() {
       return toast.error("Please sign in again.");
     }
 
+    // Make sure a profile row exists — startups.founder_id references it.
+    // (Covers users whose row was never created by the signup trigger.)
+    await supabase.from("profiles").upsert({ id: user.id }, { onConflict: "id" });
+
     const slug = `${slugify(f.name)}-${Math.random().toString(36).slice(2, 6)}`;
     const { data, error } = await supabase
       .from("startups")
@@ -103,10 +107,9 @@ export function ListingForm() {
         price_multiplier:
           f.for_sale && f.price_mode === "multiplier" ? Number(f.price_multiplier) || null : null,
         open_to_offers: f.for_sale ? f.price_mode === "offers" : false,
-        // Free listings go live immediately. For-sale listings stay a draft
-        // until the $9 fee is paid from the dashboard.
-        listing_paid: true,
-        status: f.for_sale ? "draft" : "listed",
+        // Saved as a draft. From the dashboard the founder chooses to either
+        // publish it free, or list it for sale for $9.
+        status: "draft",
       })
       .select("id, slug")
       .single();
@@ -115,13 +118,8 @@ export function ListingForm() {
       setLoading(false);
       return toast.error(error.message);
     }
-    if (f.for_sale) {
-      toast.success("Saved. Pay the $9 fee from your dashboard to list it for sale.");
-      router.push("/dashboard");
-    } else {
-      toast.success("Your listing is live.");
-      router.push(`/startup/${data.slug}`);
-    }
+    toast.success("Saved to your dashboard — publish it free or list for sale there.");
+    router.push("/dashboard");
     router.refresh();
   }
 
