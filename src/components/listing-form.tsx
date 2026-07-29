@@ -64,7 +64,7 @@ export function ListingForm() {
     setStep((s) => Math.min(s + 1, STEPS.length - 1));
   }
 
-  async function submit() {
+  async function submit(publish: boolean) {
     setLoading(true);
     const {
       data: { user },
@@ -73,6 +73,10 @@ export function ListingForm() {
       setLoading(false);
       return toast.error("Please sign in again.");
     }
+
+    // Make sure a profile row exists — startups.founder_id references it.
+    // (Covers users whose row was never created by the signup trigger.)
+    await supabase.from("profiles").upsert({ id: user.id }, { onConflict: "id" });
 
     const slug = `${slugify(f.name)}-${Math.random().toString(36).slice(2, 6)}`;
     const { data, error } = await supabase
@@ -98,22 +102,30 @@ export function ListingForm() {
         monthly_visitors: Number(f.monthly_visitors) || 0,
         analytics_url: f.analytics_url.trim() || null,
         claimed_mrr: Number(f.claimed_mrr) || 0,
-        for_sale: f.for_sale,
+        // Pricing is captured up front, but the listing only becomes "for sale"
+        // once the $9 fee is paid from the dashboard. So for_sale stays false here.
+        for_sale: false,
         asking_price: f.for_sale && f.price_mode === "fixed" ? Number(f.asking_price) || null : null,
         price_multiplier:
           f.for_sale && f.price_mode === "multiplier" ? Number(f.price_multiplier) || null : null,
         open_to_offers: f.for_sale ? f.price_mode === "offers" : false,
-        status: "draft",
+        // Publish now → live on the marketplace (free). Otherwise keep as a draft.
+        status: publish ? "listed" : "draft",
       })
-      .select("id")
+      .select("id, slug")
       .single();
 
     if (error) {
       setLoading(false);
       return toast.error(error.message);
     }
-    toast.success("Saved as a draft. Publish it from your dashboard.");
-    router.push("/dashboard");
+    if (publish) {
+      toast.success("Your listing is live.");
+      router.push(`/startup/${data.slug}`);
+    } else {
+      toast.success("Saved as a draft — publish it anytime from your dashboard.");
+      router.push("/dashboard");
+    }
     router.refresh();
   }
 
@@ -198,14 +210,14 @@ export function ListingForm() {
 
           <label className="flex cursor-pointer items-center justify-between rounded-xl border border-white/8 bg-ink-800/50 p-4">
             <div>
-              <div className="text-sm font-medium text-bone-100">Put it up for sale</div>
-              <div className="text-xs text-bone-500">Sell the code, domain and users — or list it as a public record only.</div>
+              <div className="text-sm font-medium text-bone-100">I want to sell this</div>
+              <div className="text-xs text-bone-500">Set a price now. It goes on sale once you pay the $9 fee from your dashboard.</div>
             </div>
             <input
               type="checkbox"
               checked={f.for_sale}
               onChange={(e) => set("for_sale", e.target.checked)}
-              className="h-5 w-5 accent-ember-500"
+              className="h-5 w-5 accent-accent-500"
             />
           </label>
 
@@ -243,7 +255,8 @@ export function ListingForm() {
                 </>
               )}
               <p className="text-xs text-bone-500">
-                Listing for sale requires a <span className="text-bone-300">$90</span> verification fee at publish.
+                Listing a startup is free. Listing it <span className="text-bone-300">for sale</span> is a
+                one-time <span className="text-bone-300">$9</span> fee, paid from your dashboard.
               </p>
             </div>
           )}
@@ -265,9 +278,14 @@ export function ListingForm() {
             Continue <ArrowRight size={15} />
           </Button>
         ) : (
-          <Button onClick={submit} disabled={loading}>
-            {loading ? <Loader2 size={16} className="animate-spin" /> : "Save draft"}
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => submit(false)} disabled={loading}>
+              Save as draft
+            </Button>
+            <Button onClick={() => submit(true)} disabled={loading}>
+              {loading ? <Loader2 size={16} className="animate-spin" /> : "Publish free"}
+            </Button>
+          </div>
         )}
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { AdRail } from "@/components/ad-rail";
+import { AdRail, AdStrip } from "@/components/ad-rail";
 import { StartupCard } from "@/components/startup-card";
 import { BrowseFilters } from "@/components/browse-filters";
 import { Eyebrow } from "@/components/ui";
@@ -54,6 +54,7 @@ export default async function BrowsePage({
         <AdRail slots={left} />
 
         <div className="min-w-0 flex-1">
+          <AdStrip slots={[...left, ...right]} />
           <BrowseFilters />
           {startups && startups.length > 0 ? (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

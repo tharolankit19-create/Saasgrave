@@ -12,19 +12,7 @@ export async function GET(request: Request) {
     const supabase = createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("onboarded")
-          .eq("id", user.id)
-          .single();
-        if (!profile?.onboarded) {
-          return NextResponse.redirect(`${origin}/onboarding`);
-        }
-      }
+      // Onboarding is optional — send users straight to where they were going.
       return NextResponse.redirect(`${origin}${next}`);
     }
   }

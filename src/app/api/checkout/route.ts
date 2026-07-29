@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { createDodoCheckout, type CheckoutKind } from "@/lib/dodo";
 
-// Creates a Dodo hosted-checkout session for one of our three paid actions:
-//   ad_slot ($49) · listing ($9) · sale_listing ($90)
+// Creates a Dodo hosted-checkout session for one of our paid actions:
+//   ad_slot ($49) · sale_listing ($9).  Listing a startup is free.
 // A pending payment row is recorded; the webhook flips it to "paid".
 export async function POST(req: Request) {
   const supabase = createClient();
@@ -25,9 +25,8 @@ export async function POST(req: Request) {
   }
 
   const amounts: Record<CheckoutKind, number> = {
-    ad_slot: 4900,
-    listing: 900,
-    sale_listing: 9000,
+    ad_slot: 4900, // $49 / 30 days
+    sale_listing: 900, // $9 one-time fee to list a startup for sale
   };
 
   const admin = createAdminClient();

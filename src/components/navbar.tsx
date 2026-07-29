@@ -6,21 +6,17 @@ import { UserMenu } from "@/components/user-menu";
 
 export async function Navbar() {
   const supabase = createClient();
+  // getSession reads the cookie locally (no network round-trip) — the navbar is
+  // display-only, and route protection is enforced in middleware. Name/avatar
+  // come from the JWT's user_metadata, so there's no per-navigation DB query.
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
 
-  let avatarUrl: string | null = null;
-  let name: string | null = null;
-  if (user) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("full_name, avatar_url")
-      .eq("id", user.id)
-      .single();
-    avatarUrl = data?.avatar_url ?? null;
-    name = data?.full_name ?? user.email ?? null;
-  }
+  const meta = (user?.user_metadata ?? {}) as Record<string, string | undefined>;
+  const name = user ? meta.full_name || meta.name || user.email || null : null;
+  const avatarUrl = user ? meta.avatar_url || meta.picture || null : null;
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/8 bg-ink-950/80 backdrop-blur-xl">

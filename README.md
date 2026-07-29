@@ -23,10 +23,11 @@ domains, users and pivots. Built with Next.js 14 (App Router), Supabase, and Dod
 | Payments | `/api/checkout`, `/api/webhooks/dodo` | Dodo hosted checkout for the 3 paid actions |
 | Revenue verify | `/api/verify-revenue` | Read-only Stripe key → real MRR, key never stored |
 
-### Paid actions (via Dodo Payments)
+### Pricing (via Dodo Payments)
+- **List a startup** — free (goes live immediately)
+- **List a startup for sale** — $9 one-time fee
 - **Ad slot** — $49 / 30 days (6 slots total: 3 left, 3 right on `/browse`)
-- **Publish a listing** — $9
-- **List for sale** — $90 (verification fee)
+- No commission on sales
 
 ---
 
@@ -42,8 +43,8 @@ domains, users and pivots. Built with Next.js 14 (App Router), Supabase, and Dod
 
 ### 2. Dodo Payments
 1. Sign up at [app.dodopayments.com](https://app.dodopayments.com).
-2. Create **3 products**: `$49 Ad Slot`, `$9 Listing`, `$90 Sale Listing`. Copy each product ID
-   into the matching `DODO_PRODUCT_*` env var.
+2. Create **2 products**: `$49 Ad Slot` and `$9 Sale Listing`. Copy each product ID into the
+   matching `DODO_PRODUCT_*` env var. (Listing a startup is free — no product needed.)
 3. **Developer → Webhooks →** add an endpoint pointing at `https://YOUR_DOMAIN/api/webhooks/dodo`
    and copy the signing secret into `DODO_WEBHOOK_SECRET`.
 

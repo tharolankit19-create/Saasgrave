@@ -1,7 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PROTECTED = ["/dashboard", "/sell", "/onboarding", "/profile/edit", "/sales"];
+// Routes that require a signed-in user. /sales and /browse are public.
+const PROTECTED = ["/dashboard", "/sell", "/onboarding", "/profile/edit"];
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -42,6 +43,9 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
+// Only run middleware (which does a network auth check) on routes that
+// actually need protection. Public pages — landing, browse, sales, startup —
+// skip it entirely, so navigating around the site stays fast.
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
+  matcher: ["/dashboard/:path*", "/sell/:path*", "/onboarding/:path*", "/profile/edit/:path*"],
 };

@@ -11,11 +11,14 @@ const BASE =
     ? "https://live.dodopayments.com"
     : "https://test.dodopayments.com";
 
-export type CheckoutKind = "ad_slot" | "listing" | "sale_listing";
+// Only two paid actions exist, each with its OWN Dodo product:
+//   ad_slot      → DODO_PRODUCT_AD_SLOT       ($49 / 30 days)
+//   sale_listing → DODO_PRODUCT_SALE_LISTING  ($9 one-time)
+// Listing a startup is free — it has no product.
+export type CheckoutKind = "ad_slot" | "sale_listing";
 
 const PRODUCTS: Record<CheckoutKind, string | undefined> = {
   ad_slot: process.env.DODO_PRODUCT_AD_SLOT,
-  listing: process.env.DODO_PRODUCT_LISTING,
   sale_listing: process.env.DODO_PRODUCT_SALE_LISTING,
 };
 

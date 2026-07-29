@@ -68,8 +68,8 @@ create table if not exists public.startups (
 
   -- meta
   status              text default 'draft',   -- draft | listed | sold
-  listing_paid        boolean default false,  -- $9 basic listing fee paid
-  sale_listing_paid   boolean default false,  -- $90 sale listing fee paid
+  listing_paid        boolean default false,  -- listing is free; kept for history
+  sale_listing_paid   boolean default false,  -- $9 for-sale listing fee paid
   featured            boolean default false,
   view_count          int  default 0,
   created_at          timestamptz default now(),

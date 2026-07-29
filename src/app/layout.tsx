@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Fraunces } from "next/font/google";
+import Script from "next/script";
 import { Toaster } from "sonner";
 import { Navbar } from "@/components/navbar";
 import { Analytics } from "@vercel/analytics/next";

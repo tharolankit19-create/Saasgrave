@@ -11,13 +11,7 @@ export default async function SellPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login?next=/sell");
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("onboarded")
-    .eq("id", user.id)
-    .single();
-  if (!profile?.onboarded) redirect("/onboarding");
-
+  // No onboarding gate — signed-in users can list right away.
   return (
     <div className="min-h-[calc(100vh-4rem)] px-5 py-14">
       <div className="mx-auto max-w-2xl">

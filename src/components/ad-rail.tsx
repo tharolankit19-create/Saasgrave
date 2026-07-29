@@ -15,7 +15,7 @@ type AdSlot = {
 // render the "buy this slot" upsell.
 export function AdRail({ slots }: { slots: AdSlot[] }) {
   return (
-    <aside className="hidden w-[200px] shrink-0 flex-col gap-4 xl:flex">
+    <aside className="hidden w-[190px] shrink-0 flex-col gap-4 lg:flex">
       {slots.map((slot) =>
         slot.active && slot.headline ? (
           <a
@@ -43,5 +43,36 @@ export function AdRail({ slots }: { slots: AdSlot[] }) {
         )
       )}
     </aside>
+  );
+}
+
+// Horizontal ad strip for screens too narrow for the side rails.
+export function AdStrip({ slots }: { slots: AdSlot[] }) {
+  return (
+    <div className="mb-6 lg:hidden">
+      <div className="mb-2 text-[10px] uppercase tracking-widest text-bone-500">
+        Sponsored · book a slot for $49
+      </div>
+      <div className="flex gap-3 overflow-x-auto pb-1">
+        {slots.map((slot) =>
+          slot.active && slot.headline ? (
+            <a
+              key={slot.id}
+              href={slot.cta_url || "#"}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              className="min-w-[220px] shrink-0 rounded-xl border border-white/8 bg-ink-900 p-4"
+            >
+              <div className="text-sm font-medium text-bone-100">{slot.headline}</div>
+              {slot.body && <p className="mt-1 text-xs text-bone-500">{slot.body}</p>}
+            </a>
+          ) : (
+            <div key={slot.id} className="min-w-[150px] shrink-0">
+              <BuyAdModal slotId={slot.id} position={slot.position} />
+            </div>
+          )
+        )}
+      </div>
+    </div>
   );
 }
