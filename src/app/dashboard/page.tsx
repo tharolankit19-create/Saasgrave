@@ -93,12 +93,20 @@ export default async function Dashboard() {
                   <span className="inline-flex items-center gap-1">
                     <Eye size={12} /> {s.view_count}
                   </span>
-                  {!s.listing_paid && s.status === "draft" && (
-                    <span className="text-ember-400">Unpaid — $9 to publish</span>
+                  {s.status === "draft" && s.for_sale && !s.sale_listing_paid && (
+                    <span className="text-accent-400">Not listed yet — $9 to list for sale</span>
                   )}
                 </div>
               </div>
-              <ListingRowActions startup={{ id: s.id, slug: s.slug, status: s.status, listing_paid: s.listing_paid }} />
+              <ListingRowActions
+                startup={{
+                  id: s.id,
+                  slug: s.slug,
+                  status: s.status,
+                  for_sale: s.for_sale,
+                  sale_listing_paid: s.sale_listing_paid,
+                }}
+              />
             </div>
           ))}
         </Card>

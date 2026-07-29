@@ -41,7 +41,7 @@ export default async function Home() {
             Browse listings
           </LinkButton>
         </div>
-        <p className="mt-4 text-xs text-bone-500">Free to browse · $9 to list · No commission on sales</p>
+        <p className="mt-4 text-xs text-bone-500">Free to list · $9 to sell · No commission on sales</p>
       </section>
 
       {/* ─── Stats ────────────────────────────────────────── */}
@@ -118,7 +118,7 @@ export default async function Home() {
         <div className="grid gap-5 md:grid-cols-3">
           {[
             { icon: <BookOpen size={18} />, title: "Write the record", body: "Name, tagline, metrics, and an honest account of why it ended. Detail is what earns trust." },
-            { icon: <LineChart size={18} />, title: "Verify & list", body: "Connect a read-only key to prove real revenue, then publish it to the marketplace for $9." },
+            { icon: <LineChart size={18} />, title: "Verify & list", body: "Connect a read-only key to prove real revenue, then publish it to the marketplace — free." },
             { icon: <Tag size={18} />, title: "Sell or pass it on", body: "Price it outright or as a multiple of revenue, and field offers from operators ready to run it." },
           ].map((step, i) => (
             <Card key={step.title} className="p-7">
@@ -179,7 +179,7 @@ export default async function Home() {
         </div>
         <div className="divide-y divide-white/8 rounded-2xl border border-white/8">
           {[
-            { q: "What does it cost?", a: "Browsing is free. Publishing a listing is $9. Listing something for sale is $90. We take no commission on the sale itself." },
+            { q: "What does it cost?", a: "Browsing and listing a startup are free. Listing one for sale is a one-time $9 fee, and we take no commission on the sale itself." },
             { q: "Do I have to sell?", a: "No. You can list a product purely as a public record — its metrics and post-mortem — without putting it up for sale." },
             { q: "How is revenue verified?", a: "You paste a restricted, read-only Stripe key. We calculate MRR from active subscriptions and discard the key immediately. Verified listings get a badge." },
             { q: "Who buys dead startups?", a: "Operators and indie hackers looking for a head start — a working codebase, a domain, existing users, or a market to pivot into." },

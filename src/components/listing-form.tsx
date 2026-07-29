@@ -103,17 +103,25 @@ export function ListingForm() {
         price_multiplier:
           f.for_sale && f.price_mode === "multiplier" ? Number(f.price_multiplier) || null : null,
         open_to_offers: f.for_sale ? f.price_mode === "offers" : false,
-        status: "draft",
+        // Free listings go live immediately. For-sale listings stay a draft
+        // until the $9 fee is paid from the dashboard.
+        listing_paid: true,
+        status: f.for_sale ? "draft" : "listed",
       })
-      .select("id")
+      .select("id, slug")
       .single();
 
     if (error) {
       setLoading(false);
       return toast.error(error.message);
     }
-    toast.success("Saved as a draft. Publish it from your dashboard.");
-    router.push("/dashboard");
+    if (f.for_sale) {
+      toast.success("Saved. Pay the $9 fee from your dashboard to list it for sale.");
+      router.push("/dashboard");
+    } else {
+      toast.success("Your listing is live.");
+      router.push(`/startup/${data.slug}`);
+    }
     router.refresh();
   }
 
@@ -243,7 +251,8 @@ export function ListingForm() {
                 </>
               )}
               <p className="text-xs text-bone-500">
-                Listing for sale requires a <span className="text-bone-300">$90</span> verification fee at publish.
+                Listing a startup is free. Listing it <span className="text-bone-300">for sale</span> is a
+                one-time <span className="text-bone-300">$9</span> fee, paid from your dashboard.
               </p>
             </div>
           )}
