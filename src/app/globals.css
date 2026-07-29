@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-serif: "Georgia", "Times New Roman", serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #08080a;
+  color: #f5f4f1;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Quiet, premium selection */
+::selection {
+  background: rgba(217, 138, 69, 0.28);
+  color: #f5f4f1;
+}
+
+/* Thin, unobtrusive scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #1c1c22;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #26262e;
+}
+
+/* Faint dotted "graveyard" grain behind hero sections */
+.grave-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Hairline utility */
+.hairline {
+  border-color: rgba(245, 244, 241, 0.08);
+}
