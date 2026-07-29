@@ -3,6 +3,7 @@ import { Inter, Fraunces } from "next/font/google";
 import Script from "next/script";
 import { Toaster } from "sonner";
 import { Navbar } from "@/components/navbar";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
@@ -40,13 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             },
           }}
         />
-        {/* DataFast analytics — loads on every page */}
-        <Script
-          src="https://datafa.st/js/script.js"
-          data-website-id="dfid_PMJJEOurjVUlHkZgBfT2z"
-          data-domain="saasgrave.vercel.app"
-          strategy="afterInteractive"
-        />
+        <Analytics />
       </body>
     </html>
   );
