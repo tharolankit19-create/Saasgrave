@@ -39,9 +39,11 @@ export function OnboardingForm({ defaults }: { defaults: Defaults }) {
       return toast.error("Session expired. Please sign in again.");
     }
 
-    const { error } = await supabase
-      .from("profiles")
-      .update({
+    // upsert (not update): creates the row if the trigger never ran for this
+    // user — e.g. they signed up before the schema was applied.
+    const { error } = await supabase.from("profiles").upsert(
+      {
+        id: user.id,
         full_name: form.full_name.trim(),
         avatar_url: form.avatar_url.trim() || null,
         x_handle: form.x_handle.trim().replace(/^@/, "") || null,
@@ -49,8 +51,9 @@ export function OnboardingForm({ defaults }: { defaults: Defaults }) {
         failed_count: Number(form.failed_count) || 0,
         fail_reasons: form.fail_reasons.trim() || null,
         onboarded: true,
-      })
-      .eq("id", user.id);
+      },
+      { onConflict: "id" }
+    );
 
     if (error) {
       toast.error(error.message);

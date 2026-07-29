@@ -38,9 +38,9 @@ export function EditProfileForm({ defaults }: { defaults: Defaults }) {
       setLoading(false);
       return toast.error("Session expired.");
     }
-    const { error } = await supabase
-      .from("profiles")
-      .update({
+    const { error } = await supabase.from("profiles").upsert(
+      {
+        id: user.id,
         full_name: f.full_name.trim(),
         avatar_url: f.avatar_url.trim() || null,
         bio: f.bio.trim() || null,
@@ -49,8 +49,10 @@ export function EditProfileForm({ defaults }: { defaults: Defaults }) {
         x_handle: f.x_handle.trim().replace(/^@/, "") || null,
         linkedin_url: f.linkedin_url.trim() || null,
         failed_count: Number(f.failed_count) || 0,
-      })
-      .eq("id", user.id);
+        onboarded: true,
+      },
+      { onConflict: "id" }
+    );
     setLoading(false);
     if (error) return toast.error(error.message);
     toast.success("Profile updated.");

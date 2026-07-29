@@ -21,10 +21,10 @@ export function BuyAdModal({ slotId, position }: { slotId: string; position: str
     <Dialog.Root>
       <Dialog.Trigger asChild>
         <button className="group flex h-full w-full flex-col items-center justify-center rounded-2xl border border-dashed border-white/12 bg-ink-900/40 p-5 text-center transition hover:border-ember-500/40 hover:bg-ink-900">
-          <span className="mb-2 grid h-8 w-8 place-items-center rounded-full border border-white/12 text-bone-500 transition group-hover:text-ember-400">
+          <span className="mb-2 grid h-8 w-8 place-items-center rounded-full border border-white/12 text-bone-500 transition group-hover:text-accent-400">
             <Plus size={16} />
           </span>
-          <span className="text-xs font-medium text-bone-300">Your ad here</span>
+          <span className="text-xs font-medium text-bone-300">Book ad</span>
           <span className="mt-0.5 text-xs text-bone-500">$49 / 30 days</span>
         </button>
       </Dialog.Trigger>
