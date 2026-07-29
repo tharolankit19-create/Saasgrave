@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Fraunces } from "next/font/google";
+import Script from "next/script";
 import { Toaster } from "sonner";
 import { Navbar } from "@/components/navbar";
 import "./globals.css";
@@ -38,6 +39,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               color: "#f5f4f1",
             },
           }}
+        />
+        {/* DataFast analytics — loads on every page */}
+        <Script
+          src="https://datafa.st/js/script.js"
+          data-website-id="dfid_PMJJEOurjVUlHkZgBfT2z"
+          data-domain="saasgrave.vercel.app"
+          strategy="afterInteractive"
         />
       </body>
     </html>
