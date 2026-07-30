@@ -56,17 +56,17 @@ export function GalleryUpload({
 
   return (
     <div>
-      <span className="mb-1.5 flex text-xs font-medium text-bone-500">
-        Screenshots <span className="ml-auto text-bone-500/60">up to {max}, optional</span>
+      <span className="mb-1.5 flex text-xs font-medium text-ink-faint">
+        Screenshots <span className="ml-auto text-ink-faint">up to {max}, optional</span>
       </span>
       <div className="flex flex-wrap gap-3">
         {value.map((url) => (
-          <div key={url} className="relative h-20 w-28 overflow-hidden rounded-lg border border-white/10">
+          <div key={url} className="relative h-20 w-28 overflow-hidden rounded-lg border border-line">
             <Image src={url} alt="" fill className="object-cover" sizes="112px" />
             <button
               type="button"
               onClick={() => onChange(value.filter((u) => u !== url))}
-              className="absolute right-1 top-1 grid h-5 w-5 place-items-center rounded-full bg-black/70 text-bone-100 hover:bg-black"
+              className="absolute right-1 top-1 grid h-5 w-5 place-items-center rounded-full bg-black/70 text-white hover:bg-black"
             >
               <X size={12} />
             </button>
@@ -77,7 +77,7 @@ export function GalleryUpload({
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={uploading}
-            className="grid h-20 w-28 place-items-center rounded-lg border border-dashed border-white/12 text-bone-500 transition hover:border-accent-500/40 hover:text-accent-400 disabled:opacity-50"
+            className="grid h-20 w-28 place-items-center rounded-lg border border-dashed border-line text-ink-faint transition hover:border-accent-500/40 hover:text-accent-400 disabled:opacity-50"
           >
             {uploading ? <Loader2 size={18} className="animate-spin" /> : <ImagePlus size={18} />}
           </button>

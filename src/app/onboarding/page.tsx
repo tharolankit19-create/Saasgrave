@@ -24,9 +24,9 @@ export default async function OnboardingPage() {
     <div className="grave-grid min-h-[calc(100vh-4rem)] px-5 py-16">
       <div className="mx-auto max-w-lg">
         <div className="mb-8 text-center">
-          <p className="text-xs font-medium uppercase tracking-[0.22em] text-ember-500">Step 1 of 1</p>
-          <h1 className="mt-3 font-serif text-3xl tracking-tight text-bone-100">Who are you?</h1>
-          <p className="mt-2 text-sm text-bone-500">
+          <p className="text-xs font-medium uppercase tracking-[0.22em] text-accent-500">Step 1 of 1</p>
+          <h1 className="mt-3 font-serif text-3xl tracking-tight text-ink">Who are you?</h1>
+          <p className="mt-2 text-sm text-ink-faint">
             A short introduction. This shows on your public founder profile.
           </p>
         </div>

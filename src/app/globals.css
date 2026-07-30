@@ -12,16 +12,16 @@ html {
 }
 
 body {
-  background-color: #08080a;
-  color: #f5f4f1;
+  background-color: #f4f3ee;
+  color: #1c1b17;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* Quiet, premium selection */
+/* Restrained evergreen selection */
 ::selection {
-  background: rgba(217, 138, 69, 0.28);
-  color: #f5f4f1;
+  background: rgba(60, 102, 80, 0.18);
+  color: #1c1b17;
 }
 
 /* Thin, unobtrusive scrollbars */
@@ -30,20 +30,15 @@ body {
   height: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1c1c22;
+  background: #d3cfc2;
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #26262e;
+  background: #c2bdad;
 }
 
-/* Faint dotted "graveyard" grain behind hero sections */
+/* Faint marble/paper grain behind hero and auth sections */
 .grave-grid {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(28, 27, 23, 0.05) 1px, transparent 1px);
   background-size: 22px 22px;
-}
-
-/* Hairline utility */
-.hairline {
-  border-color: rgba(245, 244, 241, 0.08);
 }

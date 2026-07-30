@@ -44,8 +44,8 @@ export default async function BrowsePage({
     <div className="mx-auto max-w-[1400px] px-5 py-12">
       <div className="mb-10">
         <Eyebrow>Browse</Eyebrow>
-        <h1 className="font-serif text-4xl tracking-tight text-bone-100">Every listed startup</h1>
-        <p className="mt-2 text-sm text-bone-500">
+        <h1 className="font-serif text-4xl tracking-tight text-ink">Every listed startup</h1>
+        <p className="mt-2 text-sm text-ink-faint">
           Products founders shipped and moved on from. Some are for sale — all come with the story.
         </p>
       </div>
@@ -63,9 +63,9 @@ export default async function BrowsePage({
               ))}
             </div>
           ) : (
-            <div className="rounded-2xl border border-white/8 p-16 text-center">
-              <p className="font-serif text-2xl text-bone-300">Nothing matches — yet.</p>
-              <p className="mt-2 text-sm text-bone-500">Try clearing your filters.</p>
+            <div className="rounded-2xl border border-line p-16 text-center">
+              <p className="font-serif text-2xl text-ink-soft">Nothing matches — yet.</p>
+              <p className="mt-2 text-sm text-ink-faint">Try clearing your filters.</p>
             </div>
           )}
         </div>

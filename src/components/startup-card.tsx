@@ -23,7 +23,7 @@ type Startup = {
 export function StartupCard({ startup: s }: { startup: Startup }) {
   return (
     <Link href={`/startup/${s.slug}`} className="group block">
-      <Card className="h-full overflow-hidden transition-all duration-300 hover:border-white/20 hover:bg-ink-850">
+      <Card className="h-full overflow-hidden transition-all duration-300 hover:border-white/20 hover:bg-sunken">
         <div className="p-6">
           <div className="mb-4 flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
@@ -32,33 +32,33 @@ export function StartupCard({ startup: s }: { startup: Startup }) {
                 <img
                   src={s.logo_url}
                   alt=""
-                  className="h-11 w-11 rounded-xl border border-white/10 object-cover"
+                  className="h-11 w-11 rounded-xl border border-line object-cover"
                 />
               ) : (
-                <span className="grid h-11 w-11 place-items-center rounded-xl border border-white/10 bg-ink-800 font-serif text-lg text-bone-300">
+                <span className="grid h-11 w-11 place-items-center rounded-xl border border-line bg-sunken font-serif text-lg text-ink-soft">
                   {s.name.charAt(0)}
                 </span>
               )}
               <div>
-                <h3 className="font-medium leading-tight text-bone-100 group-hover:text-white">
+                <h3 className="font-medium leading-tight text-ink group-hover:text-ink">
                   {s.name}
                 </h3>
-                {s.category && <span className="text-xs text-bone-500">{s.category}</span>}
+                {s.category && <span className="text-xs text-ink-faint">{s.category}</span>}
               </div>
             </div>
             {s.for_sale && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-ember-600/15 px-2.5 py-1 text-xs font-medium text-ember-400">
+              <span className="inline-flex items-center gap-1 rounded-full bg-honey-400/15 px-2.5 py-1 text-xs font-medium text-honey-500">
                 <Tag size={11} /> For sale
               </span>
             )}
           </div>
 
-          <p className="mb-5 line-clamp-2 min-h-[2.5rem] text-sm text-bone-500">
+          <p className="mb-5 line-clamp-2 min-h-[2.5rem] text-sm text-ink-faint">
             {s.tagline || "No description yet."}
           </p>
 
-          <div className="flex items-center justify-between border-t border-white/8 pt-4">
-            <div className="flex items-center gap-3 text-xs text-bone-500">
+          <div className="flex items-center justify-between border-t border-line pt-4">
+            <div className="flex items-center gap-3 text-xs text-ink-faint">
               {s.revenue_verified && s.verified_mrr > 0 && (
                 <span className="inline-flex items-center gap-1 text-moss-400">
                   <BadgeCheck size={13} /> {money(s.verified_mrr)}/mo
@@ -68,7 +68,7 @@ export function StartupCard({ startup: s }: { startup: Startup }) {
                 <Eye size={13} /> {s.view_count}
               </span>
             </div>
-            <div className="text-sm font-medium text-bone-100">
+            <div className="text-sm font-medium text-ink">
               {s.for_sale
                 ? s.asking_price
                   ? money(s.asking_price)

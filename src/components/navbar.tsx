@@ -19,20 +19,20 @@ export async function Navbar() {
   const avatarUrl = user ? meta.avatar_url || meta.picture || null : null;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/8 bg-ink-950/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-line bg-canvas/85 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
         <Link href="/" className="group">
           <Logo />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
-          <Link href="/browse" className="rounded-full px-4 py-2 text-sm text-bone-300 transition hover:text-bone-100">
+          <Link href="/browse" className="rounded-full px-4 py-2 text-sm text-ink-soft transition hover:text-ink">
             Browse
           </Link>
-          <Link href="/sales" className="rounded-full px-4 py-2 text-sm text-bone-300 transition hover:text-bone-100">
+          <Link href="/sales" className="rounded-full px-4 py-2 text-sm text-ink-soft transition hover:text-ink">
             For sale
           </Link>
-          <Link href="/sell" className="rounded-full px-4 py-2 text-sm text-bone-300 transition hover:text-bone-100">
+          <Link href="/sell" className="rounded-full px-4 py-2 text-sm text-ink-soft transition hover:text-ink">
             List a startup
           </Link>
         </nav>

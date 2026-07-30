@@ -19,10 +19,10 @@ export default async function SellPage() {
           <p className="text-xs font-medium uppercase tracking-[0.22em] text-accent-500">
             List a startup
           </p>
-          <h1 className="mt-3 font-serif text-4xl tracking-tight text-bone-100">
+          <h1 className="mt-3 font-serif text-4xl tracking-tight text-ink">
             Tell us what you built
           </h1>
-          <p className="mt-2 text-sm text-bone-500">
+          <p className="mt-2 text-sm text-ink-faint">
             Honest listings sell. The more of the story you share, the more buyers trust it.
           </p>
         </div>

@@ -25,42 +25,42 @@ export default async function SalesPage() {
     <div className="mx-auto max-w-4xl px-5 py-12">
       <div className="mb-10">
         <Eyebrow>For sale</Eyebrow>
-        <h1 className="font-serif text-4xl tracking-tight text-bone-100">Startups on the market</h1>
-        <p className="mt-2 text-sm text-bone-500">
+        <h1 className="font-serif text-4xl tracking-tight text-ink">Startups on the market</h1>
+        <p className="mt-2 text-sm text-ink-faint">
           Code, domains, users and revenue — priced outright or as a multiple of what they last earned.
         </p>
       </div>
 
       {rows.length === 0 ? (
         <Card className="p-16 text-center">
-          <p className="font-serif text-2xl text-bone-300">Nothing on the market right now.</p>
-          <p className="mt-2 text-sm text-bone-500">Check back soon — or list yours for sale.</p>
+          <p className="font-serif text-2xl text-ink-soft">Nothing on the market right now.</p>
+          <p className="mt-2 text-sm text-ink-faint">Check back soon — or list yours for sale.</p>
         </Card>
       ) : (
-        <Card className="divide-y divide-white/8">
+        <Card className="divide-y divide-line">
           {rows.map((s: any, i: number) => (
             <Link
               key={s.id}
               href={`/startup/${s.slug}`}
-              className="flex items-center gap-4 p-4 transition hover:bg-ink-850"
+              className="flex items-center gap-4 p-4 transition hover:bg-sunken"
             >
-              <div className="w-8 text-center font-serif text-lg text-bone-500">{i + 1}</div>
+              <div className="w-8 text-center font-serif text-lg text-ink-faint">{i + 1}</div>
               {s.logo_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={s.logo_url} alt="" className="h-11 w-11 rounded-xl border border-white/10 object-cover" />
+                <img src={s.logo_url} alt="" className="h-11 w-11 rounded-xl border border-line object-cover" />
               ) : (
-                <span className="grid h-11 w-11 place-items-center rounded-xl border border-white/10 bg-ink-800 font-serif text-bone-300">
+                <span className="grid h-11 w-11 place-items-center rounded-xl border border-line bg-sunken font-serif text-ink-soft">
                   {s.name.charAt(0)}
                 </span>
               )}
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="truncate font-medium text-bone-100">{s.name}</span>
+                  <span className="truncate font-medium text-ink">{s.name}</span>
                   {s.revenue_verified && s.verified_mrr > 0 && (
                     <Badge className="border-moss-500/30 text-moss-400">verified</Badge>
                   )}
                 </div>
-                <div className="mt-0.5 flex items-center gap-3 text-xs text-bone-500">
+                <div className="mt-0.5 flex items-center gap-3 text-xs text-ink-faint">
                   <span className="inline-flex items-center gap-1">
                     <TrendingUp size={12} /> {money(s.claimed_mrr)}/mo
                   </span>
@@ -70,7 +70,7 @@ export default async function SalesPage() {
                 </div>
               </div>
               <div className="text-right">
-                <div className="font-serif text-lg text-bone-100">
+                <div className="font-serif text-lg text-ink">
                   {s.asking_price
                     ? money(s.asking_price)
                     : s.price_multiplier
@@ -78,7 +78,7 @@ export default async function SalesPage() {
                       : "Offers"}
                 </div>
                 {s.price_multiplier && s.claimed_mrr > 0 && (
-                  <div className="text-xs text-ember-400">
+                  <div className="text-xs text-accent-400">
                     ≈ {money(s.price_multiplier * s.claimed_mrr)}
                   </div>
                 )}

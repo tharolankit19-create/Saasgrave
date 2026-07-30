@@ -70,10 +70,10 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
   return (
     <div className="w-full max-w-sm">
       <div className="mb-8 text-center">
-        <h1 className="font-serif text-3xl tracking-tight text-bone-100">
+        <h1 className="font-serif text-3xl tracking-tight text-ink">
           {isRegister ? "Create your account" : "Welcome back"}
         </h1>
-        <p className="mt-2 text-sm text-bone-500">
+        <p className="mt-2 text-sm text-ink-faint">
           {isRegister
             ? "List a startup or make an offer in minutes."
             : "Sign in to manage your listings."}
@@ -83,16 +83,16 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
       <button
         onClick={handleGoogle}
         disabled={loading}
-        className="flex h-11 w-full items-center justify-center gap-3 rounded-full border border-white/12 bg-ink-900 text-sm font-medium text-bone-100 transition hover:border-white/25 disabled:opacity-50"
+        className="flex h-11 w-full items-center justify-center gap-3 rounded-full border border-line bg-card text-sm font-medium text-ink transition hover:border-ink/25 disabled:opacity-50"
       >
         <GoogleIcon />
         Continue with Google
       </button>
 
-      <div className="my-5 flex items-center gap-3 text-xs text-bone-500">
-        <div className="h-px flex-1 bg-white/8" />
+      <div className="my-5 flex items-center gap-3 text-xs text-ink-faint">
+        <div className="h-px flex-1 bg-line" />
         or
-        <div className="h-px flex-1 bg-white/8" />
+        <div className="h-px flex-1 bg-line" />
       </div>
 
       <form onSubmit={handleEmail} className="space-y-3">
@@ -114,11 +114,11 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-bone-500">
+      <p className="mt-6 text-center text-sm text-ink-faint">
         {isRegister ? "Already have an account? " : "New here? "}
         <Link
           href={isRegister ? "/login" : "/register"}
-          className="text-bone-100 underline underline-offset-4 hover:text-ember-400"
+          className="text-ink underline underline-offset-4 hover:text-accent-400"
         >
           {isRegister ? "Sign in" : "Create one"}
         </Link>
@@ -144,14 +144,14 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-xs font-medium text-bone-500">{label}</span>
+      <span className="mb-1.5 block text-xs font-medium text-ink-faint">{label}</span>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         required={required}
-        className="h-11 w-full rounded-xl border border-white/10 bg-ink-900 px-4 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-ember-500/50"
+        className="h-11 w-full rounded-xl border border-line bg-card px-4 text-sm text-ink placeholder:text-ink-faint outline-none transition focus:border-accent-500/50"
       />
     </label>
   );

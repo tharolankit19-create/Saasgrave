@@ -46,8 +46,8 @@ export default async function Dashboard() {
     <div className="mx-auto max-w-5xl px-5 py-12">
       <div className="mb-10 flex items-end justify-between">
         <div>
-          <p className="text-sm text-bone-500">Welcome back,</p>
-          <h1 className="font-serif text-3xl tracking-tight text-bone-100">
+          <p className="text-sm text-ink-faint">Welcome back,</p>
+          <h1 className="font-serif text-3xl tracking-tight text-ink">
             {profile?.full_name || "Founder"}
           </h1>
         </div>
@@ -65,30 +65,30 @@ export default async function Dashboard() {
       </div>
 
       {/* listings */}
-      <h2 className="mb-4 text-sm font-medium uppercase tracking-widest text-bone-500">Your listings</h2>
+      <h2 className="mb-4 text-sm font-medium uppercase tracking-widest text-ink-faint">Your listings</h2>
       {list.length === 0 ? (
         <Card className="p-12 text-center">
-          <p className="font-serif text-xl text-bone-300">No listings yet.</p>
-          <p className="mt-2 text-sm text-bone-500">List your first startup to get started.</p>
+          <p className="font-serif text-xl text-ink-soft">No listings yet.</p>
+          <p className="mt-2 text-sm text-ink-faint">List your first startup to get started.</p>
           <div className="mt-6">
             <LinkButton href="/sell">List a startup</LinkButton>
           </div>
         </Card>
       ) : (
-        <Card className="divide-y divide-white/8">
+        <Card className="divide-y divide-line">
           {list.map((s) => (
             <div key={s.id} className="flex items-center justify-between gap-4 p-4">
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="truncate font-medium text-bone-100">{s.name}</span>
+                  <span className="truncate font-medium text-ink">{s.name}</span>
                   <StatusBadge status={s.status} />
                   {s.for_sale && (
-                    <Badge className="border-ember-500/30 text-ember-400">
+                    <Badge className="border-accent-500/30 text-accent-400">
                       {s.asking_price ? money(s.asking_price) : s.price_multiplier ? `${s.price_multiplier}×` : "offers"}
                     </Badge>
                   )}
                 </div>
-                <div className="mt-1 flex items-center gap-3 text-xs text-bone-500">
+                <div className="mt-1 flex items-center gap-3 text-xs text-ink-faint">
                   <span className="inline-flex items-center gap-1">
                     <Eye size={12} /> {s.view_count}
                   </span>
@@ -112,24 +112,24 @@ export default async function Dashboard() {
       )}
 
       {/* offers */}
-      <h2 className="mb-4 mt-12 text-sm font-medium uppercase tracking-widest text-bone-500">
+      <h2 className="mb-4 mt-12 text-sm font-medium uppercase tracking-widest text-ink-faint">
         Offers received
       </h2>
       {offers && offers.length > 0 ? (
-        <Card className="divide-y divide-white/8">
+        <Card className="divide-y divide-line">
           {offers.map((o: any) => (
             <div key={o.id} className="flex items-center justify-between p-4 text-sm">
               <div>
-                <span className="font-medium text-bone-100">{money(o.amount)}</span>
-                <span className="text-bone-500"> for {o.startup?.name}</span>
-                <div className="text-xs text-bone-500">from {o.buyer?.full_name || "a buyer"}</div>
+                <span className="font-medium text-ink">{money(o.amount)}</span>
+                <span className="text-ink-faint"> for {o.startup?.name}</span>
+                <div className="text-xs text-ink-faint">from {o.buyer?.full_name || "a buyer"}</div>
               </div>
               <Badge>{o.status}</Badge>
             </div>
           ))}
         </Card>
       ) : (
-        <p className="text-sm text-bone-500">No offers yet.</p>
+        <p className="text-sm text-ink-faint">No offers yet.</p>
       )}
     </div>
   );
@@ -138,9 +138,9 @@ export default async function Dashboard() {
 function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; value: number }) {
   return (
     <Card className="p-5">
-      <div className="mb-2 flex items-center gap-2 text-bone-500">{icon}</div>
-      <div className="font-serif text-2xl text-bone-100">{value}</div>
-      <div className="text-xs text-bone-500">{label}</div>
+      <div className="mb-2 flex items-center gap-2 text-ink-faint">{icon}</div>
+      <div className="font-serif text-2xl text-ink">{value}</div>
+      <div className="text-xs text-ink-faint">{label}</div>
     </Card>
   );
 }
@@ -148,8 +148,8 @@ function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; va
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, string> = {
     listed: "border-moss-500/30 text-moss-400",
-    draft: "border-white/15 text-bone-500",
-    sold: "border-ember-500/30 text-ember-400",
+    draft: "border-line text-ink-faint",
+    sold: "border-accent-500/30 text-accent-400",
   };
   return <Badge className={map[status] || ""}>{status}</Badge>;
 }

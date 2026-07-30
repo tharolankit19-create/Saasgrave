@@ -9,35 +9,32 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Graveyard — a quiet, premium near-black canvas with an ember accent.
+        // Saasgrave — a warm "marble / memorial" light theme. Paper canvas,
+        // dark ink text, a single restrained evergreen accent.
+        canvas: "#f4f3ee", // page background (warm paper / stone)
+        card: "#ffffff", // raised surfaces
+        sunken: "#eceae2", // subtle fills / hovers
+        line: {
+          DEFAULT: "#e4e1d7", // hairline borders
+          strong: "#d3cfc2",
+        },
         ink: {
-          950: "#08080a",
-          900: "#0a0a0c",
-          850: "#0f0f12",
-          800: "#141418",
-          700: "#1c1c22",
-          600: "#26262e",
+          DEFAULT: "#1c1b17", // primary text
+          soft: "#54524b", // secondary text
+          faint: "#8b877d", // tertiary / captions
         },
-        bone: {
-          100: "#f4f3f0",
-          300: "#c4c2bc",
-          500: "#83817b",
-        },
-        // Single restrained accent — a premium muted bronze. `ember` kept as an
-        // alias so older class usages keep resolving to the same value.
         accent: {
-          400: "#d3b287",
-          500: "#bd9560",
-          600: "#9c7846",
-        },
-        ember: {
-          400: "#d3b287",
-          500: "#bd9560",
-          600: "#9c7846",
+          400: "#4f7d64",
+          500: "#3c6650",
+          600: "#2d4e3d",
         },
         moss: {
-          400: "#89a892",
-          500: "#6c8a76",
+          400: "#3c6650",
+          500: "#2d4e3d",
+        },
+        honey: {
+          400: "#c1852f",
+          500: "#a06d24",
         },
       },
       fontFamily: {

@@ -23,17 +23,17 @@ export function AdRail({ slots }: { slots: AdSlot[] }) {
             href={slot.cta_url || "#"}
             target="_blank"
             rel="noopener noreferrer sponsored"
-            className="block rounded-2xl border border-white/8 bg-ink-900 p-5 transition hover:border-white/20"
+            className="block rounded-2xl border border-line bg-card p-5 transition hover:border-white/20"
           >
             {slot.image_url && (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={slot.image_url} alt="" className="mb-3 h-24 w-full rounded-lg object-cover" />
             )}
-            <div className="mb-1 text-[10px] uppercase tracking-widest text-bone-500">Sponsored</div>
-            <div className="text-sm font-medium text-bone-100">{slot.headline}</div>
-            {slot.body && <p className="mt-1 text-xs text-bone-500">{slot.body}</p>}
+            <div className="mb-1 text-[10px] uppercase tracking-widest text-ink-faint">Sponsored</div>
+            <div className="text-sm font-medium text-ink">{slot.headline}</div>
+            {slot.body && <p className="mt-1 text-xs text-ink-faint">{slot.body}</p>}
             {slot.cta_label && (
-              <div className="mt-3 text-xs font-medium text-ember-400">{slot.cta_label} →</div>
+              <div className="mt-3 text-xs font-medium text-accent-400">{slot.cta_label} →</div>
             )}
           </a>
         ) : (
@@ -50,7 +50,7 @@ export function AdRail({ slots }: { slots: AdSlot[] }) {
 export function AdStrip({ slots }: { slots: AdSlot[] }) {
   return (
     <div className="mb-6 lg:hidden">
-      <div className="mb-2 text-[10px] uppercase tracking-widest text-bone-500">
+      <div className="mb-2 text-[10px] uppercase tracking-widest text-ink-faint">
         Sponsored · book a slot for $49
       </div>
       <div className="flex gap-3 overflow-x-auto pb-1">
@@ -61,10 +61,10 @@ export function AdStrip({ slots }: { slots: AdSlot[] }) {
               href={slot.cta_url || "#"}
               target="_blank"
               rel="noopener noreferrer sponsored"
-              className="min-w-[220px] shrink-0 rounded-xl border border-white/8 bg-ink-900 p-4"
+              className="min-w-[220px] shrink-0 rounded-xl border border-line bg-card p-4"
             >
-              <div className="text-sm font-medium text-bone-100">{slot.headline}</div>
-              {slot.body && <p className="mt-1 text-xs text-bone-500">{slot.body}</p>}
+              <div className="text-sm font-medium text-ink">{slot.headline}</div>
+              {slot.body && <p className="mt-1 text-xs text-ink-faint">{slot.body}</p>}
             </a>
           ) : (
             <div key={slot.id} className="min-w-[150px] shrink-0">

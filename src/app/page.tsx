@@ -33,17 +33,17 @@ export default async function Home() {
     <div>
       {/* ─── Hero ─────────────────────────────────────────── */}
       <section className="mx-auto max-w-4xl px-5 pb-16 pt-24 text-center sm:pt-28">
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-ink-900 px-3.5 py-1.5 text-xs text-bone-300">
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-card px-3.5 py-1.5 text-xs text-ink-soft">
           <span className="h-1.5 w-1.5 rounded-full bg-accent-500" />
           The marketplace for startups that didn&apos;t make it
         </div>
 
-        <h1 className="font-serif text-4xl leading-[1.08] tracking-tight text-bone-100 sm:text-6xl">
+        <h1 className="font-serif text-4xl leading-[1.08] tracking-tight text-ink sm:text-6xl">
           Sold your soul to a startup
           <br className="hidden sm:block" /> that died?
         </h1>
 
-        <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-bone-300 sm:text-lg">
+        <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-ink-soft sm:text-lg">
           Most products don&apos;t fail because the code was bad — they run out of time, money, or
           the right market. Saasgrave is where founders list those dead and zero-revenue products so
           someone else can buy the code, domain, users and lessons, and give it a second life.
@@ -57,14 +57,14 @@ export default async function Home() {
             Browse the marketplace
           </LinkButton>
         </div>
-        <p className="mt-4 text-xs text-bone-500">Free to list · $9 to sell · No commission on sales</p>
+        <p className="mt-4 text-xs text-ink-faint">Free to list · $9 to sell · No commission on sales</p>
       </section>
 
       {/* ─── Plain-language explainer ─────────────────────── */}
       <section className="mx-auto max-w-3xl px-5 pb-20 text-center">
-        <p className="font-serif text-2xl leading-relaxed text-bone-300 sm:text-[28px]">
+        <p className="font-serif text-2xl leading-relaxed text-ink-soft sm:text-[28px]">
           Every year millions of startups shut down. Behind each one sits{" "}
-          <span className="text-bone-100">working code, a paid domain, real users, and a hard-won
+          <span className="text-ink">working code, a paid domain, real users, and a hard-won
           lesson</span>{" "}
           — usually deleted or left to expire. Saasgrave keeps that value alive.
         </p>
@@ -72,15 +72,15 @@ export default async function Home() {
 
       {/* ─── Stats ────────────────────────────────────────── */}
       <section className="mx-auto max-w-5xl px-5 pb-20">
-        <div className="grid grid-cols-3 gap-px overflow-hidden rounded-2xl border border-white/8 bg-white/8">
+        <div className="grid grid-cols-3 gap-px overflow-hidden rounded-2xl border border-line bg-line">
           {[
             { k: "90%", v: "of startups shut down" },
             { k: "$500B+", v: "in assets written off yearly" },
             { k: "1 in 3", v: "founders build again" },
           ].map((s) => (
-            <div key={s.k} className="bg-ink-900 p-6 text-center sm:p-8">
-              <div className="font-serif text-3xl text-bone-100 sm:text-4xl">{s.k}</div>
-              <div className="mt-1.5 text-xs text-bone-500 sm:text-sm">{s.v}</div>
+            <div key={s.k} className="bg-card p-6 text-center sm:p-8">
+              <div className="font-serif text-3xl text-ink sm:text-4xl">{s.k}</div>
+              <div className="mt-1.5 text-xs text-ink-faint sm:text-sm">{s.v}</div>
             </div>
           ))}
         </div>
@@ -90,10 +90,10 @@ export default async function Home() {
       <section className="mx-auto max-w-6xl px-5 pb-20">
         <div className="mb-12 text-center">
           <Eyebrow>How it works</Eyebrow>
-          <h2 className="font-serif text-3xl tracking-tight text-bone-100 sm:text-4xl">
+          <h2 className="font-serif text-3xl tracking-tight text-ink sm:text-4xl">
             From dead repo to done deal
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-bone-500">
+          <p className="mx-auto mt-3 max-w-xl text-sm text-ink-faint">
             Listing takes a few minutes. You stay in control the whole way.
           </p>
         </div>
@@ -116,11 +116,11 @@ export default async function Home() {
             },
           ].map((step) => (
             <Card key={step.title} className="p-7">
-              <span className="mb-5 grid h-10 w-10 place-items-center rounded-xl border border-white/10 text-accent-400">
+              <span className="mb-5 grid h-10 w-10 place-items-center rounded-xl border border-line text-accent-400">
                 {step.icon}
               </span>
-              <h3 className="mb-2 font-medium text-bone-100">{step.title}</h3>
-              <p className="text-sm leading-relaxed text-bone-500">{step.body}</p>
+              <h3 className="mb-2 font-medium text-ink">{step.title}</h3>
+              <p className="text-sm leading-relaxed text-ink-faint">{step.body}</p>
             </Card>
           ))}
         </div>
@@ -130,7 +130,7 @@ export default async function Home() {
       <section className="mx-auto max-w-6xl px-5 pb-20">
         <div className="mb-10 text-center">
           <Eyebrow>What you get</Eyebrow>
-          <h2 className="font-serif text-3xl tracking-tight text-bone-100 sm:text-4xl">
+          <h2 className="font-serif text-3xl tracking-tight text-ink sm:text-4xl">
             More than just code
           </h2>
         </div>
@@ -142,11 +142,11 @@ export default async function Home() {
             { icon: <BookOpen size={18} />, title: "The post-mortem", body: "Why it failed — the most valuable part for a buyer." },
           ].map((x) => (
             <Card key={x.title} className="p-6">
-              <span className="mb-4 grid h-9 w-9 place-items-center rounded-lg border border-white/10 text-accent-400">
+              <span className="mb-4 grid h-9 w-9 place-items-center rounded-lg border border-line text-accent-400">
                 {x.icon}
               </span>
-              <h3 className="mb-1.5 text-sm font-medium text-bone-100">{x.title}</h3>
-              <p className="text-xs leading-relaxed text-bone-500">{x.body}</p>
+              <h3 className="mb-1.5 text-sm font-medium text-ink">{x.title}</h3>
+              <p className="text-xs leading-relaxed text-ink-faint">{x.body}</p>
             </Card>
           ))}
         </div>
@@ -156,15 +156,15 @@ export default async function Home() {
       <section className="mx-auto max-w-6xl px-5 pb-20">
         <div className="grid gap-5 md:grid-cols-2">
           <Card className="p-8">
-            <span className="mb-5 grid h-10 w-10 place-items-center rounded-xl border border-white/10 text-accent-400">
+            <span className="mb-5 grid h-10 w-10 place-items-center rounded-xl border border-line text-accent-400">
               <Store size={19} />
             </span>
-            <h3 className="text-xl font-medium text-bone-100">If you built it</h3>
-            <p className="mt-2 text-sm leading-relaxed text-bone-500">
+            <h3 className="text-xl font-medium text-ink">If you built it</h3>
+            <p className="mt-2 text-sm leading-relaxed text-ink-faint">
               Don&apos;t let months of work rot in a private repo. List it in minutes, recover some
               value, and let your work help the next founder.
             </p>
-            <ul className="mt-5 space-y-2 text-sm text-bone-300">
+            <ul className="mt-5 space-y-2 text-sm text-ink-soft">
               {["Free to list — always", "Verify revenue for buyer trust", "Set a price or open it to offers", "Keep 100% of the sale — no commission"].map(
                 (x) => (
                   <li key={x} className="flex gap-2.5">
@@ -180,15 +180,15 @@ export default async function Home() {
           </Card>
 
           <Card className="p-8">
-            <span className="mb-5 grid h-10 w-10 place-items-center rounded-xl border border-white/10 text-accent-400">
+            <span className="mb-5 grid h-10 w-10 place-items-center rounded-xl border border-line text-accent-400">
               <Search size={19} />
             </span>
-            <h3 className="text-xl font-medium text-bone-100">If you want to build</h3>
-            <p className="mt-2 text-sm leading-relaxed text-bone-500">
+            <h3 className="text-xl font-medium text-ink">If you want to build</h3>
+            <p className="mt-2 text-sm leading-relaxed text-ink-faint">
               Skip zero-to-one. Buy a product that already exists, read exactly why it stalled, and
               take it somewhere the first founder couldn&apos;t.
             </p>
-            <ul className="mt-5 space-y-2 text-sm text-bone-300">
+            <ul className="mt-5 space-y-2 text-sm text-ink-soft">
               {["Filter by tech stack, price and cause", "Read the honest story before buying", "See verified revenue where available", "Make an offer directly to the founder"].map(
                 (x) => (
                   <li key={x} className="flex gap-2.5">
@@ -209,7 +209,7 @@ export default async function Home() {
       <section className="mx-auto max-w-6xl px-5 pb-20">
         <div className="mb-10 text-center">
           <Eyebrow>Pricing</Eyebrow>
-          <h2 className="font-serif text-3xl tracking-tight text-bone-100 sm:text-4xl">
+          <h2 className="font-serif text-3xl tracking-tight text-ink sm:text-4xl">
             Simple, honest, and mostly free
           </h2>
         </div>
@@ -244,19 +244,19 @@ export default async function Home() {
               className={`relative p-7 ${p.highlight ? "border-accent-500/40" : ""}`}
             >
               {p.highlight && (
-                <span className="absolute -top-2.5 left-7 rounded-full bg-accent-500 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-ink-950">
+                <span className="absolute -top-2.5 left-7 rounded-full bg-accent-500 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
                   Most popular
                 </span>
               )}
-              <span className="mb-5 grid h-10 w-10 place-items-center rounded-xl border border-white/10 text-accent-400">
+              <span className="mb-5 grid h-10 w-10 place-items-center rounded-xl border border-line text-accent-400">
                 {p.icon}
               </span>
               <div className="flex items-baseline gap-1.5">
-                <span className="font-serif text-3xl text-bone-100">{p.price}</span>
-                {p.unit && <span className="text-xs text-bone-500">{p.unit}</span>}
+                <span className="font-serif text-3xl text-ink">{p.price}</span>
+                {p.unit && <span className="text-xs text-ink-faint">{p.unit}</span>}
               </div>
-              <h3 className="mt-3 font-medium text-bone-100">{p.title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-bone-500">{p.body}</p>
+              <h3 className="mt-3 font-medium text-ink">{p.title}</h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-ink-faint">{p.body}</p>
             </Card>
           ))}
         </div>
@@ -269,8 +269,8 @@ export default async function Home() {
             <ShieldCheck size={24} />
           </span>
           <div>
-            <h3 className="text-lg font-medium text-bone-100">Numbers you can actually trust</h3>
-            <p className="mt-1.5 text-sm leading-relaxed text-bone-500">
+            <h3 className="text-lg font-medium text-ink">Numbers you can actually trust</h3>
+            <p className="mt-1.5 text-sm leading-relaxed text-ink-faint">
               Founders verify revenue with a read-only Stripe key. We compute the real MRR, badge the
               listing, and never store the key. What you see is what it earned — no screenshots to fake.
             </p>
@@ -284,9 +284,9 @@ export default async function Home() {
           <div className="mb-8 flex items-end justify-between">
             <div>
               <Eyebrow>Recently listed</Eyebrow>
-              <h2 className="font-serif text-3xl tracking-tight text-bone-100">Latest arrivals</h2>
+              <h2 className="font-serif text-3xl tracking-tight text-ink">Latest arrivals</h2>
             </div>
-            <Link href="/browse" className="hidden text-sm text-bone-300 hover:text-accent-400 sm:block">
+            <Link href="/browse" className="hidden text-sm text-ink-soft hover:text-accent-400 sm:block">
               View all →
             </Link>
           </div>
@@ -302,9 +302,9 @@ export default async function Home() {
       <section className="mx-auto max-w-3xl px-5 pb-24">
         <div className="mb-10 text-center">
           <Eyebrow>Questions</Eyebrow>
-          <h2 className="font-serif text-3xl tracking-tight text-bone-100">Good to know</h2>
+          <h2 className="font-serif text-3xl tracking-tight text-ink">Good to know</h2>
         </div>
-        <div className="divide-y divide-white/8 rounded-2xl border border-white/8">
+        <div className="divide-y divide-line rounded-2xl border border-line">
           {[
             { q: "What does it cost?", a: "Browsing and listing a startup are free. Listing one for sale is a one-time $9 fee, and we take no commission on the sale itself. Ad slots are $49 for 30 days." },
             { q: "Do I have to sell?", a: "No. You can list a product purely as a public record — its metrics and post-mortem — without ever putting it up for sale." },
@@ -314,11 +314,11 @@ export default async function Home() {
             { q: "How does the sale actually happen?", a: "Buyers make an offer through the listing. You accept, reject, or counter, then handle the transfer directly. Escrow and assisted transfers are coming next." },
           ].map((item) => (
             <details key={item.q} className="group px-5 py-4">
-              <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-medium text-bone-100">
+              <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-medium text-ink">
                 {item.q}
-                <span className="text-bone-500 transition group-open:rotate-45">+</span>
+                <span className="text-ink-faint transition group-open:rotate-45">+</span>
               </summary>
-              <p className="mt-2.5 text-sm leading-relaxed text-bone-500">{item.a}</p>
+              <p className="mt-2.5 text-sm leading-relaxed text-ink-faint">{item.a}</p>
             </details>
           ))}
         </div>
@@ -327,10 +327,10 @@ export default async function Home() {
       {/* ─── CTA ──────────────────────────────────────────── */}
       <section className="mx-auto max-w-4xl px-5 pb-24">
         <Card className="p-10 text-center sm:p-14">
-          <h2 className="font-serif text-3xl tracking-tight text-bone-100 sm:text-4xl">
+          <h2 className="font-serif text-3xl tracking-tight text-ink sm:text-4xl">
             Give your dead startup a second act.
           </h2>
-          <p className="mx-auto mt-3 max-w-md text-sm text-bone-500">
+          <p className="mx-auto mt-3 max-w-md text-sm text-ink-faint">
             It took months to build. It takes minutes to list — and it&apos;s free.
           </p>
           <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -345,15 +345,15 @@ export default async function Home() {
       </section>
 
       {/* ─── Footer ───────────────────────────────────────── */}
-      <footer className="border-t border-white/8">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 py-8 text-sm text-bone-500 sm:flex-row">
-          <span className="font-semibold text-bone-300">
-            Saas<span className="text-bone-500">grave</span>
+      <footer className="border-t border-line">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 py-8 text-sm text-ink-faint sm:flex-row">
+          <span className="font-semibold text-ink-soft">
+            Saas<span className="text-ink-faint">grave</span>
           </span>
           <div className="flex items-center gap-5">
-            <Link href="/browse" className="hover:text-bone-300">Browse</Link>
-            <Link href="/sales" className="hover:text-bone-300">For sale</Link>
-            <Link href="/sell" className="hover:text-bone-300">List</Link>
+            <Link href="/browse" className="hover:text-ink-soft">Browse</Link>
+            <Link href="/sales" className="hover:text-ink-soft">For sale</Link>
+            <Link href="/sell" className="hover:text-ink-soft">List</Link>
           </div>
           <p>© {new Date().getFullYear()} Saasgrave</p>
         </div>

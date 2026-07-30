@@ -11,12 +11,12 @@ type ButtonProps = {
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-200 disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember-500/40";
+  "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-200 disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/40";
 
 const variants = {
-  primary: "bg-bone-100 text-ink-950 hover:bg-white",
-  ghost: "text-bone-300 hover:text-bone-100 hover:bg-ink-800",
-  outline: "border border-white/12 text-bone-100 hover:border-white/25 hover:bg-ink-850",
+  primary: "bg-ink text-white hover:bg-ink/85",
+  ghost: "text-ink-soft hover:text-ink hover:bg-sunken",
+  outline: "border border-line text-ink hover:border-ink/25 hover:bg-sunken",
 };
 
 const sizes = { sm: "h-8 px-3.5 text-sm", md: "h-10 px-5 text-sm", lg: "h-12 px-7 text-[15px]" };
@@ -49,7 +49,7 @@ export function Badge({ children, className }: { children: React.ReactNode; clas
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-ink-800 px-2.5 py-1 text-xs text-bone-300",
+        "inline-flex items-center gap-1.5 rounded-full border border-line bg-sunken px-2.5 py-1 text-xs text-ink-soft",
         className
       )}
     >
@@ -62,7 +62,7 @@ export function Card({ children, className }: { children: React.ReactNode; class
   return (
     <div
       className={cn(
-        "rounded-2xl border border-white/8 bg-ink-900/60 backdrop-blur-sm",
+        "rounded-2xl border border-line bg-card backdrop-blur-sm",
         className
       )}
     >
@@ -73,6 +73,6 @@ export function Card({ children, className }: { children: React.ReactNode; class
 
 export function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mb-3 text-xs font-medium uppercase tracking-[0.22em] text-ember-500">{children}</p>
+    <p className="mb-3 text-xs font-medium uppercase tracking-[0.22em] text-accent-500">{children}</p>
   );
 }

@@ -60,25 +60,25 @@ export function ImageUpload({
 
   return (
     <div>
-      <span className="mb-1.5 flex text-xs font-medium text-bone-500">
+      <span className="mb-1.5 flex text-xs font-medium text-ink-faint">
         {label}
-        {hint && <span className="ml-auto text-bone-500/60">{hint}</span>}
+        {hint && <span className="ml-auto text-ink-faint">{hint}</span>}
       </span>
       <div className="flex items-center gap-4">
-        <div className={`relative grid h-20 w-20 shrink-0 place-items-center overflow-hidden border border-white/10 bg-ink-900 ${rounded}`}>
+        <div className={`relative grid h-20 w-20 shrink-0 place-items-center overflow-hidden border border-line bg-card ${rounded}`}>
           {value ? (
             <>
               <Image src={value} alt="" fill className="object-cover" sizes="80px" />
               <button
                 type="button"
                 onClick={() => onChange("")}
-                className="absolute right-1 top-1 grid h-5 w-5 place-items-center rounded-full bg-black/70 text-bone-100 hover:bg-black"
+                className="absolute right-1 top-1 grid h-5 w-5 place-items-center rounded-full bg-black/70 text-white hover:bg-black"
               >
                 <X size={12} />
               </button>
             </>
           ) : (
-            <span className="text-bone-500/50">
+            <span className="text-ink-faint">
               <Upload size={20} />
             </span>
           )}
@@ -88,7 +88,7 @@ export function ImageUpload({
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
-          className="inline-flex h-10 items-center gap-2 rounded-full border border-white/12 px-4 text-sm text-bone-100 transition hover:border-white/25 disabled:opacity-50"
+          className="inline-flex h-10 items-center gap-2 rounded-full border border-line px-4 text-sm text-ink transition hover:border-ink/25 disabled:opacity-50"
         >
           {uploading ? <Loader2 size={15} className="animate-spin" /> : <Upload size={15} />}
           {value ? "Replace" : "Upload image"}

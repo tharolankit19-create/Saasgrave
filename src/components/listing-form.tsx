@@ -130,20 +130,20 @@ export function ListingForm() {
   }
 
   return (
-    <div className="rounded-2xl border border-white/8 bg-ink-900/60 p-7">
+    <div className="rounded-2xl border border-line bg-card p-7">
       {/* progress */}
       <div className="mb-7 flex items-center gap-2">
         {STEPS.map((label, i) => (
           <div key={label} className="flex flex-1 items-center gap-2">
             <div
               className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-medium transition ${
-                i <= step ? "bg-ember-600 text-ink-950" : "bg-ink-800 text-bone-500"
+                i <= step ? "bg-accent-600 text-white" : "bg-sunken text-ink-faint"
               }`}
             >
               {i + 1}
             </div>
-            <span className={`text-xs ${i === step ? "text-bone-100" : "text-bone-500"}`}>{label}</span>
-            {i < STEPS.length - 1 && <div className="h-px flex-1 bg-white/8" />}
+            <span className={`text-xs ${i === step ? "text-ink" : "text-ink-faint"}`}>{label}</span>
+            {i < STEPS.length - 1 && <div className="h-px flex-1 bg-line" />}
           </div>
         ))}
       </div>
@@ -158,7 +158,7 @@ export function ListingForm() {
           <Select label="Category" value={f.category} onChange={(v) => set("category", v)} options={CATEGORIES} />
           <Text label="Tech stack" optional value={f.tech_stack} onChange={(v) => set("tech_stack", v)} placeholder="Next.js, Supabase, Stripe (comma separated)" />
           <div>
-            <span className="mb-2 block text-xs font-medium text-bone-500">Marketing channels</span>
+            <span className="mb-2 block text-xs font-medium text-ink-faint">Marketing channels</span>
             <div className="flex flex-wrap gap-2">
               {CHANNELS.map((c) => (
                 <button
@@ -167,8 +167,8 @@ export function ListingForm() {
                   onClick={() => toggleChannel(c)}
                   className={`rounded-full border px-3 py-1.5 text-xs transition ${
                     f.marketing_channels.includes(c)
-                      ? "border-ember-500/50 bg-ember-600/15 text-ember-400"
-                      : "border-white/10 text-bone-300 hover:border-white/25"
+                      ? "border-accent-500/50 bg-accent-600/15 text-accent-400"
+                      : "border-line text-ink-soft hover:border-ink/25"
                   }`}
                 >
                   {c}
@@ -203,15 +203,15 @@ export function ListingForm() {
       {step === 2 && (
         <div className="space-y-5">
           <Text label="Last known MRR ($/mo)" type="number" value={f.claimed_mrr} onChange={(v) => set("claimed_mrr", v)} placeholder="0" />
-          <p className="rounded-xl border border-white/8 bg-ink-800/50 p-3 text-xs text-bone-500">
-            You can <span className="text-bone-300">verify</span> this revenue from your listing page later
+          <p className="rounded-xl border border-line bg-sunken p-3 text-xs text-ink-faint">
+            You can <span className="text-ink-soft">verify</span> this revenue from your listing page later
             using a read-only Stripe key — verified numbers get a green badge and sell far better.
           </p>
 
-          <label className="flex cursor-pointer items-center justify-between rounded-xl border border-white/8 bg-ink-800/50 p-4">
+          <label className="flex cursor-pointer items-center justify-between rounded-xl border border-line bg-sunken p-4">
             <div>
-              <div className="text-sm font-medium text-bone-100">I want to sell this</div>
-              <div className="text-xs text-bone-500">Set a price now. It goes on sale once you pay the $9 fee from your dashboard.</div>
+              <div className="text-sm font-medium text-ink">I want to sell this</div>
+              <div className="text-xs text-ink-faint">Set a price now. It goes on sale once you pay the $9 fee from your dashboard.</div>
             </div>
             <input
               type="checkbox"
@@ -222,7 +222,7 @@ export function ListingForm() {
           </label>
 
           {f.for_sale && (
-            <div className="space-y-4 rounded-xl border border-ember-500/20 bg-ember-600/[0.04] p-4">
+            <div className="space-y-4 rounded-xl border border-accent-500/20 bg-accent-600/[0.04] p-4">
               <div className="flex gap-2">
                 {(["fixed", "multiplier", "offers"] as const).map((m) => (
                   <button
@@ -231,8 +231,8 @@ export function ListingForm() {
                     onClick={() => set("price_mode", m)}
                     className={`flex-1 rounded-lg border px-3 py-2 text-xs capitalize transition ${
                       f.price_mode === m
-                        ? "border-ember-500/50 bg-ember-600/15 text-ember-400"
-                        : "border-white/10 text-bone-300 hover:border-white/25"
+                        ? "border-accent-500/50 bg-accent-600/15 text-accent-400"
+                        : "border-line text-ink-soft hover:border-ink/25"
                     }`}
                   >
                     {m === "fixed" ? "Fixed price" : m === "multiplier" ? "Revenue multiple" : "Open to offers"}
@@ -245,18 +245,18 @@ export function ListingForm() {
               {f.price_mode === "multiplier" && (
                 <>
                   <Text label="Multiplier (× last revenue)" type="number" value={f.price_multiplier} onChange={(v) => set("price_multiplier", v)} placeholder="3" />
-                  <p className="text-xs text-bone-500">
+                  <p className="text-xs text-ink-faint">
                     At {f.price_multiplier || "3"}× your ${f.claimed_mrr || "0"}/mo, that&apos;s roughly{" "}
-                    <span className="text-ember-400">
+                    <span className="text-accent-400">
                       ${((Number(f.price_multiplier) || 0) * (Number(f.claimed_mrr) || 0)).toLocaleString()}
                     </span>
                     .
                   </p>
                 </>
               )}
-              <p className="text-xs text-bone-500">
-                Listing a startup is free. Listing it <span className="text-bone-300">for sale</span> is a
-                one-time <span className="text-bone-300">$9</span> fee, paid from your dashboard.
+              <p className="text-xs text-ink-faint">
+                Listing a startup is free. Listing it <span className="text-ink-soft">for sale</span> is a
+                one-time <span className="text-ink-soft">$9</span> fee, paid from your dashboard.
               </p>
             </div>
           )}
@@ -269,7 +269,7 @@ export function ListingForm() {
           type="button"
           onClick={() => setStep((s) => Math.max(0, s - 1))}
           disabled={step === 0}
-          className="inline-flex items-center gap-1.5 text-sm text-bone-500 transition hover:text-bone-300 disabled:opacity-0"
+          className="inline-flex items-center gap-1.5 text-sm text-ink-faint transition hover:text-ink-soft disabled:opacity-0"
         >
           <ArrowLeft size={15} /> Back
         </button>
@@ -301,9 +301,9 @@ function Text({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 flex text-xs font-medium text-bone-500">
+      <span className="mb-1.5 flex text-xs font-medium text-ink-faint">
         {label}
-        {optional && <span className="ml-auto text-bone-500/60">optional</span>}
+        {optional && <span className="ml-auto text-ink-faint">optional</span>}
       </span>
       <input
         type={type}
@@ -311,7 +311,7 @@ function Text({
         required={required}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="h-11 w-full rounded-xl border border-white/10 bg-ink-900 px-4 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-ember-500/50 [color-scheme:dark]"
+        className="h-11 w-full rounded-xl border border-line bg-card px-4 text-sm text-ink placeholder:text-ink-faint outline-none transition focus:border-accent-500/50 [color-scheme:light]"
       />
     </label>
   );
@@ -324,16 +324,16 @@ function Area({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 flex text-xs font-medium text-bone-500">
+      <span className="mb-1.5 flex text-xs font-medium text-ink-faint">
         {label}
-        {optional && <span className="ml-auto text-bone-500/60">optional</span>}
+        {optional && <span className="ml-auto text-ink-faint">optional</span>}
       </span>
       <textarea
         value={value}
         rows={3}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-xl border border-white/10 bg-ink-900 p-4 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-ember-500/50"
+        className="w-full rounded-xl border border-line bg-card p-4 text-sm text-ink placeholder:text-ink-faint outline-none transition focus:border-accent-500/50"
       />
     </label>
   );
@@ -346,11 +346,11 @@ function Select({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-xs font-medium text-bone-500">{label}</span>
+      <span className="mb-1.5 block text-xs font-medium text-ink-faint">{label}</span>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-11 w-full rounded-xl border border-white/10 bg-ink-900 px-4 text-sm text-bone-100 outline-none transition focus:border-ember-500/50 capitalize"
+        className="h-11 w-full rounded-xl border border-line bg-card px-4 text-sm text-ink outline-none transition focus:border-accent-500/50 capitalize"
       >
         {options.map((o) => (
           <option key={o} value={o}>

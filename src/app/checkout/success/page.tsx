@@ -13,8 +13,8 @@ export default function CheckoutSuccess() {
         <div className="mx-auto mb-6 grid h-16 w-16 place-items-center rounded-full border border-moss-500/30 bg-moss-500/10 text-moss-400">
           <CheckCircle2 size={30} />
         </div>
-        <h1 className="font-serif text-3xl text-bone-100">Payment received</h1>
-        <p className="mt-3 text-sm text-bone-500">
+        <h1 className="font-serif text-3xl text-ink">Payment received</h1>
+        <p className="mt-3 text-sm text-ink-faint">
           Thank you. We&apos;re confirming it with the payment provider now — your purchase will
           appear on your dashboard within a minute.
         </p>

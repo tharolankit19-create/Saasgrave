@@ -27,17 +27,17 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${fraunces.variable}`}>
-      <body className="min-h-screen bg-ink-950 font-sans antialiased">
+      <body className="min-h-screen bg-canvas font-sans antialiased">
         <Navbar />
         <main>{children}</main>
         <Toaster
-          theme="dark"
+          theme="light"
           position="bottom-right"
           toastOptions={{
             style: {
-              background: "#141418",
-              border: "1px solid rgba(245,244,241,0.08)",
-              color: "#f5f4f1",
+              background: "#ffffff",
+              border: "1px solid #e4e1d7",
+              color: "#1c1b17",
             },
           }}
         />

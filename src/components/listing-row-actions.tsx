@@ -56,7 +56,7 @@ export function ListingRowActions({
         <button
           onClick={publishFree}
           disabled={publishing}
-          className="inline-flex h-9 items-center gap-1.5 rounded-full bg-bone-100 px-4 text-sm font-medium text-ink-950 transition hover:bg-white disabled:opacity-50"
+          className="inline-flex h-9 items-center gap-1.5 rounded-full bg-ink px-4 text-sm font-medium text-white transition hover:bg-ink/85 disabled:opacity-50"
         >
           {publishing ? <Loader2 size={14} className="animate-spin" /> : <Rocket size={14} />}
           Publish free
@@ -77,7 +77,7 @@ export function ListingRowActions({
       {isListed && (
         <Link
           href={`/startup/${startup.slug}`}
-          className="inline-flex h-9 items-center gap-1.5 rounded-full border border-white/12 px-4 text-sm text-bone-300 transition hover:border-white/25"
+          className="inline-flex h-9 items-center gap-1.5 rounded-full border border-line px-4 text-sm text-ink-soft transition hover:border-ink/25"
         >
           <ExternalLink size={14} /> View
         </Link>

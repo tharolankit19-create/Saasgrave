@@ -15,7 +15,7 @@ export default async function EditProfilePage() {
 
   return (
     <div className="mx-auto max-w-lg px-5 py-14">
-      <h1 className="mb-8 font-serif text-3xl tracking-tight text-bone-100">Edit your profile</h1>
+      <h1 className="mb-8 font-serif text-3xl tracking-tight text-ink">Edit your profile</h1>
       <EditProfileForm
         defaults={{
           full_name: profile?.full_name ?? "",
