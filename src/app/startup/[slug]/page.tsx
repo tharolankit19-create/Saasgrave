@@ -24,7 +24,7 @@ export default async function StartupPage({ params }: { params: { slug: string }
 
   const { data: s } = await supabase
     .from("startups")
-    .select("*, founder:profiles(id, full_name, avatar_url, x_handle, linkedin_url, bio, failed_count)")
+    .select("*, founder:profiles(id, full_name, avatar_url, x_handle, linkedin_url, website_url, bio, failed_count)")
     .eq("slug", params.slug)
     .single();
 
@@ -181,7 +181,7 @@ export default async function StartupPage({ params }: { params: { slug: string }
             {s.founder?.bio && <p className="mt-3 text-sm text-bone-500">{s.founder.bio}</p>}
             <div className="mt-4 flex gap-2">
               {s.founder?.x_handle && (
-                <a href={`https://x.com/${s.founder.x_handle}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-black/10 p-2 text-bone-300 hover:border-black/25">
+                <a href={`https://x.com/${s.founder.x_handle.replace(/^@/, "")}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-black/10 p-2 text-bone-300 hover:border-black/25">
                   <Twitter size={15} />
                 </a>
               )}
@@ -190,7 +190,15 @@ export default async function StartupPage({ params }: { params: { slug: string }
                   <Linkedin size={15} />
                 </a>
               )}
+              {s.founder?.website_url && (
+                <a href={/^https?:\/\//i.test(s.founder.website_url) ? s.founder.website_url : `https://${s.founder.website_url}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-black/10 p-2 text-bone-300 hover:border-black/25">
+                  <Globe size={15} />
+                </a>
+              )}
             </div>
+            <Link href={`/profile/${s.founder?.id}`} className="mt-4 flex items-center justify-center gap-1 rounded-lg border border-black/10 py-2 text-xs font-medium text-bone-300 transition hover:border-black/25 hover:text-bone-100">
+              View full profile →
+            </Link>
           </Card>
           <div className="mt-4 flex items-center gap-1.5 text-xs text-bone-500">
             <Eye size={13} /> {s.view_count > 0 ? `${s.view_count} views` : "Just listed"}

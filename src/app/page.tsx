@@ -26,6 +26,7 @@ import { CountUp } from "@/components/count-up";
 import { LedgerRow } from "@/components/ledger-row";
 import { GoogleButton } from "@/components/google-button";
 import { PromoSlots } from "@/components/promo-slots";
+import { LiveFomoBar } from "@/components/live-fomo";
 import { Reveal, Aurora, Marquee } from "@/components/motion";
 import { loadGraveyard } from "@/lib/stats";
 import { money } from "@/lib/utils";
@@ -78,8 +79,13 @@ export default async function Home() {
             List yours in 3 minutes. Keep it as a public post-mortem, or sell it and keep 100%.
           </p>
 
+          {/* Live momentum — real, current, urgency without fakes. */}
+          <div className="mt-7 flex justify-center">
+            <LiveFomoBar />
+          </div>
+
           {/* Show the product before explaining it — visitors search first. */}
-          <div className="mt-9">
+          <div className="mt-8">
             <GraveyardSearch items={searchItems} />
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs">
               <span className="text-bone-500">Try:</span>
