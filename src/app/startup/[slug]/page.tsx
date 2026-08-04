@@ -1,9 +1,23 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BadgeCheck, Eye, Users, Calendar, TrendingUp, Globe, Twitter, Linkedin } from "lucide-react";
+import { headers } from "next/headers";
+import {
+  BadgeCheck,
+  Eye,
+  Users,
+  Calendar,
+  TrendingUp,
+  Globe,
+  Skull,
+  GitBranch,
+  Lightbulb,
+  ArrowUpRight,
+} from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Badge, Card, Eyebrow } from "@/components/ui";
+import { XIcon, LinkedInIcon } from "@/components/brand-icons";
+import { ShareLaunch } from "@/components/share-launch";
 import { money, monthsBetween } from "@/lib/utils";
 import { MakeOfferButton } from "@/components/make-offer-button";
 import { VerifyRevenueButton } from "@/components/verify-revenue-button";
@@ -13,7 +27,16 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const supabase = createClient();
   const { data } = await supabase.from("startups").select("name, tagline").eq("slug", params.slug).single();
   if (!data) return { title: "Not found" };
-  return { title: data.name, description: data.tagline || "A startup laid to rest on Graveyard." };
+  return { title: data.name, description: data.tagline || "A startup laid to rest on Saasgrave." };
+}
+
+export const dynamic = "force-dynamic";
+
+function normalizeUrl(url?: string | null): string | null {
+  if (!url) return null;
+  const t = url.trim();
+  if (!t) return null;
+  return /^https?:\/\//i.test(t) ? t : `https://${t}`;
 }
 
 export default async function StartupPage({ params }: { params: { slug: string } }) {
@@ -31,11 +54,19 @@ export default async function StartupPage({ params }: { params: { slug: string }
   if (!s) notFound();
   const isOwner = user?.id === s.founder_id;
   const months = monthsBetween(s.started_at, s.ended_at);
+  const pivoted = s.outcome === "pivot";
+  const site = normalizeUrl(s.website_url);
+  const founderX = s.founder?.x_handle ? s.founder.x_handle.replace(/^@/, "") : null;
+
+  const h = headers();
+  const host = h.get("host") || "localhost:3000";
+  const proto = host.includes("localhost") ? "http" : "https";
+  const listingUrl = `${proto}://${host}/startup/${s.slug}`;
 
   return (
-    <div className="mx-auto max-w-4xl px-5 py-12">
+    <div className="mx-auto max-w-4xl px-5 py-10">
       <ViewTracker slug={s.slug} />
-      <Link href="/browse" className="text-sm text-bone-500 hover:text-bone-300">
+      <Link href="/browse" className="text-sm text-bone-500 transition hover:text-bone-300">
         ← Back to listings
       </Link>
 
@@ -44,24 +75,36 @@ export default async function StartupPage({ params }: { params: { slug: string }
         <div className="flex items-start gap-4">
           {s.logo_url ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={s.logo_url} alt="" className="h-16 w-16 rounded-2xl border border-black/10 object-cover" />
+            <img src={s.logo_url} alt="" className="h-16 w-16 rounded-2xl border border-black/8 object-cover shadow-card" />
           ) : (
-            <span className="grid h-16 w-16 place-items-center rounded-2xl border border-black/10 bg-ink-800 font-serif text-2xl text-bone-300">
+            <span className="grid h-16 w-16 place-items-center rounded-2xl border border-black/8 bg-ink-850 font-serif text-2xl text-bone-300">
               {s.name.charAt(0)}
             </span>
           )}
           <div>
             <h1 className="font-serif text-3xl tracking-tight text-bone-100">{s.name}</h1>
-            <p className="mt-1 text-bone-500">{s.tagline}</p>
-            <div className="mt-3 flex flex-wrap gap-2">
+            <p className="mt-1 text-[15px] text-bone-400">{s.tagline}</p>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
               {s.category && <Badge>{s.category}</Badge>}
-              <Badge className="border-black/15">{s.outcome === "pivot" ? "Pivoted" : "Shut down"}</Badge>
+              <Badge className={pivoted ? "border-accent-500/30 text-accent-600" : "border-black/12 text-bone-400"}>
+                {pivoted ? <GitBranch size={12} /> : <Skull size={12} />} {pivoted ? "Pivoted" : "Shut down"}
+              </Badge>
               {s.revenue_verified && s.verified_mrr > 0 && (
-                <Badge className="border-moss-500/30 text-moss-400">
+                <Badge className="border-moss-500/40 text-moss-500">
                   <BadgeCheck size={12} /> Verified revenue
                 </Badge>
               )}
             </div>
+            {site && (
+              <a
+                href={site}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex h-10 items-center gap-2 rounded-full bg-bone-100 px-5 text-sm font-medium text-ink-950 shadow-card transition hover:shadow-lift"
+              >
+                <Globe size={15} /> Visit site <ArrowUpRight size={14} />
+              </a>
+            )}
           </div>
         </div>
 
@@ -69,8 +112,8 @@ export default async function StartupPage({ params }: { params: { slug: string }
         <Card className="w-full p-5 sm:w-64">
           {s.for_sale ? (
             <>
-              <div className="text-xs text-bone-500">Asking</div>
-              <div className="font-serif text-3xl text-bone-100">
+              <div className="text-xs font-medium uppercase tracking-wide text-bone-500">Asking price</div>
+              <div className="mt-1 font-serif text-3xl text-bone-100">
                 {s.asking_price
                   ? money(s.asking_price)
                   : s.price_multiplier
@@ -78,14 +121,14 @@ export default async function StartupPage({ params }: { params: { slug: string }
                     : "Open to offers"}
               </div>
               {s.price_multiplier && s.claimed_mrr > 0 && (
-                <div className="mt-1 text-xs text-bone-500">
+                <div className="mt-1 text-xs text-bone-400">
                   ≈ {money(s.price_multiplier * s.claimed_mrr)} at {money(s.claimed_mrr)}/mo
                 </div>
               )}
               {!isOwner && <MakeOfferButton startupId={s.id} className="mt-4 w-full" />}
             </>
           ) : (
-            <div className="text-sm text-bone-500">
+            <div className="text-sm text-bone-400">
               Not for sale — listed as a public record. Read the story below.
             </div>
           )}
@@ -93,8 +136,19 @@ export default async function StartupPage({ params }: { params: { slug: string }
         </Card>
       </div>
 
+      {/* owner: share your launch */}
+      {isOwner && (
+        <Card className="mt-6 flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="text-sm font-medium text-bone-100">Your listing is live 🎉</div>
+            <div className="text-xs text-bone-500">Share it — every post brings buyers back to the graveyard.</div>
+          </div>
+          <ShareLaunch name={s.name} tagline={s.tagline} url={listingUrl} forSale={s.for_sale} />
+        </Card>
+      )}
+
       {/* metrics */}
-      <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
         <Metric icon={<TrendingUp size={15} />} label="Last MRR" value={money(s.claimed_mrr)} />
         <Metric
           icon={<BadgeCheck size={15} />}
@@ -113,26 +167,48 @@ export default async function StartupPage({ params }: { params: { slug: string }
             <div className="grid grid-cols-2 gap-3">
               {s.screenshot_urls.map((url: string) => (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img key={url} src={url} alt="" className="w-full rounded-xl border border-black/8 object-cover" />
+                <img key={url} src={url} alt="" className="w-full rounded-xl border border-black/8 object-cover shadow-sm" />
               ))}
             </div>
           )}
+
           {s.about && (
             <Section title="What it was">
-              <p className="whitespace-pre-line leading-relaxed text-bone-300">{s.about}</p>
+              <p className="whitespace-pre-line text-[15px] leading-relaxed text-bone-300">{s.about}</p>
             </Section>
           )}
-          <Section title={`Why it ${s.outcome === "pivot" ? "pivoted" : "shut down"}`}>
-            <Badge className="mb-3 border-ember-500/30 text-ember-400">{s.failure_reason}</Badge>
-            {s.failure_detail && (
-              <p className="whitespace-pre-line leading-relaxed text-bone-300">{s.failure_detail}</p>
-            )}
-          </Section>
-          {s.lessons_learned && (
-            <Section title="Lessons learned">
-              <p className="whitespace-pre-line leading-relaxed text-bone-300">{s.lessons_learned}</p>
-            </Section>
-          )}
+
+          {/* THE STORY — the clearly-highlighted post-mortem box */}
+          <Card className="overflow-hidden border-accent-500/20 p-0">
+            <div className="border-b border-black/8 bg-accent-600/[0.05] px-6 py-4">
+              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-accent-600">
+                {pivoted ? <GitBranch size={14} /> : <Skull size={14} />}
+                {pivoted ? "Why it pivoted" : "Cause of death"}
+              </div>
+              {s.failure_reason && (
+                <div className="mt-1.5 font-serif text-2xl tracking-tight text-bone-100">{s.failure_reason}</div>
+              )}
+            </div>
+            <div className="space-y-6 px-6 py-5">
+              {s.failure_detail ? (
+                <div>
+                  <div className="mb-1.5 text-xs font-medium uppercase tracking-wide text-bone-500">What actually happened</div>
+                  <p className="whitespace-pre-line text-[15px] leading-relaxed text-bone-300">{s.failure_detail}</p>
+                </div>
+              ) : (
+                <p className="text-sm text-bone-500">The founder hasn&apos;t written the full story yet.</p>
+              )}
+              {s.lessons_learned && (
+                <div className="rounded-xl border border-moss-500/20 bg-moss-500/[0.06] p-4">
+                  <div className="mb-1.5 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-moss-500">
+                    <Lightbulb size={13} /> Lessons learned
+                  </div>
+                  <p className="whitespace-pre-line text-[15px] leading-relaxed text-bone-300">{s.lessons_learned}</p>
+                </div>
+              )}
+            </div>
+          </Card>
+
           {s.tech_stack?.length > 0 && (
             <Section title="Built with">
               <div className="flex flex-wrap gap-2">
@@ -153,8 +229,8 @@ export default async function StartupPage({ params }: { params: { slug: string }
           )}
           {s.analytics_url && (
             <Section title="Analytics">
-              <a href={s.analytics_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm text-ember-400 hover:underline">
-                <Globe size={14} /> View traffic dashboard
+              <a href={s.analytics_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm font-medium text-accent-600 hover:underline">
+                <Globe size={14} /> View traffic dashboard <ArrowUpRight size={12} />
               </a>
             </Section>
           )}
@@ -167,32 +243,32 @@ export default async function StartupPage({ params }: { params: { slug: string }
             <Link href={`/profile/${s.founder?.id}`} className="flex items-center gap-3">
               {s.founder?.avatar_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={s.founder.avatar_url} alt="" className="h-12 w-12 rounded-full object-cover" />
+                <img src={s.founder.avatar_url} alt="" className="h-12 w-12 rounded-xl object-cover" />
               ) : (
-                <span className="grid h-12 w-12 place-items-center rounded-full bg-ember-600 font-semibold text-ink-950">
+                <span className="grid h-12 w-12 place-items-center rounded-xl bg-bone-100 font-semibold text-white">
                   {(s.founder?.full_name || "?").charAt(0)}
                 </span>
               )}
-              <div>
-                <div className="font-medium text-bone-100">{s.founder?.full_name || "Anonymous"}</div>
+              <div className="min-w-0">
+                <div className="truncate font-medium text-bone-100">{s.founder?.full_name || "Anonymous"}</div>
                 <div className="text-xs text-bone-500">{s.founder?.failed_count || 0} startups buried</div>
               </div>
             </Link>
-            {s.founder?.bio && <p className="mt-3 text-sm text-bone-500">{s.founder.bio}</p>}
-            <div className="mt-4 flex gap-2">
-              {s.founder?.x_handle && (
-                <a href={`https://x.com/${s.founder.x_handle.replace(/^@/, "")}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-black/10 p-2 text-bone-300 hover:border-black/25">
-                  <Twitter size={15} />
+            {s.founder?.bio && <p className="mt-3 text-sm leading-relaxed text-bone-400">{s.founder.bio}</p>}
+            <div className="mt-4 flex flex-wrap gap-2">
+              {founderX && (
+                <a href={`https://x.com/${founderX}`} target="_blank" rel="noopener noreferrer" className="grid h-9 w-9 place-items-center rounded-lg border border-black/10 text-bone-300 transition hover:border-black/25 hover:text-bone-100">
+                  <XIcon size={14} />
                 </a>
               )}
               {s.founder?.linkedin_url && (
-                <a href={s.founder.linkedin_url} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-black/10 p-2 text-bone-300 hover:border-black/25">
-                  <Linkedin size={15} />
+                <a href={normalizeUrl(s.founder.linkedin_url)!} target="_blank" rel="noopener noreferrer" className="grid h-9 w-9 place-items-center rounded-lg border border-black/10 text-[#0A66C2] transition hover:border-black/25">
+                  <LinkedInIcon size={14} />
                 </a>
               )}
               {s.founder?.website_url && (
-                <a href={/^https?:\/\//i.test(s.founder.website_url) ? s.founder.website_url : `https://${s.founder.website_url}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-black/10 p-2 text-bone-300 hover:border-black/25">
-                  <Globe size={15} />
+                <a href={normalizeUrl(s.founder.website_url)!} target="_blank" rel="noopener noreferrer" className="grid h-9 w-9 place-items-center rounded-lg border border-black/10 text-bone-300 transition hover:border-black/25 hover:text-bone-100">
+                  <Globe size={14} />
                 </a>
               )}
             </div>
@@ -212,7 +288,7 @@ export default async function StartupPage({ params }: { params: { slug: string }
 function Metric({ icon, label, value, highlight }: { icon: React.ReactNode; label: string; value: string; highlight?: boolean }) {
   return (
     <Card className="p-4">
-      <div className={`mb-1.5 flex items-center gap-1.5 ${highlight ? "text-moss-400" : "text-bone-500"}`}>{icon}</div>
+      <div className={`mb-1.5 flex items-center gap-1.5 ${highlight ? "text-moss-500" : "text-bone-500"}`}>{icon}</div>
       <div className="font-serif text-xl text-bone-100">{value}</div>
       <div className="text-xs text-bone-500">{label}</div>
     </Card>
@@ -222,7 +298,7 @@ function Metric({ icon, label, value, highlight }: { icon: React.ReactNode; labe
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
-      <h2 className="mb-3 text-sm font-medium uppercase tracking-widest text-bone-500">{title}</h2>
+      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-bone-500">{title}</h2>
       {children}
     </section>
   );

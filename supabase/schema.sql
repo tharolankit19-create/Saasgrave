@@ -229,6 +229,9 @@ $$;
 -- Backfill for projects created before screenshot_urls existed.
 alter table public.startups add column if not exists screenshot_urls text[] default '{}';
 
+-- The product's live/landing URL, so a listing can link straight to the site.
+alter table public.startups add column if not exists website_url text;
+
 -- ─────────────────────────────────────────────────────────────
 --  STORAGE  (image uploads: avatars, logos, screenshots)
 --  Public-read buckets; authenticated users write to their own
