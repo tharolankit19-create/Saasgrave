@@ -13,52 +13,108 @@ import {
   Megaphone,
   Check,
   Rocket,
+  Bell,
+  Bookmark,
+  Handshake,
+  Flame,
 } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
 import { LinkButton, Eyebrow, Card } from "@/components/ui";
-import { StartupCard } from "@/components/startup-card";
+import { GraveyardSearch } from "@/components/graveyard-search";
+import { CountUp } from "@/components/count-up";
+import { LedgerRow } from "@/components/ledger-row";
+import { GoogleButton } from "@/components/google-button";
+import { loadGraveyard } from "@/lib/stats";
+import { money } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const supabase = createClient();
-  const { data: featured } = await supabase
-    .from("startups")
-    .select("*, founder:profiles(full_name, avatar_url)")
-    .eq("status", "listed")
-    .order("created_at", { ascending: false })
-    .limit(3);
+  const { rows, stats } = await loadGraveyard(200);
+
+  const searchItems = rows.map((s) => ({
+    slug: s.slug,
+    name: s.name,
+    category: s.category,
+    tagline: s.tagline,
+    for_sale: s.for_sale,
+    logo_url: s.logo_url,
+  }));
+
+  // The ledger leads with what has pull — most-viewed first (loadGraveyard
+  // already sorts by views then recency). Everything here is a real listing.
+  const ledger = rows.slice(0, 12);
+  const hasListings = rows.length > 0;
 
   return (
     <div>
       {/* ─── Hero ─────────────────────────────────────────── */}
-      <section className="mx-auto max-w-4xl px-5 pb-16 pt-24 text-center sm:pt-28">
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-ink-900 px-3.5 py-1.5 text-xs text-bone-300">
-          <span className="h-1.5 w-1.5 rounded-full bg-accent-500" />
-          The marketplace for startups that didn&apos;t make it
+      <section className="relative overflow-hidden">
+        <div className="grave-grid pointer-events-none absolute inset-0 opacity-60" />
+        <div className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-accent-600/[0.07] blur-[120px]" />
+
+        <div className="relative mx-auto max-w-4xl px-5 pb-16 pt-24 text-center sm:pt-28">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-ink-900/70 px-3.5 py-1.5 text-xs text-bone-300 backdrop-blur">
+            <Flame size={12} className="text-accent-400" />
+            The resting place for dead &amp; zero-revenue startups
+          </div>
+
+          <h1 className="font-serif text-4xl leading-[1.06] tracking-tight text-bone-100 sm:text-6xl">
+            Every dead startup
+            <br className="hidden sm:block" /> is worth something.
+          </h1>
+
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-bone-300 sm:text-lg">
+            Working code, an aged domain, real users, and a hard-won lesson — usually deleted the day
+            a product dies. Saasgrave keeps that value alive so someone else can revive it.
+          </p>
+
+          {/* Live search — visitors use the graveyard before they read a word of pitch. */}
+          <div className="mt-9">
+            <GraveyardSearch items={searchItems} />
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs">
+              <span className="text-bone-500">Try:</span>
+              {["AI", "Chrome extension", "For sale", "SaaS", "No-code"].map((c) => (
+                <Link
+                  key={c}
+                  href={`/browse?q=${encodeURIComponent(c)}`}
+                  className="rounded-full border border-white/10 bg-ink-900/60 px-3 py-1 text-bone-300 transition hover:border-white/25 hover:text-bone-100"
+                >
+                  {c}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <LinkButton href="/sell" size="lg">
+              List your startup — free <ArrowRight size={17} />
+            </LinkButton>
+            <LinkButton href="/browse" variant="outline" size="lg">
+              Browse the graveyard
+            </LinkButton>
+          </div>
+          <p className="mt-4 text-xs text-bone-500">Free to list · $9 to sell · No commission on sales</p>
         </div>
-
-        <h1 className="font-serif text-4xl leading-[1.08] tracking-tight text-bone-100 sm:text-6xl">
-          Sold your soul to a startup
-          <br className="hidden sm:block" /> that died?
-        </h1>
-
-        <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-bone-300 sm:text-lg">
-          Most products don&apos;t fail because the code was bad — they run out of time, money, or
-          the right market. Saasgrave is where founders list those dead and zero-revenue products so
-          someone else can buy the code, domain, users and lessons, and give it a second life.
-        </p>
-
-        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <LinkButton href="/sell" size="lg">
-            List your startup — free <ArrowRight size={17} />
-          </LinkButton>
-          <LinkButton href="/browse" variant="outline" size="lg">
-            Browse the marketplace
-          </LinkButton>
-        </div>
-        <p className="mt-4 text-xs text-bone-500">Free to list · $9 to sell · No commission on sales</p>
       </section>
+
+      {/* ─── Live stats ribbon ────────────────────────────── */}
+      {hasListings && (
+        <section className="mx-auto max-w-5xl px-5 pb-20">
+          <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/8 bg-white/8 sm:grid-cols-4">
+            <StatCell value={stats.graves} label="startups at rest" />
+            {stats.buriedMrr > 0 ? (
+              <StatCellRaw k={`${money(stats.buriedMrr)}`} label="monthly revenue buried" />
+            ) : (
+              <StatCell value={stats.users} label="users left behind" />
+            )}
+            <StatCell value={stats.founders} label="founders" />
+            <StatCell value={stats.forSale} label="up for sale" />
+          </div>
+          <p className="mt-3 text-center text-xs text-bone-500">
+            Live from real listings — not a single seeded or fake startup.
+          </p>
+        </section>
+      )}
 
       {/* ─── Plain-language explainer ─────────────────────── */}
       <section className="mx-auto max-w-3xl px-5 pb-20 text-center">
@@ -70,20 +126,93 @@ export default async function Home() {
         </p>
       </section>
 
-      {/* ─── Stats ────────────────────────────────────────── */}
-      <section className="mx-auto max-w-5xl px-5 pb-20">
-        <div className="grid grid-cols-3 gap-px overflow-hidden rounded-2xl border border-white/8 bg-white/8">
-          {[
-            { k: "90%", v: "of startups shut down" },
-            { k: "$500B+", v: "in assets written off yearly" },
-            { k: "1 in 3", v: "founders build again" },
-          ].map((s) => (
-            <div key={s.k} className="bg-ink-900 p-6 text-center sm:p-8">
-              <div className="font-serif text-3xl text-bone-100 sm:text-4xl">{s.k}</div>
-              <div className="mt-1.5 text-xs text-bone-500 sm:text-sm">{s.v}</div>
-            </div>
-          ))}
+      {/* ─── The Ledger (leaderboard) ─────────────────────── */}
+      <section className="mx-auto max-w-4xl px-5 pb-24">
+        <div className="mb-6 flex items-end justify-between gap-4">
+          <div>
+            <Eyebrow>The ledger</Eyebrow>
+            <h2 className="font-serif text-3xl tracking-tight text-bone-100">Most-visited graves</h2>
+            <p className="mt-2 text-sm text-bone-500">Where buyers are looking right now.</p>
+          </div>
+          <Link
+            href="/browse"
+            className="hidden shrink-0 text-sm text-bone-300 transition hover:text-accent-400 sm:block"
+          >
+            View all →
+          </Link>
         </div>
+
+        {hasListings ? (
+          <div className="overflow-hidden rounded-2xl border border-white/8 bg-ink-900/50">
+            <div className="hidden grid-cols-[2.5rem_1fr_9rem_auto] gap-4 border-b border-white/8 px-6 py-3 text-[11px] font-medium uppercase tracking-[0.16em] text-bone-500 sm:grid">
+              <span>#</span>
+              <span>Startup</span>
+              <span>Status</span>
+              <span className="text-right">Interest</span>
+            </div>
+            {ledger.map((s, i) => (
+              <LedgerRow key={s.slug} s={s} rank={i + 1} />
+            ))}
+          </div>
+        ) : (
+          <Card className="p-12 text-center">
+            <span className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-xl border border-white/10 text-accent-400">
+              <Store size={20} />
+            </span>
+            <h3 className="font-serif text-2xl text-bone-100">The ledger is empty — for now.</h3>
+            <p className="mx-auto mt-2 max-w-sm text-sm text-bone-500">
+              No startup has been laid to rest here yet. Be the first — list yours and start the record.
+            </p>
+            <LinkButton href="/sell" size="lg" className="mt-6">
+              List the first startup <ArrowRight size={16} />
+            </LinkButton>
+          </Card>
+        )}
+      </section>
+
+      {/* ─── Why create an account (conversion core) ──────── */}
+      <section className="relative mx-auto max-w-6xl px-5 pb-24">
+        <Card className="relative overflow-hidden p-8 sm:p-12">
+          <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-accent-600/10 blur-3xl" />
+          <div className="relative grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-center">
+            <div>
+              <Eyebrow>Why sign up</Eyebrow>
+              <h2 className="font-serif text-3xl tracking-tight text-bone-100 sm:text-4xl">
+                Browsing is free.
+                <br /> The good stuff needs an account.
+              </h2>
+              <p className="mt-4 max-w-md text-sm leading-relaxed text-bone-500">
+                Looking is open to everyone. An account is what lets you act on what you find — and
+                give your own dead work a second life. Takes one click.
+              </p>
+
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <GoogleButton next="/onboarding" label="Continue with Google" />
+                <LinkButton href="/register" variant="outline" size="lg">
+                  Other ways to sign up
+                </LinkButton>
+              </div>
+              <p className="mt-3 text-xs text-bone-500">Free forever · No card · Unsubscribe anytime</p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {[
+                { icon: <Bell size={17} />, title: "Death alerts", body: "Get pinged when a product in your niche or stack gets buried — reach it first." },
+                { icon: <Bookmark size={17} />, title: "Watchlist", body: "Save graves you're eyeing and track price drops and new offers." },
+                { icon: <Handshake size={17} />, title: "Make offers", body: "Message founders and bid directly. No middleman, no commission." },
+                { icon: <Store size={17} />, title: "List in minutes", body: "Turn a dead repo into a public post-mortem — or a clean sale." },
+              ].map((b) => (
+                <div key={b.title} className="rounded-xl border border-white/8 bg-ink-950/40 p-5">
+                  <span className="mb-3 grid h-9 w-9 place-items-center rounded-lg border border-white/10 text-accent-400">
+                    {b.icon}
+                  </span>
+                  <h3 className="text-sm font-medium text-bone-100">{b.title}</h3>
+                  <p className="mt-1 text-xs leading-relaxed text-bone-500">{b.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Card>
       </section>
 
       {/* ─── How it works ─────────────────────────────────── */}
@@ -278,26 +407,6 @@ export default async function Home() {
         </Card>
       </section>
 
-      {/* ─── Featured ─────────────────────────────────────── */}
-      {featured && featured.length > 0 && (
-        <section className="mx-auto max-w-6xl px-5 pb-20">
-          <div className="mb-8 flex items-end justify-between">
-            <div>
-              <Eyebrow>Recently listed</Eyebrow>
-              <h2 className="font-serif text-3xl tracking-tight text-bone-100">Latest arrivals</h2>
-            </div>
-            <Link href="/browse" className="hidden text-sm text-bone-300 hover:text-accent-400 sm:block">
-              View all →
-            </Link>
-          </div>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((s: any) => (
-              <StartupCard key={s.id} startup={s} />
-            ))}
-          </div>
-        </section>
-      )}
-
       {/* ─── FAQ ──────────────────────────────────────────── */}
       <section className="mx-auto max-w-3xl px-5 pb-24">
         <div className="mb-10 text-center">
@@ -307,7 +416,7 @@ export default async function Home() {
         <div className="divide-y divide-white/8 rounded-2xl border border-white/8">
           {[
             { q: "What does it cost?", a: "Browsing and listing a startup are free. Listing one for sale is a one-time $9 fee, and we take no commission on the sale itself. Ad slots are $49 for 30 days." },
-            { q: "Do I have to sell?", a: "No. You can list a product purely as a public record — its metrics and post-mortem — without ever putting it up for sale." },
+            { q: "Do I need an account to look?", a: "No — browsing and search are open to everyone. You only need a free account to make offers, save a watchlist, get death alerts, or list your own startup." },
             { q: "How is revenue verified?", a: "You paste a restricted, read-only Stripe key. We calculate MRR from active subscriptions and discard the key immediately. Verified listings get a green badge." },
             { q: "Who buys dead startups?", a: "Operators and indie hackers who want a head start — a working codebase, a domain, existing users, or simply a market to pivot into." },
             { q: "What if my startup made $0?", a: "That's exactly what Saasgrave is for. Zero-revenue products still have code, a domain, and a lesson worth money to the right buyer." },
@@ -326,20 +435,24 @@ export default async function Home() {
 
       {/* ─── CTA ──────────────────────────────────────────── */}
       <section className="mx-auto max-w-4xl px-5 pb-24">
-        <Card className="p-10 text-center sm:p-14">
-          <h2 className="font-serif text-3xl tracking-tight text-bone-100 sm:text-4xl">
-            Give your dead startup a second act.
-          </h2>
-          <p className="mx-auto mt-3 max-w-md text-sm text-bone-500">
-            It took months to build. It takes minutes to list — and it&apos;s free.
-          </p>
-          <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <LinkButton href="/sell" size="lg">
-              List your startup <ArrowRight size={17} />
-            </LinkButton>
-            <LinkButton href="/browse" variant="outline" size="lg">
-              Browse listings
-            </LinkButton>
+        <Card className="relative overflow-hidden p-10 text-center sm:p-14">
+          <div className="grave-grid pointer-events-none absolute inset-0 opacity-50" />
+          <div className="pointer-events-none absolute left-1/2 top-0 h-40 w-96 -translate-x-1/2 rounded-full bg-accent-600/10 blur-3xl" />
+          <div className="relative">
+            <h2 className="font-serif text-3xl tracking-tight text-bone-100 sm:text-4xl">
+              Give your dead startup a second act.
+            </h2>
+            <p className="mx-auto mt-3 max-w-md text-sm text-bone-500">
+              It took months to build. It takes minutes to list — and it&apos;s free.
+            </p>
+            <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <LinkButton href="/sell" size="lg">
+                List your startup <ArrowRight size={17} />
+              </LinkButton>
+              <LinkButton href="/browse" variant="outline" size="lg">
+                Browse listings
+              </LinkButton>
+            </div>
           </div>
         </Card>
       </section>
@@ -358,6 +471,24 @@ export default async function Home() {
           <p>© {new Date().getFullYear()} Saasgrave</p>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function StatCell({ value, label }: { value: number; label: string }) {
+  return (
+    <div className="bg-ink-900 p-6 text-center sm:p-7">
+      <CountUp value={value} className="font-serif text-3xl text-bone-100 sm:text-4xl" />
+      <div className="mt-1.5 text-xs text-bone-500 sm:text-sm">{label}</div>
+    </div>
+  );
+}
+
+function StatCellRaw({ k, label }: { k: string; label: string }) {
+  return (
+    <div className="bg-ink-900 p-6 text-center sm:p-7">
+      <div className="font-serif text-3xl text-bone-100 sm:text-4xl">{k}</div>
+      <div className="mt-1.5 text-xs text-bone-500 sm:text-sm">{label}</div>
     </div>
   );
 }
