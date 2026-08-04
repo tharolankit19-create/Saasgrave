@@ -17,9 +17,11 @@ const BASE =
 // Listing a startup is free — it has no product.
 export type CheckoutKind = "ad_slot" | "sale_listing";
 
+// Product IDs come from the Dodo dashboard. New names first, old names kept as
+// a fallback so existing deployments don't break.
 const PRODUCTS: Record<CheckoutKind, string | undefined> = {
-  ad_slot: process.env.DODO_PRODUCT_AD_SLOT,
-  sale_listing: process.env.DODO_PRODUCT_SALE_LISTING,
+  ad_slot: process.env.DODO_PRODUCT_ID_ADS || process.env.DODO_PRODUCT_AD_SLOT,
+  sale_listing: process.env.DODO_PRODUCT_ID_SALE || process.env.DODO_PRODUCT_SALE_LISTING,
 };
 
 interface CreateCheckoutArgs {
