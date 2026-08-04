@@ -29,10 +29,10 @@ function status(s: LedgerStartup) {
       tone: "text-moss-400 border-moss-500/30 bg-moss-500/10",
     };
   if (s.outcome === "pivot")
-    return { label: "Pivoted", tone: "text-bone-300 border-white/12 bg-white/[0.03]" };
+    return { label: "Pivoted", tone: "text-bone-300 border-black/12 bg-black/[0.03]" };
   if ((s.verified_mrr ?? 0) === 0 && (s.claimed_mrr ?? 0) === 0)
-    return { label: "Zero-revenue", tone: "text-bone-500 border-white/10 bg-white/[0.02]" };
-  return { label: "Resting", tone: "text-bone-400 border-white/10 bg-white/[0.02]" };
+    return { label: "Zero-revenue", tone: "text-bone-500 border-black/10 bg-black/[0.02]" };
+  return { label: "Resting", tone: "text-bone-400 border-black/10 bg-black/[0.02]" };
 }
 
 export function LedgerRow({ s, rank }: { s: LedgerStartup; rank: number }) {
@@ -48,7 +48,7 @@ export function LedgerRow({ s, rank }: { s: LedgerStartup; rank: number }) {
   return (
     <Link
       href={`/startup/${s.slug}`}
-      className="group grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-white/[0.06] px-4 py-3.5 transition-colors last:border-b-0 hover:bg-white/[0.025] sm:grid-cols-[2.5rem_1fr_9rem_auto] sm:px-6"
+      className="group grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-black/[0.06] px-4 py-3.5 transition-colors last:border-b-0 hover:bg-black/[0.025] sm:grid-cols-[2.5rem_1fr_9rem_auto] sm:px-6"
     >
       <span className="font-serif text-sm tabular-nums text-bone-500 sm:text-base">
         {String(rank).padStart(2, "0")}
@@ -60,16 +60,16 @@ export function LedgerRow({ s, rank }: { s: LedgerStartup; rank: number }) {
           <img
             src={s.logo_url}
             alt=""
-            className="h-9 w-9 shrink-0 rounded-lg border border-white/10 object-cover"
+            className="h-9 w-9 shrink-0 rounded-lg border border-black/10 object-cover"
           />
         ) : (
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-ink-800 font-serif text-sm text-bone-300">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-black/10 bg-ink-800 font-serif text-sm text-bone-300">
             {s.name.charAt(0)}
           </span>
         )}
         <span className="min-w-0">
           <span className="flex items-center gap-1.5">
-            <span className="truncate text-sm font-medium text-bone-100 group-hover:text-white">
+            <span className="truncate text-sm font-medium text-bone-100 group-hover:text-accent-600">
               {s.name}
             </span>
             <ArrowUpRight

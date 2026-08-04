@@ -39,7 +39,7 @@ export function GoogleButton({
       onClick={signIn}
       disabled={loading}
       className={cn(
-        "inline-flex h-12 items-center justify-center gap-3 rounded-full border border-white/12 bg-ink-900 px-6 text-sm font-medium text-bone-100 transition hover:border-white/25 hover:bg-ink-850 disabled:opacity-50",
+        "inline-flex h-12 items-center justify-center gap-3 rounded-full border border-black/12 bg-ink-900 px-6 text-sm font-medium text-bone-100 transition hover:border-black/25 hover:bg-ink-850 disabled:opacity-50",
         className
       )}
     >

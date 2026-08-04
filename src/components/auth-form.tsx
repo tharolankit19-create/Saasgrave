@@ -74,15 +74,15 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
       </p>
 
       <div className="my-5 flex items-center gap-3 text-xs text-bone-500">
-        <div className="h-px flex-1 bg-white/8" />
+        <div className="h-px flex-1 bg-black/8" />
         or use email
-        <div className="h-px flex-1 bg-white/8" />
+        <div className="h-px flex-1 bg-black/8" />
       </div>
 
       {!showEmail ? (
         <button
           onClick={() => setShowEmail(true)}
-          className="h-11 w-full rounded-full border border-white/10 bg-ink-900 text-sm font-medium text-bone-300 transition hover:border-white/25 hover:text-bone-100"
+          className="h-11 w-full rounded-full border border-black/10 bg-ink-900 text-sm font-medium text-bone-300 transition hover:border-black/25 hover:text-bone-100"
         >
           {isRegister ? "Sign up with email" : "Sign in with email"}
         </button>
@@ -148,7 +148,7 @@ function Field({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         required={required}
-        className="h-11 w-full rounded-xl border border-white/10 bg-ink-900 px-4 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-accent-500/50"
+        className="h-11 w-full rounded-xl border border-black/10 bg-ink-900 px-4 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-accent-500/50"
       />
     </label>
   );

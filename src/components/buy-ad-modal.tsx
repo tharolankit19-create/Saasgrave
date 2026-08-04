@@ -20,8 +20,8 @@ export function BuyAdModal({ slotId, position }: { slotId: string; position: str
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button className="group flex h-full w-full flex-col items-center justify-center rounded-2xl border border-dashed border-white/12 bg-ink-900/40 p-5 text-center transition hover:border-ember-500/40 hover:bg-ink-900">
-          <span className="mb-2 grid h-8 w-8 place-items-center rounded-full border border-white/12 text-bone-500 transition group-hover:text-accent-400">
+        <button className="group flex h-full w-full flex-col items-center justify-center rounded-2xl border border-dashed border-black/12 bg-ink-900/40 p-5 text-center transition hover:border-ember-500/40 hover:bg-ink-900">
+          <span className="mb-2 grid h-8 w-8 place-items-center rounded-full border border-black/12 text-bone-500 transition group-hover:text-accent-400">
             <Plus size={16} />
           </span>
           <span className="text-xs font-medium text-bone-300">Book ad</span>
@@ -31,7 +31,7 @@ export function BuyAdModal({ slotId, position }: { slotId: string; position: str
 
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm data-[state=open]:animate-fade-in" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[92vw] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-white/10 bg-ink-850 p-7 shadow-2xl focus:outline-none">
+        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[92vw] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-black/10 bg-ink-850 p-7 shadow-2xl focus:outline-none">
           <div className="mb-1 inline-flex items-center gap-1.5 rounded-full bg-ember-600/15 px-2.5 py-1 text-xs font-medium text-ember-400">
             <TrendingUp size={12} /> Only 6 slots exist. Ever.
           </div>
@@ -57,7 +57,7 @@ export function BuyAdModal({ slotId, position }: { slotId: string; position: str
             ))}
           </ul>
 
-          <div className="mb-5 flex items-end justify-between rounded-xl border border-white/8 bg-ink-900 p-4">
+          <div className="mb-5 flex items-end justify-between rounded-xl border border-black/8 bg-ink-900 p-4">
             <div>
               <div className="text-xs text-bone-500 line-through">$149 / month elsewhere</div>
               <div className="font-serif text-3xl text-bone-100">$49</div>

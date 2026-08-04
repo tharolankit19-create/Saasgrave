@@ -43,7 +43,7 @@ export function VerifyRevenueButton({ startupId, className }: { startupId: strin
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[92vw] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-white/10 bg-ink-850 p-7 shadow-2xl focus:outline-none">
+        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[92vw] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-black/10 bg-ink-850 p-7 shadow-2xl focus:outline-none">
           <Dialog.Title className="font-serif text-2xl text-bone-100">Verify your revenue</Dialog.Title>
           <Dialog.Description className="mt-1 text-sm text-bone-500">
             Paste a Stripe <span className="text-bone-300">restricted, read-only</span> key. We compute
@@ -54,7 +54,7 @@ export function VerifyRevenueButton({ startupId, className }: { startupId: strin
             value={key}
             onChange={(e) => setKey(e.target.value)}
             placeholder="rk_live_…"
-            className="mt-5 h-11 w-full rounded-xl border border-white/10 bg-ink-900 px-4 font-mono text-sm text-bone-100 outline-none focus:border-ember-500/50"
+            className="mt-5 h-11 w-full rounded-xl border border-black/10 bg-ink-900 px-4 font-mono text-sm text-bone-100 outline-none focus:border-ember-500/50"
           />
           <Button className="mt-4 w-full" onClick={verify} disabled={loading}>
             {loading ? <Loader2 size={16} className="animate-spin" /> : "Verify now"}

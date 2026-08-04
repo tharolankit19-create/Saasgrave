@@ -60,7 +60,7 @@ export function GraveyardSearch({ items }: { items: SearchItem[] }) {
     <div className="relative mx-auto w-full max-w-xl">
       <div
         className={`flex items-center gap-3 rounded-2xl border bg-ink-900/80 px-4 backdrop-blur transition-colors ${
-          showPanel ? "border-accent-500/50" : "border-white/12 hover:border-white/20"
+          showPanel ? "border-accent-500/50" : "border-black/12 hover:border-black/20"
         }`}
       >
         <Search size={18} className="shrink-0 text-bone-500" />
@@ -82,14 +82,14 @@ export function GraveyardSearch({ items }: { items: SearchItem[] }) {
         />
         <button
           onClick={() => go(results[active]?.slug)}
-          className="hidden shrink-0 items-center gap-1.5 rounded-full bg-bone-100 px-4 py-2 text-sm font-medium text-ink-950 transition hover:bg-white sm:inline-flex"
+          className="hidden shrink-0 items-center gap-1.5 rounded-full bg-bone-100 px-4 py-2 text-sm font-medium text-ink-950 transition hover:bg-bone-300 sm:inline-flex"
         >
           Enter <ArrowRight size={15} />
         </button>
       </div>
 
       {showPanel && (
-        <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-30 overflow-hidden rounded-2xl border border-white/10 bg-ink-850/95 shadow-2xl shadow-black/60 backdrop-blur-xl">
+        <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-30 overflow-hidden rounded-2xl border border-black/10 bg-ink-850/95 shadow-2xl shadow-black/60 backdrop-blur-xl">
           {results.length > 0 ? (
             <ul className="max-h-[340px] overflow-y-auto py-1.5 text-left">
               {results.map((s, i) => (
@@ -99,7 +99,7 @@ export function GraveyardSearch({ items }: { items: SearchItem[] }) {
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => go(s.slug)}
                     className={`flex w-full items-center gap-3 px-3 py-2.5 text-left transition ${
-                      i === active ? "bg-white/[0.06]" : ""
+                      i === active ? "bg-black/[0.06]" : ""
                     }`}
                   >
                     {s.logo_url ? (
@@ -107,10 +107,10 @@ export function GraveyardSearch({ items }: { items: SearchItem[] }) {
                       <img
                         src={s.logo_url}
                         alt=""
-                        className="h-9 w-9 shrink-0 rounded-lg border border-white/10 object-cover"
+                        className="h-9 w-9 shrink-0 rounded-lg border border-black/10 object-cover"
                       />
                     ) : (
-                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-ink-800 font-serif text-sm text-bone-300">
+                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-black/10 bg-ink-800 font-serif text-sm text-bone-300">
                         {s.name.charAt(0)}
                       </span>
                     )}
@@ -131,7 +131,7 @@ export function GraveyardSearch({ items }: { items: SearchItem[] }) {
             </ul>
           ) : (
             <div className="flex items-center gap-3 px-4 py-4 text-left">
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/10 bg-ink-800 text-bone-500">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-black/10 bg-ink-800 text-bone-500">
                 <Skull size={16} />
               </span>
               <div className="min-w-0 flex-1">

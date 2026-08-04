@@ -48,13 +48,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Navbar />
         <main>{children}</main>
         <Toaster
-          theme="dark"
+          theme="light"
           position="bottom-right"
           toastOptions={{
             style: {
-              background: "#141418",
-              border: "1px solid rgba(245,244,241,0.08)",
-              color: "#f5f4f1",
+              background: "#ffffff",
+              border: "1px solid rgba(23,20,15,0.10)",
+              color: "#17140f",
+              boxShadow: "0 10px 40px -12px rgba(23,20,15,0.18)",
             },
           }}
         />

@@ -63,7 +63,7 @@ export default async function BrowsePage({
               ))}
             </div>
           ) : (
-            <div className="rounded-2xl border border-white/8 p-16 text-center">
+            <div className="rounded-2xl border border-black/8 p-16 text-center">
               <p className="font-serif text-2xl text-bone-300">Nothing matches — yet.</p>
               <p className="mt-2 text-sm text-bone-500">Try clearing your filters.</p>
             </div>

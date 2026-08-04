@@ -61,7 +61,7 @@ export function EditProfileForm({ defaults }: { defaults: Defaults }) {
   }
 
   return (
-    <form onSubmit={save} className="space-y-4 rounded-2xl border border-white/8 bg-ink-900/60 p-7">
+    <form onSubmit={save} className="space-y-4 rounded-2xl border border-black/8 bg-ink-900/60 p-7">
       <Field label="Full name" value={f.full_name} onChange={(v) => set("full_name", v)} />
       <ImageUpload
         bucket="avatars"
@@ -76,7 +76,7 @@ export function EditProfileForm({ defaults }: { defaults: Defaults }) {
           value={f.bio}
           rows={3}
           onChange={(e) => set("bio", e.target.value)}
-          className="w-full rounded-xl border border-white/10 bg-ink-900 p-4 text-sm text-bone-100 outline-none focus:border-ember-500/50"
+          className="w-full rounded-xl border border-black/10 bg-ink-900 p-4 text-sm text-bone-100 outline-none focus:border-ember-500/50"
         />
       </label>
       <div className="grid gap-4 sm:grid-cols-2">
@@ -108,7 +108,7 @@ function Field({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="h-11 w-full rounded-xl border border-white/10 bg-ink-900 px-4 text-sm text-bone-100 outline-none focus:border-ember-500/50"
+        className="h-11 w-full rounded-xl border border-black/10 bg-ink-900 px-4 text-sm text-bone-100 outline-none focus:border-ember-500/50"
       />
     </label>
   );

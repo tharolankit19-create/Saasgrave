@@ -48,7 +48,7 @@ export async function PromoSlots() {
 
             <Link
               href="/browse"
-              className="mt-7 inline-flex h-12 items-center gap-2 rounded-full bg-bone-100 px-7 text-[15px] font-medium text-ink-950 transition hover:bg-white"
+              className="mt-7 inline-flex h-12 items-center gap-2 rounded-full bg-bone-100 px-7 text-[15px] font-medium text-ink-950 transition hover:bg-bone-300"
             >
               Claim a slot <ArrowRight size={16} />
             </Link>
@@ -63,7 +63,7 @@ export async function PromoSlots() {
                   key={i}
                   className={`flex aspect-[3/4] flex-col justify-between rounded-xl border p-3 ${
                     isTaken
-                      ? "border-white/8 bg-ink-800"
+                      ? "border-black/8 bg-ink-800"
                       : "border-dashed border-accent-500/30 bg-accent-600/[0.04]"
                   }`}
                 >
@@ -76,8 +76,8 @@ export async function PromoSlots() {
                   </span>
                   {isTaken ? (
                     <span className="space-y-1">
-                      <span className="block h-1.5 w-3/4 rounded-full bg-white/15" />
-                      <span className="block h-1.5 w-1/2 rounded-full bg-white/10" />
+                      <span className="block h-1.5 w-3/4 rounded-full bg-black/15" />
+                      <span className="block h-1.5 w-1/2 rounded-full bg-black/10" />
                     </span>
                   ) : (
                     <Megaphone size={16} className="text-accent-400/70" />

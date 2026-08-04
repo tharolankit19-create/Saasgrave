@@ -18,7 +18,7 @@ export async function AuthAside({ mode }: { mode: "login" | "register" }) {
   ];
 
   return (
-    <div className="relative hidden overflow-hidden border-r border-white/8 bg-ink-900 lg:flex lg:flex-col lg:justify-between lg:p-12">
+    <div className="relative hidden overflow-hidden border-r border-black/8 bg-ink-900 lg:flex lg:flex-col lg:justify-between lg:p-12">
       <div className="grave-grid pointer-events-none absolute inset-0 opacity-70" />
       <div className="pointer-events-none absolute -left-24 top-1/3 h-72 w-72 rounded-full bg-accent-600/10 blur-3xl" />
 
@@ -40,7 +40,7 @@ export async function AuthAside({ mode }: { mode: "login" | "register" }) {
         <ul className="mt-9 max-w-sm space-y-4">
           {benefits.map((b) => (
             <li key={b.title} className="flex gap-3.5">
-              <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-white/10 text-accent-400">
+              <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-black/10 text-accent-400">
                 {b.icon}
               </span>
               <span>
@@ -53,7 +53,7 @@ export async function AuthAside({ mode }: { mode: "login" | "register" }) {
       </div>
 
       {stats.graves > 0 && (
-        <div className="relative mt-12 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/8 pt-6">
+        <div className="relative mt-12 flex flex-wrap gap-x-8 gap-y-3 border-t border-black/8 pt-6">
           <Stat k={stats.graves.toLocaleString("en-US")} v="startups at rest" />
           {stats.founders > 0 && <Stat k={stats.founders.toLocaleString("en-US")} v="founders" />}
           {stats.buriedMrr > 0 && <Stat k={`${money(stats.buriedMrr)}/mo`} v="revenue buried" />}

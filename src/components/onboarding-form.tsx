@@ -66,7 +66,7 @@ export function OnboardingForm({ defaults }: { defaults: Defaults }) {
   }
 
   return (
-    <form onSubmit={submit} className="space-y-4 rounded-2xl border border-white/8 bg-ink-900/60 p-7">
+    <form onSubmit={submit} className="space-y-4 rounded-2xl border border-black/8 bg-ink-900/60 p-7">
       <Field
         label="Full name"
         required
@@ -113,7 +113,7 @@ export function OnboardingForm({ defaults }: { defaults: Defaults }) {
           onChange={(e) => set("fail_reasons", e.target.value)}
           rows={3}
           placeholder="No market need, ran out of runway, co-founder split…"
-          className="w-full rounded-xl border border-white/10 bg-ink-900 p-4 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-accent-500/50"
+          className="w-full rounded-xl border border-black/10 bg-ink-900 p-4 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-accent-500/50"
         />
       </label>
 
@@ -153,7 +153,7 @@ function Field({
         required={required}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="h-11 w-full rounded-xl border border-white/10 bg-ink-900 px-4 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-ember-500/50"
+        className="h-11 w-full rounded-xl border border-black/10 bg-ink-900 px-4 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-ember-500/50"
       />
     </label>
   );

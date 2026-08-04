@@ -26,6 +26,7 @@ import { CountUp } from "@/components/count-up";
 import { LedgerRow } from "@/components/ledger-row";
 import { GoogleButton } from "@/components/google-button";
 import { PromoSlots } from "@/components/promo-slots";
+import { Reveal, Aurora, Marquee } from "@/components/motion";
 import { loadGraveyard } from "@/lib/stats";
 import { money } from "@/lib/utils";
 
@@ -46,22 +47,30 @@ export default async function Home() {
   const ledger = rows.slice(0, 12);
   const hasListings = rows.length > 0;
 
+  // The moving tape under the hero. Real names when we have them; otherwise a
+  // loop of what a dead startup leaves behind — concept words, never fake names.
+  const marqueeItems = hasListings
+    ? rows.slice(0, 22).map((s) => s.name)
+    : ["Working code", "An aged domain", "Real users", "An email list", "A hard-won lesson", "A second life"];
+
   return (
     <div>
       {/* ─── 1 · Hero — one idea, sold from here alone ────── */}
       <section className="relative overflow-hidden">
         <div className="grave-grid pointer-events-none absolute inset-0 opacity-60" />
-        <div className="pointer-events-none absolute left-1/2 top-0 h-[440px] w-[860px] -translate-x-1/2 rounded-full bg-accent-600/[0.08] blur-[130px]" />
+        <Aurora className="left-1/2 top-[-120px] h-[520px] w-[880px] -translate-x-1/2" />
+        <Aurora className="right-[-140px] top-[120px] h-[360px] w-[360px]" />
 
         <div className="relative mx-auto max-w-4xl px-5 pb-16 pt-24 text-center sm:pt-28">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-ink-900/70 px-3.5 py-1.5 text-xs text-bone-300 backdrop-blur">
-            <Flame size={12} className="text-accent-400" />
+          <div className="mb-6 inline-flex animate-fade-in items-center gap-2 rounded-full border border-black/10 bg-ink-900 px-3.5 py-1.5 text-xs text-bone-500 shadow-card">
+            <Flame size={12} className="text-accent-500" />
             The resting place for dead &amp; zero-revenue startups
           </div>
 
           <h1 className="font-serif text-[2.6rem] leading-[1.04] tracking-tight text-bone-100 sm:text-6xl">
             Your dead startup
-            <br className="hidden sm:block" /> is still worth money.
+            <br className="hidden sm:block" /> is still worth{" "}
+            <span className="text-shimmer animate-shimmer">money.</span>
           </h1>
 
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-bone-300 sm:text-lg">
@@ -78,7 +87,7 @@ export default async function Home() {
                 <Link
                   key={c}
                   href={`/browse?q=${encodeURIComponent(c)}`}
-                  className="rounded-full border border-white/10 bg-ink-900/60 px-3 py-1 text-bone-300 transition hover:border-white/25 hover:text-bone-100"
+                  className="rounded-full border border-black/10 bg-ink-900/60 px-3 py-1 text-bone-300 transition hover:border-black/25 hover:text-bone-100"
                 >
                   {c}
                 </Link>
@@ -99,12 +108,20 @@ export default async function Home() {
             Free to list, forever · $9 to open it for sale · 0% commission
           </p>
         </div>
+
+        {/* Moving tape — the graveyard, drifting past. */}
+        <div className="relative mx-auto max-w-6xl px-5 pb-16">
+          <p className="mb-3 text-center text-[11px] font-medium uppercase tracking-[0.2em] text-bone-500">
+            {hasListings ? "Recently laid to rest" : "What every dead startup leaves behind"}
+          </p>
+          <Marquee items={marqueeItems} />
+        </div>
       </section>
 
       {/* ─── 2 · Live proof, in real numbers ──────────────── */}
       {hasListings && (
         <section className="mx-auto max-w-5xl px-5 pb-24">
-          <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/8 bg-white/8 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-black/8 bg-black/8 sm:grid-cols-4">
             <StatCell value={stats.graves} label="startups at rest" />
             {stats.buriedMrr > 0 ? (
               <StatCellRaw k={`${money(stats.buriedMrr)}`} label="monthly revenue buried" />
@@ -121,8 +138,8 @@ export default async function Home() {
       )}
 
       {/* ─── 3 · Empathy — name the pain before selling ───── */}
-      <section className="mx-auto max-w-3xl px-5 pb-24 text-center">
-        <span className="mx-auto mb-6 grid h-12 w-12 place-items-center rounded-2xl border border-white/10 text-accent-400">
+      <Reveal as="section" className="mx-auto max-w-3xl px-5 pb-24 text-center">
+        <span className="mx-auto mb-6 grid h-12 w-12 animate-float place-items-center rounded-2xl border border-black/10 bg-ink-900 text-accent-500 shadow-card">
           <Heart size={22} />
         </span>
         <h2 className="font-serif text-3xl leading-snug tracking-tight text-bone-100 sm:text-[38px]">
@@ -134,7 +151,7 @@ export default async function Home() {
           of real work quietly disappear. That&apos;s the part that stings. Saasgrave is where it
           doesn&apos;t have to.
         </p>
-      </section>
+      </Reveal>
 
       {/* ─── 4 · The Ledger — real listings as proof ──────── */}
       <section className="mx-auto max-w-4xl px-5 pb-24">
@@ -153,8 +170,8 @@ export default async function Home() {
         </div>
 
         {hasListings ? (
-          <div className="overflow-hidden rounded-2xl border border-white/8 bg-ink-900/50">
-            <div className="hidden grid-cols-[2.5rem_1fr_9rem_auto] gap-4 border-b border-white/8 px-6 py-3 text-[11px] font-medium uppercase tracking-[0.16em] text-bone-500 sm:grid">
+          <div className="overflow-hidden rounded-2xl border border-black/8 bg-ink-900/50">
+            <div className="hidden grid-cols-[2.5rem_1fr_9rem_auto] gap-4 border-b border-black/8 px-6 py-3 text-[11px] font-medium uppercase tracking-[0.16em] text-bone-500 sm:grid">
               <span>#</span>
               <span>Startup</span>
               <span>Status</span>
@@ -166,7 +183,7 @@ export default async function Home() {
           </div>
         ) : (
           <Card className="p-12 text-center">
-            <span className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-xl border border-white/10 text-accent-400">
+            <span className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-xl border border-black/10 text-accent-400">
               <Store size={20} />
             </span>
             <h3 className="font-serif text-2xl text-bone-100">The ledger is empty — for now.</h3>
@@ -210,7 +227,7 @@ export default async function Home() {
             },
           ].map((step) => (
             <Card key={step.title} className="p-7">
-              <span className="mb-5 grid h-10 w-10 place-items-center rounded-xl border border-white/10 text-accent-400">
+              <span className="mb-5 grid h-10 w-10 place-items-center rounded-xl border border-black/10 text-accent-400">
                 {step.icon}
               </span>
               <h3 className="mb-2 font-medium text-bone-100">{step.title}</h3>
@@ -236,7 +253,7 @@ export default async function Home() {
             { icon: <BookOpen size={18} />, title: "The post-mortem", body: "Why it failed — the most valuable part for a buyer." },
           ].map((x) => (
             <Card key={x.title} className="p-6">
-              <span className="mb-4 grid h-9 w-9 place-items-center rounded-lg border border-white/10 text-accent-400">
+              <span className="mb-4 grid h-9 w-9 place-items-center rounded-lg border border-black/10 text-accent-400">
                 {x.icon}
               </span>
               <h3 className="mb-1.5 text-sm font-medium text-bone-100">{x.title}</h3>
@@ -278,8 +295,8 @@ export default async function Home() {
                 { icon: <Handshake size={17} />, title: "Make offers", body: "Message founders and bid directly. No middleman, no commission." },
                 { icon: <Store size={17} />, title: "List in minutes", body: "Turn a dead repo into a public post-mortem — or a clean sale." },
               ].map((b) => (
-                <div key={b.title} className="rounded-xl border border-white/8 bg-ink-950/40 p-5">
-                  <span className="mb-3 grid h-9 w-9 place-items-center rounded-lg border border-white/10 text-accent-400">
+                <div key={b.title} className="rounded-xl border border-black/8 bg-ink-950/40 p-5">
+                  <span className="mb-3 grid h-9 w-9 place-items-center rounded-lg border border-black/10 text-accent-400">
                     {b.icon}
                   </span>
                   <h3 className="text-sm font-medium text-bone-100">{b.title}</h3>
@@ -302,12 +319,12 @@ export default async function Home() {
             The alternatives cost more and give less
           </h2>
         </div>
-        <div className="overflow-hidden rounded-2xl border border-white/8">
-          <div className="grid grid-cols-4 border-b border-white/8 bg-ink-900 text-[11px] font-medium uppercase tracking-[0.14em] text-bone-500 sm:text-xs">
+        <div className="overflow-hidden rounded-2xl border border-black/8">
+          <div className="grid grid-cols-4 border-b border-black/8 bg-ink-900 text-[11px] font-medium uppercase tracking-[0.14em] text-bone-500 sm:text-xs">
             <span className="p-4" />
-            <span className="border-l border-white/8 p-4 text-center text-accent-400">Saasgrave</span>
-            <span className="border-l border-white/8 p-4 text-center">Delete the repo</span>
-            <span className="border-l border-white/8 p-4 text-center">Typical marketplace</span>
+            <span className="border-l border-black/8 p-4 text-center text-accent-400">Saasgrave</span>
+            <span className="border-l border-black/8 p-4 text-center">Delete the repo</span>
+            <span className="border-l border-black/8 p-4 text-center">Typical marketplace</span>
           </div>
           {[
             { label: "Cost to list", a: "Free", b: "—", c: "Fees to start" },
@@ -316,7 +333,7 @@ export default async function Home() {
             { label: "Commission on sale", a: "0%", b: "—", c: "Up to ~15%" },
             { label: "Stays as a public record", a: true, b: false, c: false },
           ].map((row) => (
-            <div key={row.label} className="grid grid-cols-4 border-b border-white/[0.06] text-sm last:border-b-0">
+            <div key={row.label} className="grid grid-cols-4 border-b border-black/[0.06] text-sm last:border-b-0">
               <span className="p-4 text-bone-300">{row.label}</span>
               <Cell v={row.a} accent />
               <Cell v={row.b} />
@@ -382,7 +399,7 @@ export default async function Home() {
                   Most popular
                 </span>
               )}
-              <span className="mb-5 grid h-10 w-10 place-items-center rounded-xl border border-white/10 text-accent-400">
+              <span className="mb-5 grid h-10 w-10 place-items-center rounded-xl border border-black/10 text-accent-400">
                 {p.icon}
               </span>
               <div className="flex items-baseline gap-1.5">
@@ -426,7 +443,7 @@ export default async function Home() {
           <Eyebrow>Questions</Eyebrow>
           <h2 className="font-serif text-3xl tracking-tight text-bone-100">Good to know</h2>
         </div>
-        <div className="divide-y divide-white/8 rounded-2xl border border-white/8">
+        <div className="divide-y divide-black/8 rounded-2xl border border-black/8">
           {[
             { q: "Is it really free to list?", a: "Yes — listing a startup is free forever. You only pay if you open it for sale ($9 once) or book a promo slot ($49 / 30 days). We never take commission on a sale." },
             { q: "Do I need an account to look?", a: "No — browsing and search are open to everyone. You only need a free account to make offers, save a watchlist, get death alerts, or list your own startup." },
@@ -447,10 +464,10 @@ export default async function Home() {
       </section>
 
       {/* ─── 13 · Final CTA — one action ──────────────────── */}
-      <section className="mx-auto max-w-4xl px-5 pb-24">
+      <Reveal as="section" className="mx-auto max-w-4xl px-5 pb-24">
         <Card className="relative overflow-hidden p-10 text-center sm:p-16">
           <div className="grave-grid pointer-events-none absolute inset-0 opacity-50" />
-          <div className="pointer-events-none absolute left-1/2 top-0 h-40 w-96 -translate-x-1/2 rounded-full bg-accent-600/12 blur-3xl" />
+          <Aurora className="left-1/2 top-[-60px] h-64 w-[520px] -translate-x-1/2" />
           <div className="relative">
             <h2 className="font-serif text-3xl leading-tight tracking-tight text-bone-100 sm:text-[42px]">
               Don&apos;t let it die twice.
@@ -465,10 +482,10 @@ export default async function Home() {
             </div>
           </div>
         </Card>
-      </section>
+      </Reveal>
 
       {/* ─── 14 · Footer — finish strong, worth sharing ───── */}
-      <footer className="border-t border-white/8">
+      <footer className="border-t border-black/8">
         <div className="mx-auto max-w-6xl px-5 py-14 text-center">
           <p className="font-serif text-2xl tracking-tight text-bone-300">
             Every startup deserves a proper burial.
@@ -512,7 +529,7 @@ function StatCellRaw({ k, label }: { k: string; label: string }) {
 function Cell({ v, accent = false }: { v: boolean | string; accent?: boolean }) {
   return (
     <span
-      className={`flex items-center justify-center border-l border-white/8 p-4 text-center ${
+      className={`flex items-center justify-center border-l border-black/8 p-4 text-center ${
         accent ? "bg-accent-600/[0.04]" : ""
       }`}
     >

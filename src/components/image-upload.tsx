@@ -65,7 +65,7 @@ export function ImageUpload({
         {hint && <span className="ml-auto text-bone-500/60">{hint}</span>}
       </span>
       <div className="flex items-center gap-4">
-        <div className={`relative grid h-20 w-20 shrink-0 place-items-center overflow-hidden border border-white/10 bg-ink-900 ${rounded}`}>
+        <div className={`relative grid h-20 w-20 shrink-0 place-items-center overflow-hidden border border-black/10 bg-ink-900 ${rounded}`}>
           {value ? (
             <>
               <Image src={value} alt="" fill className="object-cover" sizes="80px" />
@@ -88,7 +88,7 @@ export function ImageUpload({
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
-          className="inline-flex h-10 items-center gap-2 rounded-full border border-white/12 px-4 text-sm text-bone-100 transition hover:border-white/25 disabled:opacity-50"
+          className="inline-flex h-10 items-center gap-2 rounded-full border border-black/12 px-4 text-sm text-bone-100 transition hover:border-black/25 disabled:opacity-50"
         >
           {uploading ? <Loader2 size={15} className="animate-spin" /> : <Upload size={15} />}
           {value ? "Replace" : "Upload image"}
