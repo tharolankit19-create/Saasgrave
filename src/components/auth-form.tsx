@@ -6,6 +6,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui";
+import { GoogleButton } from "@/components/google-button";
 
 export function AuthForm({ mode }: { mode: "login" | "register" }) {
   const supabase = createClient();
@@ -19,20 +20,6 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
   const [loading, setLoading] = useState(false);
 
   const isRegister = mode === "register";
-
-  async function handleGoogle() {
-    setLoading(true);
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
-      },
-    });
-    if (error) {
-      toast.error(error.message);
-      setLoading(false);
-    }
-  }
 
   async function handleEmail(e: React.FormEvent) {
     e.preventDefault();
@@ -69,32 +56,27 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
 
   return (
     <div className="w-full max-w-sm">
-      <div className="mb-8 text-center">
+      <div className="mb-6">
         <h1 className="font-serif text-3xl tracking-tight text-bone-100">
           {isRegister ? "Create your account" : "Welcome back"}
         </h1>
         <p className="mt-2 text-sm text-bone-500">
           {isRegister
-            ? "List a startup or make an offer in minutes."
-            : "Sign in to manage your listings."}
+            ? "Free forever. List, watch, and make offers in one account."
+            : "Sign in to your listings, watchlist and offers."}
         </p>
       </div>
 
-      <button
-        onClick={handleGoogle}
-        disabled={loading}
-        className="flex h-11 w-full items-center justify-center gap-3 rounded-full border border-white/12 bg-ink-900 text-sm font-medium text-bone-100 transition hover:border-white/25 disabled:opacity-50"
-      >
-        <GoogleIcon />
-        Continue with Google
-      </button>
+      {/* Fastest path — one click. */}
+      <GoogleButton next={isRegister ? "/onboarding" : next} className="w-full" />
 
       <div className="my-5 flex items-center gap-3 text-xs text-bone-500">
-        <div className="h-px flex-1 bg-white/8" />
-        or
-        <div className="h-px flex-1 bg-white/8" />
+        <div className="h-px flex-1 bg-black/10" />
+        or with email
+        <div className="h-px flex-1 bg-black/10" />
       </div>
 
+      {/* Email + password, right there — no extra click to reveal it. */}
       <form onSubmit={handleEmail} className="space-y-3">
         {isRegister && (
           <Field
@@ -103,25 +85,46 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
             value={fullName}
             onChange={setFullName}
             placeholder="Jane Founder"
+            autoComplete="name"
             required
           />
         )}
-        <Field label="Email" type="email" value={email} onChange={setEmail} placeholder="you@company.com" required />
-        <Field label="Password" type="password" value={password} onChange={setPassword} placeholder="••••••••" required />
+        <Field
+          label="Email"
+          type="email"
+          value={email}
+          onChange={setEmail}
+          placeholder="you@company.com"
+          autoComplete="email"
+          required
+        />
+        <Field
+          label="Password"
+          type="password"
+          value={password}
+          onChange={setPassword}
+          placeholder="At least 6 characters"
+          autoComplete={isRegister ? "new-password" : "current-password"}
+          required
+        />
 
-        <Button type="submit" size="lg" className="w-full" disabled={loading}>
-          {loading ? "…" : isRegister ? "Create account" : "Sign in"}
+        <Button type="submit" size="lg" className="w-full">
+          {loading ? "One sec…" : isRegister ? "Create account" : "Sign in"}
         </Button>
       </form>
 
       <p className="mt-6 text-center text-sm text-bone-500">
         {isRegister ? "Already have an account? " : "New here? "}
         <Link
-          href={isRegister ? "/login" : "/register"}
-          className="text-bone-100 underline underline-offset-4 hover:text-ember-400"
+          href={isRegister ? `/login${next ? `?next=${encodeURIComponent(next)}` : ""}` : "/register"}
+          className="font-medium text-bone-100 underline underline-offset-4 hover:text-accent-600"
         >
-          {isRegister ? "Sign in" : "Create one"}
+          {isRegister ? "Sign in" : "Create one — free"}
         </Link>
+      </p>
+
+      <p className="mt-4 text-center text-[11px] leading-relaxed text-bone-500/80">
+        Browsing stays free — always. No card to sign up.
       </p>
     </div>
   );
@@ -134,6 +137,7 @@ function Field({
   onChange,
   placeholder,
   required,
+  autoComplete,
 }: {
   label: string;
   type: string;
@@ -141,29 +145,20 @@ function Field({
   onChange: (v: string) => void;
   placeholder?: string;
   required?: boolean;
+  autoComplete?: string;
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-xs font-medium text-bone-500">{label}</span>
+      <span className="mb-1.5 block text-xs font-medium text-bone-400">{label}</span>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         required={required}
-        className="h-11 w-full rounded-xl border border-white/10 bg-ink-900 px-4 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-ember-500/50"
+        autoComplete={autoComplete}
+        className="h-11 w-full rounded-xl border border-black/10 bg-ink-900 px-4 text-sm text-bone-100 shadow-sm placeholder:text-bone-500/60 outline-none transition focus:border-accent-500/60 focus:ring-2 focus:ring-accent-500/15"
       />
     </label>
-  );
-}
-
-function GoogleIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
-      <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z" />
-      <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18z" />
-      <path fill="#FBBC05" d="M3.97 10.72a5.4 5.4 0 0 1 0-3.44V4.95H.96a9 9 0 0 0 0 8.1l3.01-2.33z" />
-      <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.47.9 11.43 0 9 0A9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z" />
-    </svg>
   );
 }

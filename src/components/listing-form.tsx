@@ -130,7 +130,7 @@ export function ListingForm() {
   }
 
   return (
-    <div className="rounded-2xl border border-white/8 bg-ink-900/60 p-7">
+    <div className="rounded-2xl border border-black/8 bg-ink-900/60 p-7">
       {/* progress */}
       <div className="mb-7 flex items-center gap-2">
         {STEPS.map((label, i) => (
@@ -143,7 +143,7 @@ export function ListingForm() {
               {i + 1}
             </div>
             <span className={`text-xs ${i === step ? "text-bone-100" : "text-bone-500"}`}>{label}</span>
-            {i < STEPS.length - 1 && <div className="h-px flex-1 bg-white/8" />}
+            {i < STEPS.length - 1 && <div className="h-px flex-1 bg-black/8" />}
           </div>
         ))}
       </div>
@@ -168,7 +168,7 @@ export function ListingForm() {
                   className={`rounded-full border px-3 py-1.5 text-xs transition ${
                     f.marketing_channels.includes(c)
                       ? "border-ember-500/50 bg-ember-600/15 text-ember-400"
-                      : "border-white/10 text-bone-300 hover:border-white/25"
+                      : "border-black/10 text-bone-300 hover:border-black/25"
                   }`}
                 >
                   {c}
@@ -203,12 +203,12 @@ export function ListingForm() {
       {step === 2 && (
         <div className="space-y-5">
           <Text label="Last known MRR ($/mo)" type="number" value={f.claimed_mrr} onChange={(v) => set("claimed_mrr", v)} placeholder="0" />
-          <p className="rounded-xl border border-white/8 bg-ink-800/50 p-3 text-xs text-bone-500">
+          <p className="rounded-xl border border-black/8 bg-ink-800/50 p-3 text-xs text-bone-500">
             You can <span className="text-bone-300">verify</span> this revenue from your listing page later
             using a read-only Stripe key — verified numbers get a green badge and sell far better.
           </p>
 
-          <label className="flex cursor-pointer items-center justify-between rounded-xl border border-white/8 bg-ink-800/50 p-4">
+          <label className="flex cursor-pointer items-center justify-between rounded-xl border border-black/8 bg-ink-800/50 p-4">
             <div>
               <div className="text-sm font-medium text-bone-100">I want to sell this</div>
               <div className="text-xs text-bone-500">Set a price now. It goes on sale once you pay the $9 fee from your dashboard.</div>
@@ -232,7 +232,7 @@ export function ListingForm() {
                     className={`flex-1 rounded-lg border px-3 py-2 text-xs capitalize transition ${
                       f.price_mode === m
                         ? "border-ember-500/50 bg-ember-600/15 text-ember-400"
-                        : "border-white/10 text-bone-300 hover:border-white/25"
+                        : "border-black/10 text-bone-300 hover:border-black/25"
                     }`}
                   >
                     {m === "fixed" ? "Fixed price" : m === "multiplier" ? "Revenue multiple" : "Open to offers"}
@@ -311,7 +311,7 @@ function Text({
         required={required}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="h-11 w-full rounded-xl border border-white/10 bg-ink-900 px-4 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-ember-500/50 [color-scheme:dark]"
+        className="h-11 w-full rounded-xl border border-black/10 bg-ink-900 px-4 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-ember-500/50 [color-scheme:dark]"
       />
     </label>
   );
@@ -333,7 +333,7 @@ function Area({
         rows={3}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-xl border border-white/10 bg-ink-900 p-4 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-ember-500/50"
+        className="w-full rounded-xl border border-black/10 bg-ink-900 p-4 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-ember-500/50"
       />
     </label>
   );
@@ -350,7 +350,7 @@ function Select({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-11 w-full rounded-xl border border-white/10 bg-ink-900 px-4 text-sm text-bone-100 outline-none transition focus:border-ember-500/50 capitalize"
+        className="h-11 w-full rounded-xl border border-black/10 bg-ink-900 px-4 text-sm text-bone-100 outline-none transition focus:border-ember-500/50 capitalize"
       >
         {options.map((o) => (
           <option key={o} value={o}>

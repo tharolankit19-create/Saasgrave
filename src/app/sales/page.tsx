@@ -37,7 +37,7 @@ export default async function SalesPage() {
           <p className="mt-2 text-sm text-bone-500">Check back soon — or list yours for sale.</p>
         </Card>
       ) : (
-        <Card className="divide-y divide-white/8">
+        <Card className="divide-y divide-black/8">
           {rows.map((s: any, i: number) => (
             <Link
               key={s.id}
@@ -47,9 +47,9 @@ export default async function SalesPage() {
               <div className="w-8 text-center font-serif text-lg text-bone-500">{i + 1}</div>
               {s.logo_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={s.logo_url} alt="" className="h-11 w-11 rounded-xl border border-white/10 object-cover" />
+                <img src={s.logo_url} alt="" className="h-11 w-11 rounded-xl border border-black/10 object-cover" />
               ) : (
-                <span className="grid h-11 w-11 place-items-center rounded-xl border border-white/10 bg-ink-800 font-serif text-bone-300">
+                <span className="grid h-11 w-11 place-items-center rounded-xl border border-black/10 bg-ink-800 font-serif text-bone-300">
                   {s.name.charAt(0)}
                 </span>
               )}

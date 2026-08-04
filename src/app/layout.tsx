@@ -1,43 +1,68 @@
 import type { Metadata } from "next";
-import { Inter, Fraunces } from "next/font/google";
+import { Manrope, Fraunces } from "next/font/google";
 import Script from "next/script";
 import { Toaster } from "sonner";
 import { Navbar } from "@/components/navbar";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
-const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-serif", display: "swap" });
+// Editorial pairing: a warm high-contrast serif for display, a clean modern
+// grotesque for everything else. Distinct enough to not read as a template.
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-serif",
+  display: "swap",
+  axes: ["opsz", "SOFT", "WONK"],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   title: {
-    default: "Saasgrave — The resting place for dead SaaS",
+    default: "Saasgrave — Your dead startup is still worth money",
     template: "%s · Saasgrave",
   },
   description:
-    "A marketplace for failed and zero-revenue software startups. List what you built, study what others learned, and buy a product worth reviving.",
+    "List a dead or zero-revenue startup in 3 minutes. Free to list, $9 to sell, 0% commission.",
+  keywords: [
+    "failed startups",
+    "buy dead startups",
+    "sell a startup",
+    "startup marketplace",
+    "acquire SaaS",
+    "startup post-mortem",
+    "zero revenue startup",
+  ],
   openGraph: {
-    title: "Saasgrave",
-    description: "The resting place for dead SaaS.",
+    title: "Your dead startup is still worth money.",
+    description:
+      "The marketplace for dead & zero-revenue startups. Free to list, $9 to sell, 0% commission.",
     type: "website",
+    siteName: "Saasgrave",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Your dead startup is still worth money.",
+    description:
+      "List a dead or zero-revenue startup in 3 minutes. Free to list, $9 to sell, 0% commission.",
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${fraunces.variable}`}>
+    <html lang="en" className={`${manrope.variable} ${fraunces.variable}`}>
       <body className="min-h-screen bg-ink-950 font-sans antialiased">
         <Navbar />
         <main>{children}</main>
         <Toaster
-          theme="dark"
+          theme="light"
           position="bottom-right"
           toastOptions={{
             style: {
-              background: "#141418",
-              border: "1px solid rgba(245,244,241,0.08)",
-              color: "#f5f4f1",
+              background: "#ffffff",
+              border: "1px solid rgba(23,20,15,0.10)",
+              color: "#17140f",
+              boxShadow: "0 10px 40px -12px rgba(23,20,15,0.18)",
             },
           }}
         />

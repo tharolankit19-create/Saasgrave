@@ -23,7 +23,7 @@ type Startup = {
 export function StartupCard({ startup: s }: { startup: Startup }) {
   return (
     <Link href={`/startup/${s.slug}`} className="group block">
-      <Card className="h-full overflow-hidden transition-all duration-300 hover:border-white/20 hover:bg-ink-850">
+      <Card className="h-full overflow-hidden transition-all duration-300 hover:border-black/20 hover:bg-ink-850">
         <div className="p-6">
           <div className="mb-4 flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
@@ -32,15 +32,15 @@ export function StartupCard({ startup: s }: { startup: Startup }) {
                 <img
                   src={s.logo_url}
                   alt=""
-                  className="h-11 w-11 rounded-xl border border-white/10 object-cover"
+                  className="h-11 w-11 rounded-xl border border-black/10 object-cover"
                 />
               ) : (
-                <span className="grid h-11 w-11 place-items-center rounded-xl border border-white/10 bg-ink-800 font-serif text-lg text-bone-300">
+                <span className="grid h-11 w-11 place-items-center rounded-xl border border-black/10 bg-ink-800 font-serif text-lg text-bone-300">
                   {s.name.charAt(0)}
                 </span>
               )}
               <div>
-                <h3 className="font-medium leading-tight text-bone-100 group-hover:text-white">
+                <h3 className="font-medium leading-tight text-bone-100 group-hover:text-accent-600">
                   {s.name}
                 </h3>
                 {s.category && <span className="text-xs text-bone-500">{s.category}</span>}
@@ -57,7 +57,7 @@ export function StartupCard({ startup: s }: { startup: Startup }) {
             {s.tagline || "No description yet."}
           </p>
 
-          <div className="flex items-center justify-between border-t border-white/8 pt-4">
+          <div className="flex items-center justify-between border-t border-black/8 pt-4">
             <div className="flex items-center gap-3 text-xs text-bone-500">
               {s.revenue_verified && s.verified_mrr > 0 && (
                 <span className="inline-flex items-center gap-1 text-moss-400">
@@ -65,7 +65,7 @@ export function StartupCard({ startup: s }: { startup: Startup }) {
                 </span>
               )}
               <span className="inline-flex items-center gap-1">
-                <Eye size={13} /> {s.view_count}
+                <Eye size={13} /> {s.view_count > 0 ? `${s.view_count} views` : "New"}
               </span>
             </div>
             <div className="text-sm font-medium text-bone-100">

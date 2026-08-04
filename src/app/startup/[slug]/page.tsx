@@ -44,9 +44,9 @@ export default async function StartupPage({ params }: { params: { slug: string }
         <div className="flex items-start gap-4">
           {s.logo_url ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={s.logo_url} alt="" className="h-16 w-16 rounded-2xl border border-white/10 object-cover" />
+            <img src={s.logo_url} alt="" className="h-16 w-16 rounded-2xl border border-black/10 object-cover" />
           ) : (
-            <span className="grid h-16 w-16 place-items-center rounded-2xl border border-white/10 bg-ink-800 font-serif text-2xl text-bone-300">
+            <span className="grid h-16 w-16 place-items-center rounded-2xl border border-black/10 bg-ink-800 font-serif text-2xl text-bone-300">
               {s.name.charAt(0)}
             </span>
           )}
@@ -55,7 +55,7 @@ export default async function StartupPage({ params }: { params: { slug: string }
             <p className="mt-1 text-bone-500">{s.tagline}</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {s.category && <Badge>{s.category}</Badge>}
-              <Badge className="border-white/15">{s.outcome === "pivot" ? "Pivoted" : "Shut down"}</Badge>
+              <Badge className="border-black/15">{s.outcome === "pivot" ? "Pivoted" : "Shut down"}</Badge>
               {s.revenue_verified && s.verified_mrr > 0 && (
                 <Badge className="border-moss-500/30 text-moss-400">
                   <BadgeCheck size={12} /> Verified revenue
@@ -113,7 +113,7 @@ export default async function StartupPage({ params }: { params: { slug: string }
             <div className="grid grid-cols-2 gap-3">
               {s.screenshot_urls.map((url: string) => (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img key={url} src={url} alt="" className="w-full rounded-xl border border-white/8 object-cover" />
+                <img key={url} src={url} alt="" className="w-full rounded-xl border border-black/8 object-cover" />
               ))}
             </div>
           )}
@@ -181,19 +181,19 @@ export default async function StartupPage({ params }: { params: { slug: string }
             {s.founder?.bio && <p className="mt-3 text-sm text-bone-500">{s.founder.bio}</p>}
             <div className="mt-4 flex gap-2">
               {s.founder?.x_handle && (
-                <a href={`https://x.com/${s.founder.x_handle}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-white/10 p-2 text-bone-300 hover:border-white/25">
+                <a href={`https://x.com/${s.founder.x_handle}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-black/10 p-2 text-bone-300 hover:border-black/25">
                   <Twitter size={15} />
                 </a>
               )}
               {s.founder?.linkedin_url && (
-                <a href={s.founder.linkedin_url} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-white/10 p-2 text-bone-300 hover:border-white/25">
+                <a href={s.founder.linkedin_url} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-black/10 p-2 text-bone-300 hover:border-black/25">
                   <Linkedin size={15} />
                 </a>
               )}
             </div>
           </Card>
           <div className="mt-4 flex items-center gap-1.5 text-xs text-bone-500">
-            <Eye size={13} /> {s.view_count} views
+            <Eye size={13} /> {s.view_count > 0 ? `${s.view_count} views` : "Just listed"}
           </div>
         </div>
       </div>

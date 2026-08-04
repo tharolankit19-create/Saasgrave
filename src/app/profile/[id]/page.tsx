@@ -22,7 +22,7 @@ export default async function ProfilePage({ params }: { params: { id: string } }
         <div className="flex flex-wrap items-center gap-5">
           {profile.avatar_url ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={profile.avatar_url} alt="" className="h-20 w-20 rounded-full border border-white/10 object-cover" />
+            <img src={profile.avatar_url} alt="" className="h-20 w-20 rounded-full border border-black/10 object-cover" />
           ) : (
             <span className="grid h-20 w-20 place-items-center rounded-full bg-ember-600 font-serif text-3xl text-ink-950">
               {(profile.full_name || "?").charAt(0)}
@@ -46,17 +46,17 @@ export default async function ProfilePage({ params }: { params: { id: string } }
           </div>
           <div className="flex gap-2">
             {profile.x_handle && (
-              <a href={`https://x.com/${profile.x_handle}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-white/10 p-2.5 text-bone-300 hover:border-white/25">
+              <a href={`https://x.com/${profile.x_handle}`} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-black/10 p-2.5 text-bone-300 hover:border-black/25">
                 <Twitter size={16} />
               </a>
             )}
             {profile.linkedin_url && (
-              <a href={profile.linkedin_url} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-white/10 p-2.5 text-bone-300 hover:border-white/25">
+              <a href={profile.linkedin_url} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-black/10 p-2.5 text-bone-300 hover:border-black/25">
                 <Linkedin size={16} />
               </a>
             )}
             {profile.website_url && (
-              <a href={profile.website_url} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-white/10 p-2.5 text-bone-300 hover:border-white/25">
+              <a href={profile.website_url} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-black/10 p-2.5 text-bone-300 hover:border-black/25">
                 <Globe size={16} />
               </a>
             )}

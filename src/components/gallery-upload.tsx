@@ -61,7 +61,7 @@ export function GalleryUpload({
       </span>
       <div className="flex flex-wrap gap-3">
         {value.map((url) => (
-          <div key={url} className="relative h-20 w-28 overflow-hidden rounded-lg border border-white/10">
+          <div key={url} className="relative h-20 w-28 overflow-hidden rounded-lg border border-black/10">
             <Image src={url} alt="" fill className="object-cover" sizes="112px" />
             <button
               type="button"
@@ -77,7 +77,7 @@ export function GalleryUpload({
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={uploading}
-            className="grid h-20 w-28 place-items-center rounded-lg border border-dashed border-white/12 text-bone-500 transition hover:border-accent-500/40 hover:text-accent-400 disabled:opacity-50"
+            className="grid h-20 w-28 place-items-center rounded-lg border border-dashed border-black/12 text-bone-500 transition hover:border-accent-500/40 hover:text-accent-400 disabled:opacity-50"
           >
             {uploading ? <Loader2 size={18} className="animate-spin" /> : <ImagePlus size={18} />}
           </button>

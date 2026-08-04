@@ -23,7 +23,7 @@ export function AdRail({ slots }: { slots: AdSlot[] }) {
             href={slot.cta_url || "#"}
             target="_blank"
             rel="noopener noreferrer sponsored"
-            className="block rounded-2xl border border-white/8 bg-ink-900 p-5 transition hover:border-white/20"
+            className="block rounded-2xl border border-black/8 bg-ink-900 p-5 transition hover:border-black/20"
           >
             {slot.image_url && (
               // eslint-disable-next-line @next/next/no-img-element
@@ -61,7 +61,7 @@ export function AdStrip({ slots }: { slots: AdSlot[] }) {
               href={slot.cta_url || "#"}
               target="_blank"
               rel="noopener noreferrer sponsored"
-              className="min-w-[220px] shrink-0 rounded-xl border border-white/8 bg-ink-900 p-4"
+              className="min-w-[220px] shrink-0 rounded-xl border border-black/8 bg-ink-900 p-4"
             >
               <div className="text-sm font-medium text-bone-100">{slot.headline}</div>
               {slot.body && <p className="mt-1 text-xs text-bone-500">{slot.body}</p>}

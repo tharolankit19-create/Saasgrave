@@ -9,54 +9,85 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Graveyard — a quiet, premium near-black canvas with an ember accent.
+        // Saasgrave — a premium, editorial LIGHT theme. Warm paper canvas,
+        // crisp white cards, ink-black type, and a single restrained gold
+        // accent. The `ink` scale now names *surfaces* (paper → white → warm
+        // wells) and `bone` names *type* (near-black → muted), so existing
+        // markup keeps its intent as the theme reads light.
         ink: {
-          950: "#08080a",
-          900: "#0a0a0c",
-          850: "#0f0f12",
-          800: "#141418",
-          700: "#1c1c22",
-          600: "#26262e",
+          950: "#f7f7f9", // page — bright, cool near-white
+          900: "#ffffff", // cards / surfaces — pure white
+          850: "#f1f1f4", // hover / wells
+          800: "#eaeaef", // deeper well
+          700: "#e2e2e9", // subtle fills
+          600: "#d6d6de",
         },
         bone: {
-          100: "#f4f3f0",
-          300: "#c4c2bc",
-          500: "#83817b",
+          100: "#14151a", // headings — near-black, cool
+          300: "#3a3b42", // body
+          400: "#63646d", // secondary
+          500: "#8a8b94", // muted
         },
-        // Single restrained accent — a premium muted bronze. `ember` kept as an
-        // alias so older class usages keep resolving to the same value.
+        // Premium gold accent — the single pop of colour on a crisp white page.
         accent: {
-          400: "#d3b287",
-          500: "#bd9560",
-          600: "#9c7846",
+          400: "#c08a24", // icons / soft accent
+          500: "#a6771a", // primary accent / eyebrow
+          600: "#855c10", // text on white
         },
         ember: {
-          400: "#d3b287",
-          500: "#bd9560",
-          600: "#9c7846",
+          400: "#c08a24",
+          500: "#a6771a",
+          600: "#855c10",
         },
+        // Verified / positive — a deep, calm green that holds on white.
         moss: {
-          400: "#89a892",
-          500: "#6c8a76",
+          400: "#3f8a5f",
+          500: "#2f7a4f",
         },
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         serif: ["var(--font-serif)", "Georgia", "serif"],
       },
+      boxShadow: {
+        // Crisp, layered editorial elevation for the bright white theme.
+        card: "0 1px 2px rgba(20,21,26,0.04), 0 6px 16px -8px rgba(20,21,26,0.10), 0 18px 40px -24px rgba(20,21,26,0.16)",
+        lift: "0 2px 6px rgba(20,21,26,0.06), 0 18px 50px -18px rgba(20,21,26,0.24)",
+        glow: "0 0 0 1px rgba(166,119,26,0.12), 0 20px 60px -20px rgba(166,119,26,0.28)",
+      },
       keyframes: {
         "fade-up": {
-          "0%": { opacity: "0", transform: "translateY(12px)" },
+          "0%": { opacity: "0", transform: "translateY(14px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
         "fade-in": {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+        aurora: {
+          "0%, 100%": { transform: "translate3d(0,0,0) scale(1)", opacity: "0.55" },
+          "50%": { transform: "translate3d(3%,-4%,0) scale(1.12)", opacity: "0.85" },
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-6px)" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards",
         "fade-in": "fade-in 1s ease forwards",
+        marquee: "marquee var(--marquee-dur, 40s) linear infinite",
+        aurora: "aurora 14s ease-in-out infinite",
+        float: "float 6s ease-in-out infinite",
+        shimmer: "shimmer 2.5s linear infinite",
       },
     },
   },

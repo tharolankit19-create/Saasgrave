@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Plus, Eye, Tag, FileText, TrendingUp } from "lucide-react";
+import { Plus, Eye, Tag, FileText, TrendingUp, Megaphone } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Card, LinkButton, Badge } from "@/components/ui";
 import { money } from "@/lib/utils";
 import { ListingRowActions } from "@/components/listing-row-actions";
+import { AdSlotManager, type OwnedSlot } from "@/components/ad-slot-manager";
 
 export const metadata = { title: "Dashboard" };
 export const dynamic = "force-dynamic";
@@ -33,6 +34,13 @@ export default async function Dashboard() {
     .select("*, startup:startups!inner(name, founder_id), buyer:profiles!offers_buyer_id_fkey(full_name)")
     .eq("startup.founder_id", user.id)
     .order("created_at", { ascending: false });
+
+  // Promotions — the ad slots this founder owns, plus what's still open to book.
+  const { data: allSlots } = await supabase.from("ad_slots").select("*").order("position");
+  const slots = allSlots || [];
+  const ownedSlots = slots.filter((s) => s.buyer_id === user.id) as OwnedSlot[];
+  const openSlots = slots.filter((s) => !(s.active && s.headline) && s.buyer_id !== user.id);
+  const openSlotId = openSlots[0]?.id ?? null;
 
   const list = startups || [];
   const stats = {
@@ -75,7 +83,7 @@ export default async function Dashboard() {
           </div>
         </Card>
       ) : (
-        <Card className="divide-y divide-white/8">
+        <Card className="divide-y divide-black/8">
           {list.map((s) => (
             <div key={s.id} className="flex items-center justify-between gap-4 p-4">
               <div className="min-w-0">
@@ -111,12 +119,18 @@ export default async function Dashboard() {
         </Card>
       )}
 
+      {/* promotions / ad slots */}
+      <h2 className="mb-4 mt-12 flex items-center gap-2 text-sm font-medium uppercase tracking-widest text-bone-500">
+        <Megaphone size={14} /> Promotions
+      </h2>
+      <AdSlotManager owned={ownedSlots} openSlotId={openSlotId} openCount={openSlots.length} />
+
       {/* offers */}
       <h2 className="mb-4 mt-12 text-sm font-medium uppercase tracking-widest text-bone-500">
         Offers received
       </h2>
       {offers && offers.length > 0 ? (
-        <Card className="divide-y divide-white/8">
+        <Card className="divide-y divide-black/8">
           {offers.map((o: any) => (
             <div key={o.id} className="flex items-center justify-between p-4 text-sm">
               <div>
@@ -148,7 +162,7 @@ function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; va
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, string> = {
     listed: "border-moss-500/30 text-moss-400",
-    draft: "border-white/15 text-bone-500",
+    draft: "border-black/15 text-bone-500",
     sold: "border-ember-500/30 text-ember-400",
   };
   return <Badge className={map[status] || ""}>{status}</Badge>;

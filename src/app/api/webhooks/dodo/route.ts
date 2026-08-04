@@ -27,6 +27,7 @@ export async function POST(req: Request) {
   const metadata = data?.metadata || {};
   const kind = metadata.kind as string | undefined;
   const referenceId = metadata.reference_id as string | undefined;
+  const buyerId = metadata.user_id as string | undefined;
   const paymentId = data?.payment_id || data?.id;
 
   if (!kind || !referenceId) {
@@ -49,7 +50,12 @@ export async function POST(req: Request) {
     const ends = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // 30-day run
     await admin
       .from("ad_slots")
-      .update({ active: true, starts_at: now.toISOString(), ends_at: ends.toISOString() })
+      .update({
+        active: true,
+        buyer_id: buyerId ?? null, // so the founder can manage it from their dashboard
+        starts_at: now.toISOString(),
+        ends_at: ends.toISOString(),
+      })
       .eq("id", referenceId);
   } else if (kind === "sale_listing") {
     await admin

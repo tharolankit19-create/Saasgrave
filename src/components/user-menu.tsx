@@ -11,7 +11,7 @@ export function UserMenu({ name, avatarUrl }: { name: string | null; avatarUrl: 
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <button className="flex items-center gap-2 rounded-full border border-white/10 p-1 pr-3 transition hover:border-white/25">
+        <button className="flex items-center gap-2 rounded-full border border-black/10 p-1 pr-3 transition hover:border-black/25">
           {avatarUrl ? (
             <Image
               src={avatarUrl}
@@ -33,13 +33,13 @@ export function UserMenu({ name, avatarUrl }: { name: string | null; avatarUrl: 
         <DropdownMenu.Content
           align="end"
           sideOffset={8}
-          className="z-50 min-w-[200px] rounded-xl border border-white/10 bg-ink-850 p-1.5 shadow-2xl"
+          className="z-50 min-w-[200px] rounded-xl border border-black/10 bg-ink-850 p-1.5 shadow-2xl"
         >
           <Item href="/dashboard" icon={<LayoutDashboard size={15} />}>Dashboard</Item>
           <Item href="/sell" icon={<Store size={15} />}>List a startup</Item>
           <Item href="/sales" icon={<Tag size={15} />}>For-sale board</Item>
           <Item href="/profile/edit" icon={<User size={15} />}>Edit profile</Item>
-          <DropdownMenu.Separator className="my-1.5 h-px bg-white/8" />
+          <DropdownMenu.Separator className="my-1.5 h-px bg-black/8" />
           <DropdownMenu.Item asChild>
             <a
               href="/logout"
