@@ -24,6 +24,7 @@ export function ListingForm() {
   const [f, setF] = useState({
     name: "",
     logo_url: "",
+    website_url: "",
     screenshot_urls: [] as string[],
     tagline: "",
     about: "",
@@ -86,6 +87,7 @@ export function ListingForm() {
         slug,
         name: f.name.trim(),
         logo_url: f.logo_url.trim() || null,
+        website_url: f.website_url.trim() || null,
         screenshot_urls: f.screenshot_urls,
         tagline: f.tagline.trim() || null,
         about: f.about.trim() || null,
@@ -153,6 +155,7 @@ export function ListingForm() {
         <div className="space-y-4">
           <Text label="Startup name" required value={f.name} onChange={(v) => set("name", v)} placeholder="Acme Analytics" />
           <ImageUpload bucket="logos" label="Logo" hint="optional" value={f.logo_url} onChange={(v) => set("logo_url", v)} />
+          <Text label="Website URL" optional value={f.website_url} onChange={(v) => set("website_url", v)} placeholder="https://yourproduct.com — so buyers can visit it" />
           <Text label="Tagline" optional value={f.tagline} onChange={(v) => set("tagline", v)} placeholder="One line on what it did." />
           <Area label="About" optional value={f.about} onChange={(v) => set("about", v)} placeholder="What did it do? Who was it for?" />
           <Select label="Category" value={f.category} onChange={(v) => set("category", v)} options={CATEGORIES} />

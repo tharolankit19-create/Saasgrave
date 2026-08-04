@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { Plus, Eye, Tag, FileText, TrendingUp, Megaphone } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Card, LinkButton, Badge } from "@/components/ui";
 import { money } from "@/lib/utils";
 import { ListingRowActions } from "@/components/listing-row-actions";
 import { AdSlotManager, type OwnedSlot } from "@/components/ad-slot-manager";
+import { ShareLaunch } from "@/components/share-launch";
 
 export const metadata = { title: "Dashboard" };
 export const dynamic = "force-dynamic";
@@ -41,6 +43,9 @@ export default async function Dashboard() {
   const ownedSlots = slots.filter((s) => s.buyer_id === user.id) as OwnedSlot[];
   const openSlots = slots.filter((s) => !(s.active && s.headline) && s.buyer_id !== user.id);
   const openSlotId = openSlots[0]?.id ?? null;
+
+  const host = headers().get("host") || "localhost:3000";
+  const origin = `${host.includes("localhost") ? "http" : "https"}://${host}`;
 
   const list = startups || [];
   const stats = {
@@ -85,35 +90,43 @@ export default async function Dashboard() {
       ) : (
         <Card className="divide-y divide-black/8">
           {list.map((s) => (
-            <div key={s.id} className="flex items-center justify-between gap-4 p-4">
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="truncate font-medium text-bone-100">{s.name}</span>
-                  <StatusBadge status={s.status} />
-                  {s.for_sale && (
-                    <Badge className="border-ember-500/30 text-ember-400">
-                      {s.asking_price ? money(s.asking_price) : s.price_multiplier ? `${s.price_multiplier}×` : "offers"}
-                    </Badge>
-                  )}
+            <div key={s.id} className="p-4">
+              <div className="flex items-center justify-between gap-4">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <Link href={`/startup/${s.slug}`} className="truncate font-medium text-bone-100 hover:text-accent-600">
+                      {s.name}
+                    </Link>
+                    <StatusBadge status={s.status} />
+                    {s.for_sale && (
+                      <Badge className="border-accent-500/30 text-accent-600">
+                        {s.asking_price ? money(s.asking_price) : s.price_multiplier ? `${s.price_multiplier}×` : "offers"}
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="mt-1 flex items-center gap-3 text-xs text-bone-500">
+                    <span className="inline-flex items-center gap-1">
+                      <Eye size={12} /> {s.view_count > 0 ? `${s.view_count} views` : "New"}
+                    </span>
+                    {s.status === "draft" && <span className="text-accent-600">Draft — not live yet</span>}
+                  </div>
                 </div>
-                <div className="mt-1 flex items-center gap-3 text-xs text-bone-500">
-                  <span className="inline-flex items-center gap-1">
-                    <Eye size={12} /> {s.view_count}
-                  </span>
-                  {s.status === "draft" && (
-                    <span className="text-accent-400">Draft — not live yet</span>
-                  )}
-                </div>
+                <ListingRowActions
+                  startup={{
+                    id: s.id,
+                    slug: s.slug,
+                    status: s.status,
+                    for_sale: s.for_sale,
+                    sale_listing_paid: s.sale_listing_paid,
+                  }}
+                />
               </div>
-              <ListingRowActions
-                startup={{
-                  id: s.id,
-                  slug: s.slug,
-                  status: s.status,
-                  for_sale: s.for_sale,
-                  sale_listing_paid: s.sale_listing_paid,
-                }}
-              />
+              {s.status === "listed" && (
+                <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-black/8 pt-3">
+                  <span className="text-xs font-medium text-bone-500">Share your launch:</span>
+                  <ShareLaunch name={s.name} tagline={s.tagline} url={`${origin}/startup/${s.slug}`} forSale={s.for_sale} compact />
+                </div>
+              )}
             </div>
           ))}
         </Card>
