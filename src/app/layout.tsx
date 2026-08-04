@@ -12,15 +12,32 @@ const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-serif", displa
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   title: {
-    default: "Saasgrave — The resting place for dead SaaS",
+    default: "Saasgrave — Your dead startup is still worth money",
     template: "%s · Saasgrave",
   },
   description:
-    "A marketplace for failed and zero-revenue software startups. List what you built, study what others learned, and buy a product worth reviving.",
+    "List a dead or zero-revenue startup in 3 minutes. Free to list, $9 to sell, 0% commission.",
+  keywords: [
+    "failed startups",
+    "buy dead startups",
+    "sell a startup",
+    "startup marketplace",
+    "acquire SaaS",
+    "startup post-mortem",
+    "zero revenue startup",
+  ],
   openGraph: {
-    title: "Saasgrave",
-    description: "The resting place for dead SaaS.",
+    title: "Your dead startup is still worth money.",
+    description:
+      "The marketplace for dead & zero-revenue startups. Free to list, $9 to sell, 0% commission.",
     type: "website",
+    siteName: "Saasgrave",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Your dead startup is still worth money.",
+    description:
+      "List a dead or zero-revenue startup in 3 minutes. Free to list, $9 to sell, 0% commission.",
   },
 };
 

@@ -32,6 +32,9 @@ export async function Navbar() {
           <Link href="/sales" className="rounded-full px-4 py-2 text-sm text-bone-300 transition hover:text-bone-100">
             For sale
           </Link>
+          <Link href="/#pricing" className="rounded-full px-4 py-2 text-sm text-bone-300 transition hover:text-bone-100">
+            Pricing
+          </Link>
           <Link href="/sell" className="rounded-full px-4 py-2 text-sm text-bone-300 transition hover:text-bone-100">
             List a startup
           </Link>
