@@ -193,7 +193,7 @@ export default async function StartupPage({ params }: { params: { slug: string }
             </div>
           </Card>
           <div className="mt-4 flex items-center gap-1.5 text-xs text-bone-500">
-            <Eye size={13} /> {s.view_count} views
+            <Eye size={13} /> {s.view_count > 0 ? `${s.view_count} views` : "Just listed"}
           </div>
         </div>
       </div>

@@ -18,7 +18,6 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showEmail, setShowEmail] = useState(false);
 
   const isRegister = mode === "register";
 
@@ -57,68 +56,75 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
 
   return (
     <div className="w-full max-w-sm">
-      <div className="mb-7">
+      <div className="mb-6">
         <h1 className="font-serif text-3xl tracking-tight text-bone-100">
           {isRegister ? "Create your account" : "Welcome back"}
         </h1>
         <p className="mt-2 text-sm text-bone-500">
           {isRegister
-            ? "Free forever. One account to list, watch, and make offers."
+            ? "Free forever. List, watch, and make offers in one account."
             : "Sign in to your listings, watchlist and offers."}
         </p>
       </div>
 
+      {/* Fastest path — one click. */}
       <GoogleButton next={isRegister ? "/onboarding" : next} className="w-full" />
-      <p className="mt-2 text-center text-xs text-bone-500">
-        Fastest way in — no password to remember.
-      </p>
 
       <div className="my-5 flex items-center gap-3 text-xs text-bone-500">
-        <div className="h-px flex-1 bg-black/8" />
-        or use email
-        <div className="h-px flex-1 bg-black/8" />
+        <div className="h-px flex-1 bg-black/10" />
+        or with email
+        <div className="h-px flex-1 bg-black/10" />
       </div>
 
-      {!showEmail ? (
-        <button
-          onClick={() => setShowEmail(true)}
-          className="h-11 w-full rounded-full border border-black/10 bg-ink-900 text-sm font-medium text-bone-300 transition hover:border-black/25 hover:text-bone-100"
-        >
-          {isRegister ? "Sign up with email" : "Sign in with email"}
-        </button>
-      ) : (
-        <form onSubmit={handleEmail} className="space-y-3">
-          {isRegister && (
-            <Field
-              label="Full name"
-              type="text"
-              value={fullName}
-              onChange={setFullName}
-              placeholder="Jane Founder"
-              required
-            />
-          )}
-          <Field label="Email" type="email" value={email} onChange={setEmail} placeholder="you@company.com" required />
-          <Field label="Password" type="password" value={password} onChange={setPassword} placeholder="••••••••" required />
+      {/* Email + password, right there — no extra click to reveal it. */}
+      <form onSubmit={handleEmail} className="space-y-3">
+        {isRegister && (
+          <Field
+            label="Full name"
+            type="text"
+            value={fullName}
+            onChange={setFullName}
+            placeholder="Jane Founder"
+            autoComplete="name"
+            required
+          />
+        )}
+        <Field
+          label="Email"
+          type="email"
+          value={email}
+          onChange={setEmail}
+          placeholder="you@company.com"
+          autoComplete="email"
+          required
+        />
+        <Field
+          label="Password"
+          type="password"
+          value={password}
+          onChange={setPassword}
+          placeholder="At least 6 characters"
+          autoComplete={isRegister ? "new-password" : "current-password"}
+          required
+        />
 
-          <Button type="submit" size="lg" className="w-full" disabled={loading}>
-            {loading ? "…" : isRegister ? "Create account" : "Sign in"}
-          </Button>
-        </form>
-      )}
+        <Button type="submit" size="lg" className="w-full">
+          {loading ? "One sec…" : isRegister ? "Create account" : "Sign in"}
+        </Button>
+      </form>
 
       <p className="mt-6 text-center text-sm text-bone-500">
         {isRegister ? "Already have an account? " : "New here? "}
         <Link
-          href={isRegister ? "/login" : "/register"}
-          className="text-bone-100 underline underline-offset-4 hover:text-accent-400"
+          href={isRegister ? `/login${next ? `?next=${encodeURIComponent(next)}` : ""}` : "/register"}
+          className="font-medium text-bone-100 underline underline-offset-4 hover:text-accent-600"
         >
           {isRegister ? "Sign in" : "Create one — free"}
         </Link>
       </p>
 
       <p className="mt-4 text-center text-[11px] leading-relaxed text-bone-500/80">
-        By continuing you agree to keep it honest. Browsing stays free — always.
+        Browsing stays free — always. No card to sign up.
       </p>
     </div>
   );
@@ -131,6 +137,7 @@ function Field({
   onChange,
   placeholder,
   required,
+  autoComplete,
 }: {
   label: string;
   type: string;
@@ -138,17 +145,19 @@ function Field({
   onChange: (v: string) => void;
   placeholder?: string;
   required?: boolean;
+  autoComplete?: string;
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-xs font-medium text-bone-500">{label}</span>
+      <span className="mb-1.5 block text-xs font-medium text-bone-400">{label}</span>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         required={required}
-        className="h-11 w-full rounded-xl border border-black/10 bg-ink-900 px-4 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-accent-500/50"
+        autoComplete={autoComplete}
+        className="h-11 w-full rounded-xl border border-black/10 bg-ink-900 px-4 text-sm text-bone-100 shadow-sm placeholder:text-bone-500/60 outline-none transition focus:border-accent-500/60 focus:ring-2 focus:ring-accent-500/15"
       />
     </label>
   );

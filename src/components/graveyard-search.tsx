@@ -59,8 +59,8 @@ export function GraveyardSearch({ items }: { items: SearchItem[] }) {
   return (
     <div className="relative mx-auto w-full max-w-xl">
       <div
-        className={`flex items-center gap-3 rounded-2xl border bg-ink-900/80 px-4 backdrop-blur transition-colors ${
-          showPanel ? "border-accent-500/50" : "border-black/12 hover:border-black/20"
+        className={`flex items-center gap-3 rounded-2xl border bg-ink-900 px-4 shadow-card transition-all ${
+          showPanel ? "border-accent-500/50 shadow-glow" : "border-black/10 hover:shadow-lift"
         }`}
       >
         <Search size={18} className="shrink-0 text-bone-500" />
@@ -89,7 +89,7 @@ export function GraveyardSearch({ items }: { items: SearchItem[] }) {
       </div>
 
       {showPanel && (
-        <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-30 overflow-hidden rounded-2xl border border-black/10 bg-ink-850/95 shadow-2xl shadow-black/60 backdrop-blur-xl">
+        <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-30 overflow-hidden rounded-2xl border border-black/10 bg-ink-900 shadow-lift">
           {results.length > 0 ? (
             <ul className="max-h-[340px] overflow-y-auto py-1.5 text-left">
               {results.map((s, i) => (

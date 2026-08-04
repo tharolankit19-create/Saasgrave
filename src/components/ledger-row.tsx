@@ -94,7 +94,7 @@ export function LedgerRow({ s, rank }: { s: LedgerStartup; rank: number }) {
       <span className="flex items-center justify-end gap-4 text-right">
         {price && <span className="hidden text-sm font-medium text-bone-100 sm:inline">{price}</span>}
         <span className="inline-flex items-center gap-1 text-xs tabular-nums text-bone-500">
-          <Eye size={12} /> {s.view_count ?? 0}
+          <Eye size={12} /> {(s.view_count ?? 0) > 0 ? s.view_count : "New"}
         </span>
       </span>
     </Link>

@@ -87,7 +87,7 @@ export default async function Home() {
                 <Link
                   key={c}
                   href={`/browse?q=${encodeURIComponent(c)}`}
-                  className="rounded-full border border-black/10 bg-ink-900/60 px-3 py-1 text-bone-300 transition hover:border-black/25 hover:text-bone-100"
+                  className="rounded-full border border-black/8 bg-ink-900 px-3 py-1 text-bone-400 shadow-sm transition hover:text-bone-100 hover:shadow-card"
                 >
                   {c}
                 </Link>

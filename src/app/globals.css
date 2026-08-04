@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --font-serif: "Georgia", "Times New Roman", serif;
+  --font-sans: "Manrope", system-ui, -apple-system, sans-serif;
+  --font-serif: "Fraunces", "Georgia", "Times New Roman", serif;
 }
 
 html {
@@ -12,16 +12,17 @@ html {
 }
 
 body {
-  background-color: #f6f3ec;
-  color: #17140f;
+  background-color: #f7f7f9;
+  color: #14151a;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  font-feature-settings: "cv11", "ss01";
 }
 
-/* Warm, premium selection */
+/* Crisp, premium selection */
 ::selection {
-  background: rgba(152, 102, 23, 0.18);
-  color: #17140f;
+  background: rgba(166, 119, 26, 0.18);
+  color: #14151a;
 }
 
 /* Thin, unobtrusive scrollbars */
@@ -30,22 +31,22 @@ body {
   height: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #ddd6c6;
+  background: #d9d9df;
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #cfc7b4;
+  background: #c7c7cf;
 }
 
-/* Faint dotted "paper" grain behind hero sections */
+/* Faint dotted grain behind hero sections */
 .grave-grid {
-  background-image: radial-gradient(rgba(23, 20, 15, 0.045) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(20, 21, 26, 0.04) 1px, transparent 1px);
   background-size: 22px 22px;
 }
 
 /* Hairline utility */
 .hairline {
-  border-color: rgba(23, 20, 15, 0.08);
+  border-color: rgba(20, 21, 26, 0.08);
 }
 
 /* ── Motion helpers ──────────────────────────────────────── */

@@ -65,7 +65,7 @@ export function StartupCard({ startup: s }: { startup: Startup }) {
                 </span>
               )}
               <span className="inline-flex items-center gap-1">
-                <Eye size={13} /> {s.view_count}
+                <Eye size={13} /> {s.view_count > 0 ? `${s.view_count} views` : "New"}
               </span>
             </div>
             <div className="text-sm font-medium text-bone-100">

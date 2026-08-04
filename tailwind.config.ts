@@ -15,34 +15,34 @@ const config: Config = {
         // wells) and `bone` names *type* (near-black → muted), so existing
         // markup keeps its intent as the theme reads light.
         ink: {
-          950: "#f6f3ec", // page — warm paper
-          900: "#ffffff", // cards / surfaces
-          850: "#f4f1e8", // hover / wells
-          800: "#efeae0", // deeper well
-          700: "#e7e1d4", // subtle fills
-          600: "#ddd6c6",
+          950: "#f7f7f9", // page — bright, cool near-white
+          900: "#ffffff", // cards / surfaces — pure white
+          850: "#f1f1f4", // hover / wells
+          800: "#eaeaef", // deeper well
+          700: "#e2e2e9", // subtle fills
+          600: "#d6d6de",
         },
         bone: {
-          100: "#17140f", // headings — near-black, warm
-          300: "#413c34", // body
-          400: "#6c6659", // secondary
-          500: "#8f897b", // muted
+          100: "#14151a", // headings — near-black, cool
+          300: "#3a3b42", // body
+          400: "#63646d", // secondary
+          500: "#8a8b94", // muted
         },
-        // Premium gold-bronze accent, tuned to read on white.
+        // Premium gold accent — the single pop of colour on a crisp white page.
         accent: {
-          400: "#b07d2b", // icons / soft accent
-          500: "#986617", // primary accent / eyebrow
-          600: "#7a4f11", // text on light
+          400: "#c08a24", // icons / soft accent
+          500: "#a6771a", // primary accent / eyebrow
+          600: "#855c10", // text on white
         },
         ember: {
-          400: "#b07d2b",
-          500: "#986617",
-          600: "#7a4f11",
+          400: "#c08a24",
+          500: "#a6771a",
+          600: "#855c10",
         },
         // Verified / positive — a deep, calm green that holds on white.
         moss: {
-          400: "#4f7a5e",
-          500: "#3f6a4e",
+          400: "#3f8a5f",
+          500: "#2f7a4f",
         },
       },
       fontFamily: {
@@ -50,9 +50,10 @@ const config: Config = {
         serif: ["var(--font-serif)", "Georgia", "serif"],
       },
       boxShadow: {
-        // Soft, editorial elevation for the light theme.
-        card: "0 1px 2px rgba(23,20,15,0.04), 0 8px 24px -12px rgba(23,20,15,0.10)",
-        lift: "0 10px 40px -12px rgba(23,20,15,0.18)",
+        // Crisp, layered editorial elevation for the bright white theme.
+        card: "0 1px 2px rgba(20,21,26,0.04), 0 6px 16px -8px rgba(20,21,26,0.10), 0 18px 40px -24px rgba(20,21,26,0.16)",
+        lift: "0 2px 6px rgba(20,21,26,0.06), 0 18px 50px -18px rgba(20,21,26,0.24)",
+        glow: "0 0 0 1px rgba(166,119,26,0.12), 0 20px 60px -20px rgba(166,119,26,0.28)",
       },
       keyframes: {
         "fade-up": {
