@@ -501,6 +501,7 @@ export default async function Home() {
             <Link href="/browse" className="hover:text-bone-300">Browse</Link>
             <Link href="/sales" className="hover:text-bone-300">For sale</Link>
             <Link href="/#pricing" className="hover:text-bone-300">Pricing</Link>
+            <Link href="/guides" className="hover:text-bone-300">Guides</Link>
             <Link href="/sell" className="hover:text-bone-300">List a startup</Link>
             <Link href="/register" className="hover:text-bone-300">Sign up</Link>
           </div>
