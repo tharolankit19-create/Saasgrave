@@ -155,9 +155,9 @@ export default async function ProfilePage({ params }: { params: { id: string } }
 function StatCard({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
     <Card className="p-5">
-      <div className="text-xs font-medium uppercase tracking-wide text-bone-500">{label}</div>
-      <div className="mt-3 font-serif text-2xl text-bone-100">{value}</div>
-      <div className="mt-1 text-xs text-bone-400">{sub}</div>
+      <div className="text-[11px] font-semibold uppercase tracking-wider text-bone-400">{label}</div>
+      <div className="mt-2.5 font-serif text-[28px] leading-none text-bone-100">{value}</div>
+      <div className="mt-1.5 text-xs font-medium text-bone-400">{sub}</div>
     </Card>
   );
 }
@@ -180,7 +180,7 @@ function FounderStartupCard({ s }: { s: any }) {
             <span className="truncate font-medium text-bone-100">{s.name}</span>
             {s.revenue_verified && (s.verified_mrr ?? 0) > 0 && <BadgeCheck size={14} className="shrink-0 text-moss-500" />}
           </div>
-          <div className="truncate text-xs text-bone-500">{s.tagline || s.category || "Laid to rest"}</div>
+          <div className="truncate text-xs text-bone-400">{s.tagline || s.category || "Laid to rest"}</div>
         </div>
       </Link>
 
@@ -196,8 +196,8 @@ function FounderStartupCard({ s }: { s: any }) {
 function MiniStat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div className="text-[10px] font-medium uppercase tracking-wide text-bone-500">{label}</div>
-      <div className="mt-0.5 text-sm font-semibold text-bone-100">{value}</div>
+      <div className="text-[10px] font-semibold uppercase tracking-wider text-bone-400">{label}</div>
+      <div className="mt-1 text-sm font-bold text-bone-100">{value}</div>
     </div>
   );
 }

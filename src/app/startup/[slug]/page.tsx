@@ -114,7 +114,7 @@ export default async function StartupPage({ params }: { params: { slug: string }
         <Card className="w-full p-5 sm:w-64">
           {s.for_sale ? (
             <>
-              <div className="text-xs font-medium uppercase tracking-wide text-bone-500">Asking price</div>
+              <div className="text-xs font-medium uppercase tracking-wider text-bone-400">Asking price</div>
               <div className="mt-1 font-serif text-3xl text-bone-100">
                 {s.asking_price
                   ? money(s.asking_price)
@@ -220,7 +220,7 @@ export default async function StartupPage({ params }: { params: { slug: string }
             <div className="space-y-6 px-6 py-5">
               {s.failure_detail ? (
                 <div>
-                  <div className="mb-1.5 text-xs font-medium uppercase tracking-wide text-bone-500">What actually happened</div>
+                  <div className="mb-1.5 text-xs font-medium uppercase tracking-wider text-bone-400">What actually happened</div>
                   <p className="whitespace-pre-line text-[15px] leading-relaxed text-bone-300">{s.failure_detail}</p>
                 </div>
               ) : (
@@ -316,9 +316,9 @@ export default async function StartupPage({ params }: { params: { slug: string }
 function Metric({ icon, label, value, highlight }: { icon: React.ReactNode; label: string; value: string; highlight?: boolean }) {
   return (
     <Card className="p-4">
-      <div className={`mb-1.5 flex items-center gap-1.5 ${highlight ? "text-moss-500" : "text-bone-500"}`}>{icon}</div>
+      <div className={`mb-1.5 flex items-center gap-1.5 ${highlight ? "text-moss-500" : "text-accent-500"}`}>{icon}</div>
       <div className="font-serif text-xl text-bone-100">{value}</div>
-      <div className="text-xs text-bone-500">{label}</div>
+      <div className="text-xs font-medium text-bone-400">{label}</div>
     </Card>
   );
 }
@@ -326,7 +326,7 @@ function Metric({ icon, label, value, highlight }: { icon: React.ReactNode; labe
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
-      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-bone-500">{title}</h2>
+      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-bone-400">{title}</h2>
       {children}
     </section>
   );
