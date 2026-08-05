@@ -232,6 +232,87 @@ alter table public.startups add column if not exists screenshot_urls text[] defa
 -- The product's live/landing URL, so a listing can link straight to the site.
 alter table public.startups add column if not exists website_url text;
 
+-- AI-generated "story-mode" narrative (Gemini) shown on the listing.
+alter table public.startups add column if not exists ai_story text;
+
+-- ─────────────────────────────────────────────────────────────
+--  COMMUNITY  (founders share stories, post, and comment)
+-- ─────────────────────────────────────────────────────────────
+create table if not exists public.community_posts (
+  id          uuid primary key default gen_random_uuid(),
+  author_id   uuid not null references public.profiles(id) on delete cascade,
+  title       text not null,
+  body        text,
+  kind        text default 'story',   -- story | win | question | show
+  like_count  int  default 0,
+  created_at  timestamptz default now()
+);
+create index if not exists community_posts_created_idx on public.community_posts(created_at desc);
+
+create table if not exists public.community_comments (
+  id          uuid primary key default gen_random_uuid(),
+  post_id     uuid not null references public.community_posts(id) on delete cascade,
+  author_id   uuid not null references public.profiles(id) on delete cascade,
+  body        text not null,
+  created_at  timestamptz default now()
+);
+create index if not exists community_comments_post_idx on public.community_comments(post_id);
+
+create table if not exists public.community_likes (
+  post_id     uuid not null references public.community_posts(id) on delete cascade,
+  user_id     uuid not null references public.profiles(id) on delete cascade,
+  created_at  timestamptz default now(),
+  primary key (post_id, user_id)
+);
+
+alter table public.community_posts    enable row level security;
+alter table public.community_comments enable row level security;
+alter table public.community_likes    enable row level security;
+
+drop policy if exists "cposts read"   on public.community_posts;
+drop policy if exists "cposts insert"  on public.community_posts;
+drop policy if exists "cposts update"  on public.community_posts;
+drop policy if exists "cposts delete"  on public.community_posts;
+create policy "cposts read"   on public.community_posts for select using (true);
+create policy "cposts insert" on public.community_posts for insert with check (auth.uid() = author_id);
+create policy "cposts update" on public.community_posts for update using (auth.uid() = author_id);
+create policy "cposts delete" on public.community_posts for delete using (auth.uid() = author_id);
+
+drop policy if exists "ccomments read"   on public.community_comments;
+drop policy if exists "ccomments insert"  on public.community_comments;
+drop policy if exists "ccomments delete"  on public.community_comments;
+create policy "ccomments read"   on public.community_comments for select using (true);
+create policy "ccomments insert" on public.community_comments for insert with check (auth.uid() = author_id);
+create policy "ccomments delete" on public.community_comments for delete using (auth.uid() = author_id);
+
+drop policy if exists "clikes read"   on public.community_likes;
+drop policy if exists "clikes insert"  on public.community_likes;
+drop policy if exists "clikes delete"  on public.community_likes;
+create policy "clikes read"   on public.community_likes for select using (true);
+create policy "clikes insert" on public.community_likes for insert with check (auth.uid() = user_id);
+create policy "clikes delete" on public.community_likes for delete using (auth.uid() = user_id);
+
+-- Toggle a like and keep the denormalised counter in sync (atomic).
+create or replace function public.toggle_post_like(p_post uuid)
+returns int language plpgsql security definer set search_path = public as $$
+declare
+  liked boolean;
+  newcount int;
+begin
+  if exists (select 1 from public.community_likes where post_id = p_post and user_id = auth.uid()) then
+    delete from public.community_likes where post_id = p_post and user_id = auth.uid();
+    update public.community_posts set like_count = greatest(0, like_count - 1) where id = p_post
+      returning like_count into newcount;
+  else
+    insert into public.community_likes (post_id, user_id) values (p_post, auth.uid())
+      on conflict do nothing;
+    update public.community_posts set like_count = like_count + 1 where id = p_post
+      returning like_count into newcount;
+  end if;
+  return coalesce(newcount, 0);
+end;
+$$;
+
 -- ─────────────────────────────────────────────────────────────
 --  STORAGE  (image uploads: avatars, logos, screenshots)
 --  Public-read buckets; authenticated users write to their own

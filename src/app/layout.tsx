@@ -3,6 +3,7 @@ import { Manrope, Fraunces } from "next/font/google";
 import Script from "next/script";
 import { Toaster } from "sonner";
 import { Navbar } from "@/components/navbar";
+import { CommunityBar } from "@/components/community-bar";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
@@ -52,7 +53,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${manrope.variable} ${fraunces.variable}`}>
       <body className="min-h-screen bg-ink-950 font-sans antialiased">
-        <Navbar />
+        <div className="sticky top-0 z-40">
+          <CommunityBar />
+          <Navbar />
+        </div>
         <main>{children}</main>
         <Toaster
           theme="light"
