@@ -11,7 +11,7 @@ export function generateStaticParams() {
   return GUIDES.map((g) => ({ slug: g.slug }));
 }
 
-const BASE = process.env.NEXT_PUBLIC_SITE_URL || "https://saasgrave.com";
+const BASE = process.env.NEXT_PUBLIC_SITE_URL || "https://saasgrave.org";
 
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const g = getGuide(params.slug);
