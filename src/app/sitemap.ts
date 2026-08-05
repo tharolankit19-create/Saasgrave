@@ -5,7 +5,7 @@ import { GUIDES } from "@/lib/guides";
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "https://saasgrave.com";
+  const base = process.env.NEXT_PUBLIC_SITE_URL || "https://saasgrave.org";
   const now = new Date();
 
   const staticPaths = ["", "/browse", "/sales", "/sell", "/guides", "/login", "/register"].map((path) => ({

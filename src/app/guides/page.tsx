@@ -4,7 +4,7 @@ import { ArrowRight, Clock } from "lucide-react";
 import { GUIDES } from "@/lib/guides";
 import { Card, Eyebrow } from "@/components/ui";
 
-const BASE = process.env.NEXT_PUBLIC_SITE_URL || "https://saasgrave.com";
+const BASE = process.env.NEXT_PUBLIC_SITE_URL || "https://saasgrave.org";
 
 export const metadata: Metadata = {
   title: "Guides for founders — failing, pivoting, selling & buying startups",
