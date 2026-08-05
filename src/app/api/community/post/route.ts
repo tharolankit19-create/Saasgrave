@@ -21,6 +21,9 @@ export async function POST(req: Request) {
   if (!title) return NextResponse.json({ error: "A title is required." }, { status: 400 });
   const kind = KINDS.includes(body.kind || "") ? body.kind : "story";
 
+  // Ensure a profile row exists before the FK insert (belt and suspenders).
+  await supabase.from("profiles").upsert({ id: user.id }, { onConflict: "id" });
+
   const { data, error } = await supabase
     .from("community_posts")
     .insert({ author_id: user.id, title, body: (body.body || "").trim().slice(0, 4000) || null, kind })

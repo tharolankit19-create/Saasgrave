@@ -15,24 +15,32 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 
 export const dynamic = "force-dynamic";
 
+type Author = { id: string; full_name: string | null; avatar_url: string | null };
+
 export default async function PostPage({ params }: { params: { id: string } }) {
   const supabase = createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: post } = await supabase
-    .from("community_posts")
-    .select("*, author:profiles(id, full_name, avatar_url)")
-    .eq("id", params.id)
-    .single();
+  const { data: post } = await supabase.from("community_posts").select("*").eq("id", params.id).single();
   if (!post) notFound();
 
   const { data: comments } = await supabase
     .from("community_comments")
-    .select("*, author:profiles(id, full_name, avatar_url)")
+    .select("*")
     .eq("post_id", params.id)
     .order("created_at", { ascending: true });
+
+  const list = comments || [];
+
+  // Authors fetched separately (robust against a stale PostgREST cache).
+  const authorIds = Array.from(new Set([post.author_id, ...list.map((c: any) => c.author_id)].filter(Boolean)));
+  const authors = new Map<string, Author>();
+  if (authorIds.length) {
+    const { data: profs } = await supabase.from("profiles").select("id, full_name, avatar_url").in("id", authorIds);
+    profs?.forEach((a: any) => authors.set(a.id, a));
+  }
 
   let liked = false;
   if (user) {
@@ -46,7 +54,7 @@ export default async function PostPage({ params }: { params: { id: string } }) {
   }
 
   const badge = kindBadge(post.kind);
-  const list = comments || [];
+  const pa = authors.get(post.author_id);
 
   return (
     <div className="mx-auto max-w-2xl px-5 py-12">
@@ -59,18 +67,18 @@ export default async function PostPage({ params }: { params: { id: string } }) {
           <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${badge.tone}`}>
             {badge.label}
           </span>
-          <Link href={`/profile/${post.author?.id}`} className="flex items-center gap-1.5 text-xs text-bone-500 hover:text-bone-300">
-            {post.author?.avatar_url ? (
+          <Link href={`/profile/${post.author_id}`} className="flex items-center gap-1.5 text-xs text-bone-400 hover:text-bone-200">
+            {pa?.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={post.author.avatar_url} alt="" className="h-5 w-5 rounded-full object-cover" />
+              <img src={pa.avatar_url} alt="" className="h-5 w-5 rounded-full object-cover" />
             ) : (
               <span className="grid h-5 w-5 place-items-center rounded-full bg-bone-100 text-[10px] text-white">
-                {(post.author?.full_name || "?").charAt(0)}
+                {(pa?.full_name || "?").charAt(0)}
               </span>
             )}
-            {post.author?.full_name || "A founder"}
+            {pa?.full_name || "A founder"}
           </Link>
-          <span className="text-xs text-bone-500">· {timeAgo(post.created_at)}</span>
+          <span className="text-xs text-bone-400">· {timeAgo(post.created_at)}</span>
         </div>
         <h1 className="font-serif text-2xl leading-snug tracking-tight text-bone-100">{post.title}</h1>
         {post.body && <p className="mt-3 whitespace-pre-line text-[15px] leading-relaxed text-bone-300">{post.body}</p>}
@@ -79,7 +87,7 @@ export default async function PostPage({ params }: { params: { id: string } }) {
         </div>
       </Card>
 
-      <h2 className="mb-4 mt-8 text-sm font-semibold uppercase tracking-wide text-bone-500">
+      <h2 className="mb-4 mt-8 text-sm font-semibold uppercase tracking-wide text-bone-400">
         {list.length} {list.length === 1 ? "reply" : "replies"}
       </h2>
 
@@ -88,25 +96,28 @@ export default async function PostPage({ params }: { params: { id: string } }) {
       </div>
 
       <div className="space-y-3">
-        {list.map((c: any) => (
-          <div key={c.id} className="rounded-xl border border-black/8 bg-ink-900 p-4 shadow-sm">
-            <div className="mb-1.5 flex items-center gap-1.5 text-xs text-bone-500">
-              <Link href={`/profile/${c.author?.id}`} className="flex items-center gap-1.5 hover:text-bone-300">
-                {c.author?.avatar_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={c.author.avatar_url} alt="" className="h-5 w-5 rounded-full object-cover" />
-                ) : (
-                  <span className="grid h-5 w-5 place-items-center rounded-full bg-bone-100 text-[10px] text-white">
-                    {(c.author?.full_name || "?").charAt(0)}
-                  </span>
-                )}
-                {c.author?.full_name || "A founder"}
-              </Link>
-              <span>· {timeAgo(c.created_at)}</span>
+        {list.map((c: any) => {
+          const ca = authors.get(c.author_id);
+          return (
+            <div key={c.id} className="rounded-xl border border-black/8 bg-ink-900 p-4 shadow-sm">
+              <div className="mb-1.5 flex items-center gap-1.5 text-xs text-bone-400">
+                <Link href={`/profile/${c.author_id}`} className="flex items-center gap-1.5 hover:text-bone-200">
+                  {ca?.avatar_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={ca.avatar_url} alt="" className="h-5 w-5 rounded-full object-cover" />
+                  ) : (
+                    <span className="grid h-5 w-5 place-items-center rounded-full bg-bone-100 text-[10px] text-white">
+                      {(ca?.full_name || "?").charAt(0)}
+                    </span>
+                  )}
+                  {ca?.full_name || "A founder"}
+                </Link>
+                <span>· {timeAgo(c.created_at)}</span>
+              </div>
+              <p className="whitespace-pre-line text-sm leading-relaxed text-bone-300">{c.body}</p>
             </div>
-            <p className="whitespace-pre-line text-sm leading-relaxed text-bone-300">{c.body}</p>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

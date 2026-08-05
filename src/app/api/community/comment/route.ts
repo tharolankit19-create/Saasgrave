@@ -17,6 +17,8 @@ export async function POST(req: Request) {
   const text = (body.body || "").trim().slice(0, 2000);
   if (!body.postId || !text) return NextResponse.json({ error: "Write something first." }, { status: 400 });
 
+  await supabase.from("profiles").upsert({ id: user.id }, { onConflict: "id" });
+
   const { error } = await supabase
     .from("community_comments")
     .insert({ post_id: body.postId, author_id: user.id, body: text });
