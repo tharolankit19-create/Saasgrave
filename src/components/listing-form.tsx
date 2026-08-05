@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, Sparkles } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui";
 import { ImageUpload } from "@/components/image-upload";
@@ -41,14 +41,49 @@ export function ListingForm() {
     monthly_visitors: "",
     analytics_url: "",
     claimed_mrr: "",
+    ai_story: "",
     for_sale: false,
     price_mode: "fixed" as "fixed" | "multiplier" | "offers",
     asking_price: "",
     price_multiplier: "",
   });
+  const [generating, setGenerating] = useState(false);
 
   function set<K extends keyof typeof f>(key: K, value: (typeof f)[K]) {
     setF((prev) => ({ ...prev, [key]: value }));
+  }
+
+  // Ask Gemini to turn the raw fields into a warm post-mortem story.
+  async function generateAiStory() {
+    if (!f.name.trim()) return toast.error("Add the startup name first.");
+    setGenerating(true);
+    try {
+      const res = await fetch("/api/generate-story", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: f.name,
+          tagline: f.tagline,
+          about: f.about,
+          category: f.category,
+          outcome: f.outcome,
+          failure_reason: f.failure_reason,
+          failure_detail: f.failure_detail,
+          lessons_learned: f.lessons_learned,
+          total_users: f.total_users,
+          claimed_mrr: f.claimed_mrr,
+          tech_stack: f.tech_stack,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Couldn't generate.");
+      set("ai_story", data.story);
+      toast.success("Story generated — edit it to sound like you.");
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setGenerating(false);
+    }
   }
 
   function toggleChannel(c: string) {
@@ -100,6 +135,7 @@ export function ListingForm() {
         failure_reason: f.failure_reason,
         failure_detail: f.failure_detail.trim() || null,
         lessons_learned: f.lessons_learned.trim() || null,
+        ai_story: f.ai_story.trim() || null,
         total_users: Number(f.total_users) || 0,
         monthly_visitors: Number(f.monthly_visitors) || 0,
         analytics_url: f.analytics_url.trim() || null,
@@ -194,6 +230,37 @@ export function ListingForm() {
           <Select label="Why it ended" value={f.failure_reason} onChange={(v) => set("failure_reason", v)} options={REASONS} />
           <Area label="What actually happened" optional value={f.failure_detail} onChange={(v) => set("failure_detail", v)} placeholder="The honest post-mortem." />
           <Area label="Lessons learned" optional value={f.lessons_learned} onChange={(v) => set("lessons_learned", v)} placeholder="What would you tell the next founder?" />
+
+          {/* AI story generator — turns the fields above into a shareable narrative */}
+          <div className="rounded-2xl border border-accent-500/25 bg-accent-600/[0.04] p-5">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="flex items-center gap-1.5 text-sm font-medium text-bone-100">
+                  <Sparkles size={15} className="text-accent-500" /> Story mode
+                </div>
+                <p className="mt-0.5 text-xs text-bone-500">
+                  Let AI turn your answers into a warm, honest story other founders will actually read.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={generateAiStory}
+                disabled={generating}
+                className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-bone-100 px-4 text-sm font-medium text-ink-950 shadow-card transition hover:shadow-lift disabled:opacity-50"
+              >
+                {generating ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+                {generating ? "Writing…" : f.ai_story ? "Regenerate" : "Generate with AI"}
+              </button>
+            </div>
+            {f.ai_story && (
+              <textarea
+                value={f.ai_story}
+                onChange={(e) => set("ai_story", e.target.value)}
+                rows={7}
+                className="mt-4 w-full rounded-xl border border-black/10 bg-ink-900 px-4 py-3 text-sm leading-relaxed text-bone-200 outline-none transition focus:border-accent-500/50"
+              />
+            )}
+          </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <Text label="Total users ever" type="number" value={f.total_users} onChange={(v) => set("total_users", v)} />
             <Text label="Monthly visitors" type="number" value={f.monthly_visitors} onChange={(v) => set("monthly_visitors", v)} />
