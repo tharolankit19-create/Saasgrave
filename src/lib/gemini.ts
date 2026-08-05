@@ -1,9 +1,10 @@
-// ─── Gemini helper ──────────────────────────────────────────
+// ─── AI story helper ────────────────────────────────────────
 // Server-only. Turns a founder's raw listing fields into a warm, honest
-// "story-mode" narrative other founders can learn from. Uses the REST API so
-// there's no SDK dependency. Set GEMINI_API_KEY in the environment.
-
-const MODEL = process.env.GEMINI_MODEL || "gemini-1.5-flash-latest";
+// "story-mode" narrative other founders can learn from.
+//
+// Provider order: OpenRouter (set OPENROUTER_API_KEY, e.g. an NVIDIA Nemotron
+// model) is used first; Gemini (GEMINI_API_KEY) is the fallback. Whichever is
+// configured works — no code change needed to switch.
 
 export type StoryInput = {
   name: string;
@@ -14,15 +15,15 @@ export type StoryInput = {
   failure_reason?: string;
   failure_detail?: string;
   lessons_learned?: string;
+  biggest_mistake?: string;
+  cac?: number | string;
+  retention?: string;
   total_users?: number | string;
   claimed_mrr?: number | string;
   tech_stack?: string;
 };
 
-export async function generateStory(input: StoryInput): Promise<string> {
-  const key = process.env.GEMINI_API_KEY?.trim();
-  if (!key) throw new Error("AI is not configured — set GEMINI_API_KEY.");
-
+function buildPrompt(input: StoryInput) {
   const pivoted = input.outcome === "pivot";
   const facts = [
     `Name: ${input.name}`,
@@ -32,7 +33,10 @@ export async function generateStory(input: StoryInput): Promise<string> {
     `Outcome: ${pivoted ? "pivoted away from it" : "shut it down"}`,
     input.failure_reason && `Main reason: ${input.failure_reason}`,
     input.failure_detail && `What happened: ${input.failure_detail}`,
+    input.biggest_mistake && `Biggest mistake: ${input.biggest_mistake}`,
     input.lessons_learned && `Lessons the founder noted: ${input.lessons_learned}`,
+    input.cac && Number(input.cac) > 0 && `Customer acquisition cost: $${input.cac}`,
+    input.retention && `Retention: ${input.retention}`,
     input.total_users && `Total users reached: ${input.total_users}`,
     input.claimed_mrr && Number(input.claimed_mrr) > 0 && `Peak MRR: $${input.claimed_mrr}/mo`,
     input.tech_stack && `Built with: ${input.tech_stack}`,
@@ -40,7 +44,7 @@ export async function generateStory(input: StoryInput): Promise<string> {
     .filter(Boolean)
     .join("\n");
 
-  const prompt = `You are writing a short, honest "post-mortem story" for a marketplace of dead and pivoted startups. Founders read these to learn from each other.
+  return `You are writing a short, honest "post-mortem story" for a marketplace of dead and pivoted startups. Founders read these to learn from each other.
 
 Write in third person about the founder and their product. Be warm, specific, and human — never corporate or hyped. No emojis. No markdown headings. 150–220 words.
 
@@ -53,8 +57,54 @@ Only use the facts below. Do not invent metrics, names, or events. If a detail i
 
 FACTS:
 ${facts}`;
+}
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${key}`;
+export async function generateStory(input: StoryInput): Promise<string> {
+  if (!input.name?.trim()) throw new Error("Add a name first, then generate.");
+  const prompt = buildPrompt(input);
+
+  if (process.env.OPENROUTER_API_KEY?.trim()) return viaOpenRouter(prompt);
+  if (process.env.GEMINI_API_KEY?.trim()) return viaGemini(prompt);
+  throw new Error("AI is not configured — set OPENROUTER_API_KEY (or GEMINI_API_KEY).");
+}
+
+async function viaOpenRouter(prompt: string): Promise<string> {
+  const key = process.env.OPENROUTER_API_KEY!.trim();
+  const model = process.env.OPENROUTER_MODEL?.trim() || "nvidia/llama-3.1-nemotron-70b-instruct";
+  const site = process.env.NEXT_PUBLIC_SITE_URL || "https://saasgrave.org";
+
+  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json",
+      "HTTP-Referer": site,
+      "X-Title": "Saasgrave",
+    },
+    body: JSON.stringify({
+      model,
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.8,
+      max_tokens: 600,
+    }),
+  });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    console.error(`OpenRouter failed (${res.status}): ${text}`);
+    if (res.status === 401) throw new Error("AI couldn't run — check OPENROUTER_API_KEY.");
+    throw new Error("AI is busy right now. Please try again in a moment.");
+  }
+  const data = await res.json();
+  const story: string = data?.choices?.[0]?.message?.content?.trim() || "";
+  if (!story) throw new Error("AI returned an empty story. Try again.");
+  return story;
+}
+
+async function viaGemini(prompt: string): Promise<string> {
+  const key = process.env.GEMINI_API_KEY!.trim();
+  const model = process.env.GEMINI_MODEL || "gemini-1.5-flash-latest";
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -63,16 +113,12 @@ ${facts}`;
       generationConfig: { temperature: 0.8, maxOutputTokens: 512, topP: 0.95 },
     }),
   });
-
   if (!res.ok) {
     const text = await res.text().catch(() => "");
     console.error(`Gemini failed (${res.status}): ${text}`);
-    if (res.status === 400 || res.status === 403) {
-      throw new Error("AI couldn't run — check that GEMINI_API_KEY is valid and enabled.");
-    }
+    if (res.status === 400 || res.status === 403) throw new Error("AI couldn't run — check GEMINI_API_KEY.");
     throw new Error("AI is busy right now. Please try again in a moment.");
   }
-
   const data = await res.json();
   const story: string =
     data?.candidates?.[0]?.content?.parts?.map((p: any) => p.text).join("").trim() || "";

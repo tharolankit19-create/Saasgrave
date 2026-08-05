@@ -502,8 +502,14 @@ export default async function Home() {
             <Link href="/sales" className="hover:text-bone-300">For sale</Link>
             <Link href="/#pricing" className="hover:text-bone-300">Pricing</Link>
             <Link href="/guides" className="hover:text-bone-300">Guides</Link>
+            <Link href="/community" className="hover:text-bone-300">Community</Link>
             <Link href="/sell" className="hover:text-bone-300">List a startup</Link>
-            <Link href="/register" className="hover:text-bone-300">Sign up</Link>
+            <Link href="/support" className="hover:text-bone-300">Support</Link>
+          </div>
+          <div className="mt-5 flex items-center justify-center gap-4 text-sm text-bone-500">
+            <a href="mailto:ankittharol7@gmail.com" className="hover:text-bone-300">ankittharol7@gmail.com</a>
+            <span className="text-bone-500/50">·</span>
+            <a href="https://x.com/SaasGrave" target="_blank" rel="noopener noreferrer" className="hover:text-bone-300">@SaasGrave</a>
           </div>
           <p className="mt-8 text-xs text-bone-500">
             © {new Date().getFullYear()} Saas<span className="text-bone-300">grave</span> — the marketplace for startups that didn&apos;t make it.

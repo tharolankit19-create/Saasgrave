@@ -14,6 +14,7 @@ import {
   Lightbulb,
   ArrowUpRight,
   Sparkles,
+  AlertTriangle,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Badge, Card, Eyebrow } from "@/components/ui";
@@ -206,32 +207,58 @@ export default async function StartupPage({ params }: { params: { slug: string }
             </Section>
           )}
 
-          {/* THE STORY — the clearly-highlighted post-mortem box */}
+          {/* STARTUP AUTOPSY — the structured post-mortem buyers value most */}
           <Card className="overflow-hidden border-accent-500/20 p-0">
             <div className="border-b border-black/8 bg-accent-600/[0.05] px-6 py-4">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-accent-600">
+              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-accent-600">
                 {pivoted ? <GitBranch size={14} /> : <Skull size={14} />}
-                {pivoted ? "Why it pivoted" : "Cause of death"}
+                Startup autopsy · {pivoted ? "why it pivoted" : "cause of death"}
               </div>
               {s.failure_reason && (
                 <div className="mt-1.5 font-serif text-2xl tracking-tight text-bone-100">{s.failure_reason}</div>
               )}
             </div>
-            <div className="space-y-6 px-6 py-5">
+
+            {/* the numbers a buyer wants at a glance */}
+            {(Number(s.cac) > 0 || s.retention || (s.total_users || 0) > 0 || (s.claimed_mrr || 0) > 0) && (
+              <div className="grid grid-cols-2 gap-px border-b border-black/8 bg-black/8 sm:grid-cols-4">
+                {(s.claimed_mrr || 0) > 0 && <AutopsyStat label="Peak MRR" value={`${money(s.claimed_mrr)}/mo`} />}
+                {(s.total_users || 0) > 0 && <AutopsyStat label="Users" value={s.total_users.toLocaleString()} />}
+                {Number(s.cac) > 0 && <AutopsyStat label="CAC" value={money(s.cac)} />}
+                {s.monthly_visitors > 0 && <AutopsyStat label="Monthly visitors" value={s.monthly_visitors.toLocaleString()} />}
+              </div>
+            )}
+
+            <div className="space-y-5 px-6 py-5">
               {s.failure_detail ? (
-                <div>
-                  <div className="mb-1.5 text-xs font-medium uppercase tracking-wider text-bone-400">What actually happened</div>
+                <AutopsyBlock label="What actually happened">
                   <p className="whitespace-pre-line text-[15px] leading-relaxed text-bone-300">{s.failure_detail}</p>
-                </div>
+                </AutopsyBlock>
               ) : (
-                <p className="text-sm text-bone-500">The founder hasn&apos;t written the full story yet.</p>
+                <p className="text-sm text-bone-400">The founder hasn&apos;t written the full story yet.</p>
               )}
-              {s.lessons_learned && (
-                <div className="rounded-xl border border-moss-500/20 bg-moss-500/[0.06] p-4">
-                  <div className="mb-1.5 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-moss-500">
-                    <Lightbulb size={13} /> Lessons learned
+
+              {s.retention && (
+                <AutopsyBlock label="Why users churned / experiments tried">
+                  <p className="whitespace-pre-line text-[15px] leading-relaxed text-bone-300">{s.retention}</p>
+                </AutopsyBlock>
+              )}
+
+              {s.biggest_mistake && (
+                <div className="rounded-xl border border-accent-500/25 bg-accent-600/[0.05] p-4">
+                  <div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-accent-600">
+                    <AlertTriangle size={13} /> Biggest mistake
                   </div>
-                  <p className="whitespace-pre-line text-[15px] leading-relaxed text-bone-300">{s.lessons_learned}</p>
+                  <p className="whitespace-pre-line text-[15px] leading-relaxed text-bone-200">{s.biggest_mistake}</p>
+                </div>
+              )}
+
+              {s.lessons_learned && (
+                <div className="rounded-xl border border-moss-500/25 bg-moss-500/[0.06] p-4">
+                  <div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-moss-500">
+                    <Lightbulb size={13} /> Lessons for the next founder
+                  </div>
+                  <p className="whitespace-pre-line text-[15px] leading-relaxed text-bone-200">{s.lessons_learned}</p>
                 </div>
               )}
             </div>
@@ -320,6 +347,24 @@ function Metric({ icon, label, value, highlight }: { icon: React.ReactNode; labe
       <div className="font-serif text-xl text-bone-100">{value}</div>
       <div className="text-xs font-medium text-bone-400">{label}</div>
     </Card>
+  );
+}
+
+function AutopsyStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="bg-ink-900 px-4 py-3.5 text-center">
+      <div className="text-[10px] font-semibold uppercase tracking-wider text-bone-400">{label}</div>
+      <div className="mt-1 font-serif text-lg text-bone-100">{value}</div>
+    </div>
+  );
+}
+
+function AutopsyBlock({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <div className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-bone-400">{label}</div>
+      {children}
+    </div>
   );
 }
 

@@ -37,6 +37,9 @@ export function ListingForm() {
     failure_reason: "No market need",
     failure_detail: "",
     lessons_learned: "",
+    biggest_mistake: "",
+    cac: "",
+    retention: "",
     total_users: "",
     monthly_visitors: "",
     analytics_url: "",
@@ -70,6 +73,9 @@ export function ListingForm() {
           failure_reason: f.failure_reason,
           failure_detail: f.failure_detail,
           lessons_learned: f.lessons_learned,
+          biggest_mistake: f.biggest_mistake,
+          cac: f.cac,
+          retention: f.retention,
           total_users: f.total_users,
           claimed_mrr: f.claimed_mrr,
           tech_stack: f.tech_stack,
@@ -135,6 +141,9 @@ export function ListingForm() {
         failure_reason: f.failure_reason,
         failure_detail: f.failure_detail.trim() || null,
         lessons_learned: f.lessons_learned.trim() || null,
+        biggest_mistake: f.biggest_mistake.trim() || null,
+        cac: Number(f.cac) || null,
+        retention: f.retention.trim() || null,
         ai_story: f.ai_story.trim() || null,
         total_users: Number(f.total_users) || 0,
         monthly_visitors: Number(f.monthly_visitors) || 0,
@@ -230,6 +239,17 @@ export function ListingForm() {
           <Select label="Why it ended" value={f.failure_reason} onChange={(v) => set("failure_reason", v)} options={REASONS} />
           <Area label="What actually happened" optional value={f.failure_detail} onChange={(v) => set("failure_detail", v)} placeholder="The honest post-mortem." />
           <Area label="Lessons learned" optional value={f.lessons_learned} onChange={(v) => set("lessons_learned", v)} placeholder="What would you tell the next founder?" />
+
+          {/* Post-mortem details — optional, but this is the part buyers value most */}
+          <div className="rounded-2xl border border-black/8 bg-ink-850/60 p-5">
+            <div className="text-sm font-medium text-bone-100">The post-mortem — optional, but gold</div>
+            <p className="mt-0.5 text-xs text-bone-400">Be honest. Your failure is someone else&apos;s shortcut.</p>
+            <div className="mt-4 space-y-4">
+              <Area label="Biggest mistake" optional value={f.biggest_mistake} onChange={(v) => set("biggest_mistake", v)} placeholder="If you could redo one thing…" />
+              <Area label="Why users churned / what experiments you tried" optional value={f.retention} onChange={(v) => set("retention", v)} placeholder="e.g. 'Retention was 5% after week 1. We tried onboarding emails and a freemium tier — neither moved it.'" />
+              <Text label="CAC — cost to acquire a customer ($)" type="number" value={f.cac} onChange={(v) => set("cac", v)} placeholder="e.g. 12" />
+            </div>
+          </div>
 
           {/* AI story generator — turns the fields above into a shareable narrative */}
           <div className="rounded-2xl border border-accent-500/25 bg-accent-600/[0.04] p-5">

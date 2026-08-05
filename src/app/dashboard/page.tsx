@@ -8,6 +8,7 @@ import { money } from "@/lib/utils";
 import { ListingRowActions } from "@/components/listing-row-actions";
 import { AdSlotManager, type OwnedSlot } from "@/components/ad-slot-manager";
 import { ShareLaunch } from "@/components/share-launch";
+import { OfferActions } from "@/components/offer-actions";
 
 export const metadata = { title: "Dashboard" };
 export const dynamic = "force-dynamic";
@@ -145,13 +146,28 @@ export default async function Dashboard() {
       {offers && offers.length > 0 ? (
         <Card className="divide-y divide-black/8">
           {offers.map((o: any) => (
-            <div key={o.id} className="flex items-center justify-between p-4 text-sm">
+            <div key={o.id} className="flex flex-wrap items-center justify-between gap-3 p-4 text-sm">
               <div>
                 <span className="font-medium text-bone-100">{money(o.amount)}</span>
-                <span className="text-bone-500"> for {o.startup?.name}</span>
-                <div className="text-xs text-bone-500">from {o.buyer?.full_name || "a buyer"}</div>
+                <span className="text-bone-400"> for {o.startup?.name}</span>
+                <div className="text-xs text-bone-400">from {o.buyer?.full_name || "a buyer"}</div>
+                {o.message && <div className="mt-1 max-w-md text-xs italic text-bone-500">“{o.message}”</div>}
               </div>
-              <Badge>{o.status}</Badge>
+              {o.status === "pending" ? (
+                <OfferActions offerId={o.id} />
+              ) : (
+                <Badge
+                  className={
+                    o.status === "accepted"
+                      ? "border-moss-500/40 text-moss-500"
+                      : o.status === "rejected"
+                        ? "border-black/15 text-bone-400"
+                        : ""
+                  }
+                >
+                  {o.status}
+                </Badge>
+              )}
             </div>
           ))}
         </Card>
