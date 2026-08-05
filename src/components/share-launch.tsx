@@ -26,10 +26,24 @@ export function ShareLaunch({
 }) {
   const [copied, setCopied] = useState(false);
 
-  const line = forSale
-    ? `I just listed ${name} for sale on @saasgrave 🪦`
-    : `I just gave ${name} a proper burial on @saasgrave 🪦`;
-  const caption = `${line}\n\n${tagline ? tagline + "\n\n" : ""}Working code, domain, users and the honest story — someone can give it a second life 👇`;
+  // High-curiosity, build-in-public hooks — written to earn replies and clicks,
+  // not to read like an ad. First line does the heavy lifting.
+  const sub = tagline ? `\n\n(${tagline})` : "";
+  const caption = forSale
+    ? `I'm selling ${name}. 💀
+
+I built it. It didn't take off. But the code, the domain and the users are all still real — so I'm not deleting it, I'm handing it to whoever can take it further.${sub}
+
+The full story + the price 👇`
+    : `I killed ${name}. 💀
+
+Months of nights and weekends. Real users. Then it quietly died.
+
+Most founders delete the repo and never speak of it again.
+
+I did the opposite — published everything: the code, the domain, the users, and the honest post-mortem of what actually went wrong.${sub}
+
+Someone's going to revive it 👇`;
 
   const xHref = `https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}&url=${encodeURIComponent(url)}`;
   const liHref = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
