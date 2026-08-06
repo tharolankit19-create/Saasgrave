@@ -77,6 +77,27 @@ export default async function StartupPage({ params }: { params: { slug: string }
 
   return (
     <div className="mx-auto max-w-4xl px-5 py-10">
+      {/* SEO: the post-mortem as a structured Article so search + assistants
+          can surface this listing and the founder's story. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: `${s.name} — ${s.failure_reason || "startup post-mortem"}`,
+            description: s.tagline || `The story of ${s.name}, a startup laid to rest on Saasgrave.`,
+            image: `${listingUrl}/opengraph-image`,
+            datePublished: s.created_at,
+            dateModified: s.updated_at || s.created_at,
+            author: s.founder?.full_name
+              ? { "@type": "Person", name: s.founder.full_name }
+              : { "@type": "Organization", name: "Saasgrave" },
+            publisher: { "@type": "Organization", name: "Saasgrave" },
+            mainEntityOfPage: listingUrl,
+          }),
+        }}
+      />
       <ViewTracker slug={s.slug} />
       <Link href="/browse" className="text-sm text-bone-500 transition hover:text-bone-300">
         ← Back to listings

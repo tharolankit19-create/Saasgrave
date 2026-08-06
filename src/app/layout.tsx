@@ -18,8 +18,10 @@ const fraunces = Fraunces({
   axes: ["opsz", "SOFT", "WONK"],
 });
 
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://saasgrave.org";
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://saasgrave.org"),
+  metadataBase: new URL(SITE),
   title: {
     default: "Saasgrave — Your dead startup is still worth money",
     template: "%s · Saasgrave",
@@ -54,6 +56,40 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${manrope.variable} ${fraunces.variable}`}>
       <body className="min-h-screen bg-ink-950 font-sans antialiased">
+        {/* Structured data — lets Google show the brand name + logo, and
+            understand the site's search action. Logo points at the generated icon. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "Organization",
+                  "@id": `${SITE}/#org`,
+                  name: "Saasgrave",
+                  url: SITE,
+                  logo: `${SITE}/icon`,
+                  sameAs: ["https://x.com/SaasGrave"],
+                  description:
+                    "The marketplace for dead and zero-revenue startups. List a failed startup in 3 minutes — free to list, $9 to sell, 0% commission.",
+                },
+                {
+                  "@type": "WebSite",
+                  "@id": `${SITE}/#website`,
+                  url: SITE,
+                  name: "Saasgrave",
+                  publisher: { "@id": `${SITE}/#org` },
+                  potentialAction: {
+                    "@type": "SearchAction",
+                    target: { "@type": "EntryPoint", urlTemplate: `${SITE}/browse?q={search_term_string}` },
+                    "query-input": "required name=search_term_string",
+                  },
+                },
+              ],
+            }),
+          }}
+        />
         {/* Google Tag Manager (noscript) — must sit right after <body> opens */}
         <noscript>
           {/* eslint-disable-next-line @next/next/no-sync-scripts */}

@@ -57,7 +57,7 @@ export function BrowseFilters() {
         className="h-11 rounded-full border border-black/10 bg-ink-900 px-4 text-sm text-bone-300 outline-none focus:border-ember-500/50"
       >
         <option value="">Newest</option>
-        <option value="views">Most viewed</option>
+        <option value="users">Most users</option>
         <option value="revenue">Highest revenue</option>
       </select>
 

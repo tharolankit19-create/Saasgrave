@@ -1,7 +1,11 @@
 import Link from "next/link";
-import { BadgeCheck, Eye, Tag } from "lucide-react";
+import { BadgeCheck, Users, Tag, TrendingUp } from "lucide-react";
 import { Card } from "@/components/ui";
 import { money } from "@/lib/utils";
+
+function compact(n: number) {
+  return Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(n);
+}
 
 type Startup = {
   id: string;
@@ -16,7 +20,7 @@ type Startup = {
   price_multiplier: number | null;
   verified_mrr: number;
   revenue_verified: boolean;
-  view_count: number;
+  total_users: number | null;
   founder?: { full_name: string | null; avatar_url: string | null } | null;
 };
 
@@ -59,14 +63,20 @@ export function StartupCard({ startup: s }: { startup: Startup }) {
 
           <div className="flex items-center justify-between border-t border-black/8 pt-4">
             <div className="flex items-center gap-3 text-xs text-bone-500">
-              {s.revenue_verified && s.verified_mrr > 0 && (
+              {s.revenue_verified && s.verified_mrr > 0 ? (
                 <span className="inline-flex items-center gap-1 text-moss-400">
                   <BadgeCheck size={13} /> {money(s.verified_mrr)}/mo
                 </span>
+              ) : (
+                <span className="inline-flex items-center gap-1">
+                  <TrendingUp size={13} /> MRR n/a
+                </span>
               )}
-              <span className="inline-flex items-center gap-1">
-                <Eye size={13} /> {s.view_count > 0 ? `${s.view_count} views` : "New"}
-              </span>
+              {(s.total_users ?? 0) > 0 && (
+                <span className="inline-flex items-center gap-1">
+                  <Users size={13} /> {compact(s.total_users as number)} users
+                </span>
+              )}
             </div>
             <div className="text-sm font-medium text-bone-100">
               {s.for_sale
