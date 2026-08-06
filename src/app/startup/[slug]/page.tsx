@@ -21,6 +21,7 @@ import { Badge, Card, Eyebrow } from "@/components/ui";
 import { Reveal, Aurora } from "@/components/motion";
 import { XIcon, LinkedInIcon } from "@/components/brand-icons";
 import { ShareLaunch } from "@/components/share-launch";
+import { ObituaryCard } from "@/components/obituary-card";
 import { money, monthsBetween } from "@/lib/utils";
 import { MakeOfferButton } from "@/components/make-offer-button";
 import { VerifyRevenueButton } from "@/components/verify-revenue-button";
@@ -30,7 +31,15 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const supabase = createClient();
   const { data } = await supabase.from("startups").select("name, tagline").eq("slug", params.slug).single();
   if (!data) return { title: "Not found" };
-  return { title: data.name, description: data.tagline || "A startup laid to rest on Saasgrave." };
+  const description = data.tagline || "A startup laid to rest on Saasgrave.";
+  // The obituary card (opengraph-image.tsx) is injected automatically; we just
+  // opt X into the large-image unfurl so shares show the full death certificate.
+  return {
+    title: data.name,
+    description,
+    openGraph: { title: `${data.name} — laid to rest`, description, type: "article" },
+    twitter: { card: "summary_large_image", title: `${data.name} — laid to rest`, description },
+  };
 }
 
 export const dynamic = "force-dynamic";
@@ -139,15 +148,18 @@ export default async function StartupPage({ params }: { params: { slug: string }
         </Card>
       </div>
 
-      {/* owner: share your launch */}
+      {/* owner: share your launch + obituary card (the viral loop) */}
       {isOwner && (
-        <Card className="mt-6 flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <div className="text-sm font-medium text-bone-100">Your listing is live 🎉</div>
-            <div className="text-xs text-bone-500">Share it — every post brings buyers back to the graveyard.</div>
-          </div>
-          <ShareLaunch name={s.name} tagline={s.tagline} url={listingUrl} forSale={s.for_sale} />
-        </Card>
+        <>
+          <Card className="mt-6 flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="text-sm font-medium text-bone-100">Your listing is live 🎉</div>
+              <div className="text-xs text-bone-500">Every share brings founders back to the graveyard.</div>
+            </div>
+            <ShareLaunch name={s.name} tagline={s.tagline} url={listingUrl} forSale={s.for_sale} />
+          </Card>
+          <ObituaryCard slug={s.slug} name={s.name} tagline={s.tagline} url={listingUrl} forSale={s.for_sale} />
+        </>
       )}
 
       {/* metrics — MRR only ever shows as verified; self-reported never masquerades as real */}

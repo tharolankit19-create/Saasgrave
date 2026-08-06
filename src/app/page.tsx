@@ -21,6 +21,7 @@ import {
   Megaphone,
 } from "lucide-react";
 import { LinkButton, Eyebrow, Card } from "@/components/ui";
+import { LinkedInIcon } from "@/components/brand-icons";
 import { GraveyardSearch } from "@/components/graveyard-search";
 import { CountUp } from "@/components/count-up";
 import { LedgerRow } from "@/components/ledger-row";
@@ -115,6 +116,13 @@ export default async function Home() {
           <p className="mt-4 text-xs text-bone-500">
             Free to list, forever · $9 to open it for sale · 0% commission
           </p>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] text-bone-500">
+            <span className="inline-flex items-center gap-1.5">
+              <LinkedInIcon size={12} className="text-[#0A66C2]" /> Launched in public on LinkedIn
+            </span>
+            <span className="text-bone-500/40">·</span>
+            <span>Built by a 16-year-old founder who buried 4 of his own</span>
+          </div>
         </div>
 
         {/* Moving tape — the graveyard, drifting past. */}
@@ -127,23 +135,31 @@ export default async function Home() {
       </section>
 
       {/* ─── 2 · Live proof, in real numbers ──────────────── */}
-      {hasListings && (
-        <section className="mx-auto max-w-5xl px-5 pb-24">
-          <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-black/8 bg-black/8 sm:grid-cols-4">
-            <StatCell value={stats.graves} label="startups at rest" />
-            {stats.buriedMrr > 0 ? (
-              <StatCellRaw k={`${money(stats.buriedMrr)}`} label="verified revenue buried" />
-            ) : (
-              <StatCell value={stats.users} label="users left behind" />
-            )}
-            <StatCell value={stats.founders} label="founders" />
-            <StatCell value={stats.forSale} label="up for sale" />
-          </div>
-          <p className="mt-3 text-center text-xs text-bone-500">
-            Live from real listings — not a single seeded or fake startup.
-          </p>
-        </section>
-      )}
+      {hasListings && (() => {
+        // Only ever surface real, non-zero stats — a "0 up for sale" cell reads
+        // like a dead marketplace, so we simply don't show a stat until it's true.
+        const cells: { key: string; node: JSX.Element }[] = [
+          { key: "graves", node: <StatCell value={stats.graves} label="startups at rest" /> },
+          { key: "founders", node: <StatCell value={stats.founders} label="founders joined" /> },
+        ];
+        if (stats.buriedMrr > 0) cells.push({ key: "mrr", node: <StatCellRaw k={money(stats.buriedMrr)} label="verified revenue buried" /> });
+        if (stats.users > 0) cells.push({ key: "users", node: <StatCell value={stats.users} label="users left behind" /> });
+        if (stats.forSale > 0) cells.push({ key: "sale", node: <StatCell value={stats.forSale} label="open to offers" /> });
+        const show = cells.slice(0, 4);
+        const cols = show.length >= 4 ? "sm:grid-cols-4" : show.length === 3 ? "sm:grid-cols-3" : "sm:grid-cols-2";
+        return (
+          <section className="mx-auto max-w-5xl px-5 pb-24">
+            <div className={`grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-black/8 bg-black/8 ${cols}`}>
+              {show.map((c) => (
+                <div key={c.key}>{c.node}</div>
+              ))}
+            </div>
+            <p className="mt-3 text-center text-xs text-bone-500">
+              Live from real listings — not a single seeded or fake startup.
+            </p>
+          </section>
+        );
+      })()}
 
       {/* ─── 3 · Empathy — name the pain before selling ───── */}
       <Reveal as="section" className="mx-auto max-w-3xl px-5 pb-24 text-center">
@@ -166,8 +182,8 @@ export default async function Home() {
         <div className="mb-6 flex items-end justify-between gap-4">
           <div>
             <Eyebrow>The ledger</Eyebrow>
-            <h2 className="font-serif text-3xl tracking-tight text-bone-100">Most-visited graves</h2>
-            <p className="mt-2 text-sm text-bone-500">Where buyers are looking right now.</p>
+            <h2 className="font-serif text-3xl tracking-tight text-bone-100">The latest to rest</h2>
+            <p className="mt-2 text-sm text-bone-500">Real founders, honest post-mortems — the record as it grows.</p>
           </div>
           <Link
             href="/browse"
