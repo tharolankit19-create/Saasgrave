@@ -130,7 +130,7 @@ export default async function Home() {
           <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-black/8 bg-black/8 sm:grid-cols-4">
             <StatCell value={stats.graves} label="startups at rest" />
             {stats.buriedMrr > 0 ? (
-              <StatCellRaw k={`${money(stats.buriedMrr)}`} label="monthly revenue buried" />
+              <StatCellRaw k={`${money(stats.buriedMrr)}`} label="verified revenue buried" />
             ) : (
               <StatCell value={stats.users} label="users left behind" />
             )}
@@ -436,8 +436,7 @@ export default async function Home() {
           <div>
             <h3 className="text-lg font-medium text-bone-100">Revenue you can actually trust</h3>
             <p className="mt-1.5 text-sm leading-relaxed text-bone-500">
-              Founders verify revenue with a read-only Stripe key. We compute the real MRR, badge the
-              listing, and never store the key. What you see is what it earned — no screenshots to fake.
+              Founders verify revenue with a read-only key from Stripe, Paddle, Lemon Squeezy or Dodo. We compute the real MRR, badge the listing, and never store the key. What you see is what it earned — no screenshots to fake.
             </p>
           </div>
         </Card>

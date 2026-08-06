@@ -292,7 +292,7 @@ export function ListingForm() {
       {/* Step 3 — Money & sale */}
       {step === 2 && (
         <div className="space-y-5">
-          <Text label="Last known MRR ($/mo)" type="number" value={f.claimed_mrr} onChange={(v) => set("claimed_mrr", v)} placeholder="0" />
+          <Text label="Last known MRR ($/mo) — self-reported" type="number" value={f.claimed_mrr} onChange={(v) => set("claimed_mrr", v)} placeholder="0" hint="Shown as unverified until you connect a payment provider" />
           <p className="rounded-xl border border-black/8 bg-ink-800/50 p-3 text-xs text-bone-500">
             You can <span className="text-bone-300">verify</span> this revenue from your listing page later
             using a read-only Stripe key — verified numbers get a green badge and sell far better.
@@ -384,10 +384,10 @@ export function ListingForm() {
 
 /* ── field primitives ─────────────────────────────────────── */
 function Text({
-  label, value, onChange, placeholder, type = "text", required, optional,
+  label, value, onChange, placeholder, type = "text", required, optional, hint,
 }: {
   label: string; value: string; onChange: (v: string) => void;
-  placeholder?: string; type?: string; required?: boolean; optional?: boolean;
+  placeholder?: string; type?: string; required?: boolean; optional?: boolean; hint?: string;
 }) {
   return (
     <label className="block">
@@ -401,8 +401,9 @@ function Text({
         required={required}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="h-11 w-full rounded-xl border border-black/10 bg-ink-900 px-4 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-ember-500/50 [color-scheme:dark]"
+        className="h-11 w-full rounded-xl border border-black/10 bg-ink-900 px-4 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-ember-500/50"
       />
+      {hint && <span className="mt-1 block text-[11px] text-bone-400">{hint}</span>}
     </label>
   );
 }
