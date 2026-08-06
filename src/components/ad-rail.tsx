@@ -28,7 +28,7 @@ export function AdRail({ slots }: { slots: AdSlot[] }) {
           >
             {slot.image_url && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={slot.image_url} alt="" className="mb-3 h-24 w-full rounded-lg border border-black/8 object-cover" />
+              <img src={slot.image_url} alt="" className="mb-3 h-24 w-full rounded-lg border border-black/8 bg-white object-contain p-2" />
             )}
             <div className="text-sm font-semibold text-bone-100">{slot.headline}</div>
             {slot.body && <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-bone-400">{slot.body}</p>}
