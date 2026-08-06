@@ -19,7 +19,6 @@ import {
 } from "lucide-react";
 import { LinkButton, Eyebrow, Card } from "@/components/ui";
 import { LedgerRow } from "@/components/ledger-row";
-import { FounderNote } from "@/components/founder-note";
 import { Reveal, Marquee } from "@/components/motion";
 import { loadGraveyard } from "@/lib/stats";
 import { money } from "@/lib/utils";
@@ -58,7 +57,7 @@ export default async function Home() {
           <h1 className="text-[2.7rem] font-bold leading-[0.98] tracking-tight text-bone-100 sm:text-[5rem]">
             Your dead startup
             <br className="hidden sm:block" /> is still worth{" "}
-            <span className="underline decoration-bone-100 decoration-4 underline-offset-[8px]">money</span>.
+            <span className="text-accent-500 underline decoration-accent-500/40 decoration-4 underline-offset-[8px]">money</span>.
           </h1>
 
           <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-bone-400">
@@ -71,8 +70,8 @@ export default async function Home() {
             <LinkButton href="/sell" size="lg">
               List my dead startup — free <ArrowRight size={17} />
             </LinkButton>
-            <Link href="/browse" className="text-sm text-bone-400 underline decoration-black/20 underline-offset-4 transition hover:text-bone-100">
-              or just walk the graveyard →
+            <Link href="/browse" className="text-sm font-medium text-accent-600 underline decoration-accent-600/30 underline-offset-4 transition hover:text-accent-500">
+              or browse startups for sale →
             </Link>
           </div>
 
@@ -115,7 +114,7 @@ export default async function Home() {
                   key={p.key}
                   className="flex min-w-[190px] flex-1 items-center gap-4 rounded-2xl border border-black/8 bg-ink-900 p-5 shadow-card"
                 >
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-bone-100 text-white">
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent-500/10 text-accent-600">
                     {p.icon}
                   </span>
                   <div>
@@ -225,7 +224,7 @@ export default async function Home() {
             },
           ].map((step) => (
             <div key={step.n} className="relative text-center">
-              <span className="relative z-[1] mx-auto grid h-12 w-12 place-items-center rounded-full bg-bone-100 font-mono text-sm font-bold text-white ring-4 ring-ink-950">
+              <span className="relative z-[1] mx-auto grid h-12 w-12 place-items-center rounded-full bg-gradient-to-b from-accent-400 to-accent-500 font-mono text-sm font-bold text-white shadow-glow ring-4 ring-ink-950">
                 {step.n}
               </span>
               <h3 className="mt-5 flex items-center justify-center gap-2 text-lg font-semibold text-bone-100">
@@ -413,9 +412,6 @@ export default async function Home() {
           ))}
         </div>
       </section>
-
-      {/* ─── 12.5 · The founder — real person, at the end ─── */}
-      <FounderNote />
 
       {/* ─── 13 · Final CTA — one action ──────────────────── */}
       <Reveal as="section" className="mx-auto max-w-4xl px-5 pb-24">

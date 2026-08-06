@@ -14,7 +14,8 @@ const base =
   "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-200 active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950";
 
 const variants = {
-  primary: "bg-bone-100 text-ink-950 shadow-card hover:bg-[#2b2c33] hover:shadow-lift",
+  primary:
+    "bg-gradient-to-b from-accent-400 to-accent-500 text-white shadow-glow hover:brightness-[1.04] hover:shadow-lift",
   ghost: "text-bone-300 hover:text-bone-100 hover:bg-ink-800",
   outline: "border border-black/12 bg-ink-900 text-bone-100 hover:border-black/25 hover:bg-ink-850 hover:shadow-card",
 };

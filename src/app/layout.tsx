@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Bricolage_Grotesque, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import { Toaster } from "sonner";
 import { Navbar } from "@/components/navbar";
@@ -8,10 +8,10 @@ import { AnnouncementPopup } from "@/components/announcement-popup";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
-// A deliberate, slightly technical pairing — Space Grotesk for everything on
-// screen, JetBrains Mono for the small labels and figures. Reads as a real
-// product built by a person, not a serif template.
-const grotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+// A distinctive, characterful pairing — Bricolage Grotesque (optically-sized,
+// clearly "designed", not a generic sans) across the whole product, with
+// JetBrains Mono for the small labels and figures.
+const grotesk = Bricolage_Grotesque({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://saasgrave.org";

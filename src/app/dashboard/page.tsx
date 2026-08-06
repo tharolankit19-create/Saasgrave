@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
-import { Plus, Eye, Tag, FileText, TrendingUp, Megaphone } from "lucide-react";
+import { Plus, Tag, FileText, TrendingUp, Megaphone } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Card, LinkButton, Badge } from "@/components/ui";
 import { money } from "@/lib/utils";
@@ -49,20 +49,22 @@ export default async function Dashboard() {
   const origin = `${host.includes("localhost") ? "http" : "https"}://${host}`;
 
   const list = startups || [];
+  const offerList = offers || [];
   const stats = {
     total: list.length,
     listed: list.filter((s) => s.status === "listed").length,
     forSale: list.filter((s) => s.for_sale).length,
-    views: list.reduce((n, s) => n + (s.view_count || 0), 0),
+    offers: offerList.filter((o: any) => o.status === "pending").length,
+    mrr: list.reduce((n, s) => n + (s.revenue_verified ? s.verified_mrr || 0 : 0), 0),
   };
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-12">
-      <div className="mb-10 flex items-end justify-between">
+      <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm text-bone-500">Welcome back,</p>
-          <h1 className="font-serif text-3xl tracking-tight text-bone-100">
-            {profile?.full_name || "Founder"}
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-bone-500">Your graveyard</p>
+          <h1 className="mt-1 text-3xl font-bold tracking-tight text-bone-100">
+            Welcome back, {profile?.full_name || "founder"}.
           </h1>
         </div>
         <LinkButton href="/sell">
@@ -71,15 +73,15 @@ export default async function Dashboard() {
       </div>
 
       {/* stats */}
-      <div className="mb-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <Stat icon={<FileText size={16} />} label="Listings" value={stats.total} />
-        <Stat icon={<TrendingUp size={16} />} label="Live" value={stats.listed} />
-        <Stat icon={<Tag size={16} />} label="For sale" value={stats.forSale} />
-        <Stat icon={<Eye size={16} />} label="Total views" value={stats.views} />
+      <div className="mb-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <Stat icon={<FileText size={16} />} label="Listings" value={String(stats.total)} />
+        <Stat icon={<Tag size={16} />} label="Open for sale" value={String(stats.forSale)} />
+        <Stat icon={<TrendingUp size={16} />} label="Pending offers" value={String(stats.offers)} highlight={stats.offers > 0} />
+        <Stat icon={<Megaphone size={16} />} label="Verified MRR" value={stats.mrr > 0 ? money(stats.mrr) : "—"} />
       </div>
 
       {/* listings */}
-      <h2 className="mb-4 text-sm font-medium uppercase tracking-widest text-bone-500">Your listings</h2>
+      <h2 className="mb-4 font-mono text-[11px] uppercase tracking-[0.18em] text-accent-600">Your listings</h2>
       {list.length === 0 ? (
         <Card className="p-12 text-center">
           <p className="font-serif text-xl text-bone-300">No listings yet.</p>
@@ -106,10 +108,9 @@ export default async function Dashboard() {
                     )}
                   </div>
                   <div className="mt-1 flex items-center gap-3 text-xs text-bone-500">
-                    <span className="inline-flex items-center gap-1">
-                      <Eye size={12} /> {s.view_count > 0 ? `${s.view_count} views` : "New"}
-                    </span>
-                    {s.status === "draft" && <span className="text-accent-600">Draft — not live yet</span>}
+                    {s.category && <span>{s.category}</span>}
+                    {(s.total_users || 0) > 0 && <span className="font-mono tabular-nums">{s.total_users.toLocaleString()} users</span>}
+                    {s.status === "draft" && <span className="font-medium text-accent-600">Draft — not live yet</span>}
                   </div>
                 </div>
                 <ListingRowActions
@@ -134,13 +135,13 @@ export default async function Dashboard() {
       )}
 
       {/* promotions / ad slots */}
-      <h2 className="mb-4 mt-12 flex items-center gap-2 text-sm font-medium uppercase tracking-widest text-bone-500">
-        <Megaphone size={14} /> Promotions
+      <h2 className="mb-4 mt-12 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-accent-600">
+        <Megaphone size={13} /> Promotions
       </h2>
       <AdSlotManager owned={ownedSlots} openSlotId={openSlotId} openCount={openSlots.length} />
 
       {/* offers */}
-      <h2 className="mb-4 mt-12 text-sm font-medium uppercase tracking-widest text-bone-500">
+      <h2 className="mb-4 mt-12 font-mono text-[11px] uppercase tracking-[0.18em] text-accent-600">
         Offers received
       </h2>
       {offers && offers.length > 0 ? (
@@ -178,12 +179,30 @@ export default async function Dashboard() {
   );
 }
 
-function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; value: number }) {
+function Stat({
+  icon,
+  label,
+  value,
+  highlight = false,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  highlight?: boolean;
+}) {
   return (
-    <Card className="p-5">
-      <div className="mb-2 flex items-center gap-2 text-bone-500">{icon}</div>
-      <div className="font-serif text-2xl text-bone-100">{value}</div>
-      <div className="text-xs text-bone-500">{label}</div>
+    <Card className={`flex items-center gap-4 p-5 ${highlight ? "ring-1 ring-accent-500/40" : ""}`}>
+      <span
+        className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${
+          highlight ? "bg-gradient-to-b from-accent-400 to-accent-500 text-white shadow-glow" : "bg-accent-500/10 text-accent-600"
+        }`}
+      >
+        {icon}
+      </span>
+      <div>
+        <div className="font-mono text-2xl font-bold leading-none tabular-nums text-bone-100">{value}</div>
+        <div className="mt-1.5 text-xs text-bone-500">{label}</div>
+      </div>
     </Card>
   );
 }
