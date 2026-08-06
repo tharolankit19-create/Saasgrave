@@ -401,10 +401,10 @@ export default async function Home() {
           ].map((p) => (
             <Card
               key={p.title}
-              className={`relative flex flex-col p-7 ${p.highlight ? "border-accent-500/40" : ""}`}
+              className={`relative flex flex-col p-7 ${p.highlight ? "shine-border border-accent-500/40 shadow-lift" : ""}`}
             >
               {p.highlight && (
-                <span className="absolute -top-2.5 left-7 rounded-full bg-accent-500 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-ink-950">
+                <span className="absolute -top-2.5 left-7 z-[3] rounded-full bg-accent-500 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white shadow-sm">
                   Most popular
                 </span>
               )}

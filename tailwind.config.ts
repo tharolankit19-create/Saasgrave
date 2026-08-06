@@ -15,12 +15,12 @@ const config: Config = {
         // wells) and `bone` names *type* (near-black → muted), so existing
         // markup keeps its intent as the theme reads light.
         ink: {
-          950: "#f7f7f9", // page — bright, cool near-white
+          950: "#f8f9fb", // page — bright, clean near-white
           900: "#ffffff", // cards / surfaces — pure white
-          850: "#f1f1f4", // hover / wells
-          800: "#eaeaef", // deeper well
-          700: "#e2e2e9", // subtle fills
-          600: "#d6d6de",
+          850: "#f2f3f6", // hover / wells
+          800: "#eceef2", // deeper well
+          700: "#e3e5ea", // subtle fills
+          600: "#d7d9e0",
         },
         bone: {
           100: "#14151a", // headings — near-black, cool
@@ -50,10 +50,10 @@ const config: Config = {
         serif: ["var(--font-serif)", "Georgia", "serif"],
       },
       boxShadow: {
-        // Crisp, layered editorial elevation for the bright white theme.
-        card: "0 1px 2px rgba(20,21,26,0.04), 0 6px 16px -8px rgba(20,21,26,0.10), 0 18px 40px -24px rgba(20,21,26,0.16)",
-        lift: "0 2px 6px rgba(20,21,26,0.06), 0 18px 50px -18px rgba(20,21,26,0.24)",
-        glow: "0 0 0 1px rgba(166,119,26,0.12), 0 20px 60px -20px rgba(166,119,26,0.28)",
+        // Crisp, layered editorial elevation — cards float cleanly on white.
+        card: "0 1px 2px rgba(20,21,26,0.05), 0 8px 20px -10px rgba(20,21,26,0.12), 0 24px 48px -28px rgba(20,21,26,0.18)",
+        lift: "0 2px 8px rgba(20,21,26,0.07), 0 26px 60px -20px rgba(20,21,26,0.28)",
+        glow: "0 0 0 1px rgba(166,119,26,0.14), 0 24px 70px -22px rgba(166,119,26,0.30)",
       },
       keyframes: {
         "fade-up": {

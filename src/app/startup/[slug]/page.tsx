@@ -235,16 +235,19 @@ export default async function StartupPage({ params }: { params: { slug: string }
 
             <div className="space-y-5 px-6 py-5">
               {s.failure_detail ? (
-                <AutopsyBlock label="What actually happened">
-                  <p className="whitespace-pre-line text-[15px] leading-relaxed text-bone-300">{s.failure_detail}</p>
-                </AutopsyBlock>
+                <div className="rounded-xl border border-black/8 border-l-[4px] border-l-accent-500 bg-ink-850 py-4 pl-5 pr-4 shadow-sm">
+                  <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-accent-600">
+                    <Skull size={13} /> What actually went wrong
+                  </div>
+                  <p className="whitespace-pre-line text-[17px] font-medium leading-relaxed text-bone-100">{s.failure_detail}</p>
+                </div>
               ) : (
                 <p className="text-sm text-bone-400">The founder hasn&apos;t written the full story yet.</p>
               )}
 
               {s.retention && (
                 <AutopsyBlock label="Why users churned / experiments tried">
-                  <p className="whitespace-pre-line text-[15px] leading-relaxed text-bone-300">{s.retention}</p>
+                  <p className="whitespace-pre-line text-[16px] leading-relaxed text-bone-200">{s.retention}</p>
                 </AutopsyBlock>
               )}
 
