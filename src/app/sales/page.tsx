@@ -61,9 +61,15 @@ export default async function SalesPage() {
                   )}
                 </div>
                 <div className="mt-0.5 flex items-center gap-3 text-xs text-bone-500">
-                  <span className="inline-flex items-center gap-1">
-                    <TrendingUp size={12} /> {money(s.claimed_mrr)}/mo
-                  </span>
+                  {s.revenue_verified && s.verified_mrr > 0 ? (
+                    <span className="inline-flex items-center gap-1 text-moss-500">
+                      <TrendingUp size={12} /> {money(s.verified_mrr)}/mo verified
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 text-bone-400">
+                      <TrendingUp size={12} /> Unverified revenue
+                    </span>
+                  )}
                   <span className="inline-flex items-center gap-1">
                     <Users size={12} /> {(s.total_users || 0).toLocaleString()}
                   </span>
@@ -77,9 +83,9 @@ export default async function SalesPage() {
                       ? `${s.price_multiplier}×`
                       : "Offers"}
                 </div>
-                {s.price_multiplier && s.claimed_mrr > 0 && (
-                  <div className="text-xs text-ember-400">
-                    ≈ {money(s.price_multiplier * s.claimed_mrr)}
+                {s.price_multiplier && s.revenue_verified && s.verified_mrr > 0 && (
+                  <div className="text-xs text-accent-600">
+                    ≈ {money(s.price_multiplier * s.verified_mrr)}
                   </div>
                 )}
               </div>

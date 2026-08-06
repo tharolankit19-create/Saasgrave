@@ -150,18 +150,22 @@ export default async function StartupPage({ params }: { params: { slug: string }
         </Card>
       )}
 
-      {/* metrics */}
+      {/* metrics — MRR only ever shows as verified; self-reported never masquerades as real */}
       <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <Metric icon={<TrendingUp size={15} />} label="Last MRR" value={money(s.claimed_mrr)} />
-        <Metric
-          icon={<BadgeCheck size={15} />}
-          label="Verified MRR"
-          value={s.revenue_verified ? money(s.verified_mrr) : "—"}
-          highlight={s.revenue_verified}
-        />
+        {s.revenue_verified && (s.verified_mrr || 0) > 0 ? (
+          <Metric icon={<BadgeCheck size={15} />} label="Verified MRR" value={`${money(s.verified_mrr)}/mo`} highlight />
+        ) : (
+          <Metric icon={<TrendingUp size={15} />} label="MRR" value="Unverified" />
+        )}
         <Metric icon={<Users size={15} />} label="Users" value={(s.total_users || 0).toLocaleString()} />
+        <Metric icon={<Globe size={15} />} label="Monthly visitors" value={(s.monthly_visitors || 0).toLocaleString()} />
         <Metric icon={<Calendar size={15} />} label="Lifespan" value={months != null ? `${months} mo` : "—"} />
       </div>
+      {!s.revenue_verified && (s.claimed_mrr || 0) > 0 && (
+        <p className="mt-3 text-xs text-bone-400">
+          Founder self-reports ≈{money(s.claimed_mrr)}/mo — <span className="text-bone-500">unverified</span>. Only provider-verified revenue gets the green badge.
+        </p>
+      )}
 
       {/* AI story mode — the narrative other founders read */}
       {s.ai_story && (
@@ -220,9 +224,9 @@ export default async function StartupPage({ params }: { params: { slug: string }
             </div>
 
             {/* the numbers a buyer wants at a glance */}
-            {(Number(s.cac) > 0 || s.retention || (s.total_users || 0) > 0 || (s.claimed_mrr || 0) > 0) && (
+            {(Number(s.cac) > 0 || s.retention || (s.total_users || 0) > 0 || (s.revenue_verified && (s.verified_mrr || 0) > 0)) && (
               <div className="grid grid-cols-2 gap-px border-b border-black/8 bg-black/8 sm:grid-cols-4">
-                {(s.claimed_mrr || 0) > 0 && <AutopsyStat label="Peak MRR" value={`${money(s.claimed_mrr)}/mo`} />}
+                {s.revenue_verified && (s.verified_mrr || 0) > 0 && <AutopsyStat label="Verified MRR" value={`${money(s.verified_mrr)}/mo`} />}
                 {(s.total_users || 0) > 0 && <AutopsyStat label="Users" value={s.total_users.toLocaleString()} />}
                 {Number(s.cac) > 0 && <AutopsyStat label="CAC" value={money(s.cac)} />}
                 {s.monthly_visitors > 0 && <AutopsyStat label="Monthly visitors" value={s.monthly_visitors.toLocaleString()} />}

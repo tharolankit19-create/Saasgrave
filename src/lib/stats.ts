@@ -55,7 +55,8 @@ export async function loadGraveyard(limit = 200): Promise<{ rows: GraveyardRow[]
 
     for (const r of rows) {
       founders.add(r.founder_id);
-      buriedMrr += r.revenue_verified ? r.verified_mrr ?? 0 : r.claimed_mrr ?? 0;
+      // Only verified revenue counts — we never aggregate self-reported MRR.
+      buriedMrr += r.revenue_verified ? r.verified_mrr ?? 0 : 0;
       users += r.total_users ?? 0;
       if (r.for_sale) forSale += 1;
     }

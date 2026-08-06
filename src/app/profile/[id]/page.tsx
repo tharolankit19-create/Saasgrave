@@ -39,7 +39,7 @@ export default async function ProfilePage({ params }: { params: { id: string } }
   const list = startups || [];
   const agg = list.reduce(
     (a, s: any) => {
-      a.mrr += s.revenue_verified ? s.verified_mrr ?? 0 : s.claimed_mrr ?? 0;
+      a.mrr += s.revenue_verified ? s.verified_mrr ?? 0 : 0; // verified only
       a.users += s.total_users ?? 0;
       a.views += s.view_count ?? 0;
       if (s.for_sale) a.forSale += 1;
@@ -129,7 +129,7 @@ export default async function ProfilePage({ params }: { params: { id: string } }
 
       {/* stat cards — TrustMRR-style */}
       <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="Peak revenue" value={agg.mrr > 0 ? `${money(agg.mrr)}/mo` : "—"} sub="across all startups" />
+        <StatCard label="Verified MRR" value={agg.mrr > 0 ? `${money(agg.mrr)}/mo` : "—"} sub="provider-verified only" />
         <StatCard label="Users reached" value={agg.users > 0 ? agg.users.toLocaleString("en-US") : "—"} sub="all-time" />
         <StatCard label="Startups buried" value={buried.toLocaleString("en-US")} sub={`${agg.forSale} for sale`} />
         <StatCard label="Profile views" value={agg.views.toLocaleString("en-US")} sub="on their listings" />
@@ -163,7 +163,7 @@ function StatCard({ label, value, sub }: { label: string; value: string; sub: st
 }
 
 function FounderStartupCard({ s }: { s: any }) {
-  const mrr = s.revenue_verified ? s.verified_mrr : s.claimed_mrr;
+  const verifiedMrr = s.revenue_verified && (s.verified_mrr ?? 0) > 0 ? s.verified_mrr : null;
   return (
     <Card className="flex flex-col p-5 transition hover:shadow-lift">
       <Link href={`/startup/${s.slug}`} className="flex items-center gap-3">
@@ -185,7 +185,7 @@ function FounderStartupCard({ s }: { s: any }) {
       </Link>
 
       <div className="mt-4 grid grid-cols-3 gap-2 border-t border-black/8 pt-4 text-center">
-        <MiniStat label="MRR" value={mrr > 0 ? money(mrr) : "$0"} />
+        <MiniStat label={verifiedMrr ? "Verified MRR" : "MRR"} value={verifiedMrr ? `${money(verifiedMrr)}` : "—"} />
         <MiniStat label="Users" value={(s.total_users || 0).toLocaleString("en-US")} />
         <MiniStat label={s.for_sale ? "Price" : "Views"} value={s.for_sale ? (s.asking_price ? money(s.asking_price) : s.price_multiplier ? `${s.price_multiplier}×` : "Offers") : (s.view_count || 0).toString()} />
       </div>
