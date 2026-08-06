@@ -28,7 +28,7 @@ export function StartupCard({ startup: s }: { startup: Startup }) {
   return (
     <Link href={`/startup/${s.slug}`} className="group block">
       <Card className="h-full overflow-hidden transition-all duration-300 hover:border-black/20 hover:bg-ink-850">
-        <div className="p-6">
+        <div className="flex h-full flex-col p-6">
           <div className="mb-4 flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
               {s.logo_url ? (
@@ -61,24 +61,24 @@ export function StartupCard({ startup: s }: { startup: Startup }) {
             {s.tagline || "No description yet."}
           </p>
 
-          <div className="flex items-center justify-between border-t border-black/8 pt-4">
-            <div className="flex items-center gap-3 text-xs text-bone-500">
+          <div className="mt-auto flex items-center justify-between gap-2 border-t border-black/8 pt-4">
+            <div className="flex items-center gap-3 font-mono text-[11px] tabular-nums leading-none text-bone-500">
               {s.revenue_verified && s.verified_mrr > 0 ? (
-                <span className="inline-flex items-center gap-1 text-moss-400">
-                  <BadgeCheck size={13} /> {money(s.verified_mrr)}/mo
+                <span className="inline-flex items-center gap-1.5 text-moss-500">
+                  <BadgeCheck size={12} className="shrink-0" /> {money(s.verified_mrr)}/mo
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1">
-                  <TrendingUp size={13} /> MRR n/a
+                <span className="inline-flex items-center gap-1.5">
+                  <TrendingUp size={12} className="shrink-0" /> MRR —
                 </span>
               )}
               {(s.total_users ?? 0) > 0 && (
-                <span className="inline-flex items-center gap-1">
-                  <Users size={13} /> {compact(s.total_users as number)} users
+                <span className="inline-flex items-center gap-1.5">
+                  <Users size={12} className="shrink-0" /> {compact(s.total_users as number)}
                 </span>
               )}
             </div>
-            <div className="text-sm font-medium text-bone-100">
+            <span className="shrink-0 rounded-full border border-black/10 bg-ink-850 px-2.5 py-1 text-[11px] font-semibold leading-none text-bone-100">
               {s.for_sale
                 ? s.asking_price
                   ? money(s.asking_price)
@@ -86,7 +86,7 @@ export function StartupCard({ startup: s }: { startup: Startup }) {
                     ? `${s.price_multiplier}× rev`
                     : "Open to offers"
                 : "Not for sale"}
-            </div>
+            </span>
           </div>
         </div>
       </Card>
