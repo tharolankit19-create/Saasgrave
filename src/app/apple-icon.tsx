@@ -5,7 +5,7 @@ export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 
 export default function AppleIcon() {
-  const gold = "#c79a3a";
+  const gold = "#f2efe8"; // no colour — clean bone cross on the dark tile
   const bone = "#f2efe8";
   return new ImageResponse(
     (

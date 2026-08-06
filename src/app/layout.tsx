@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope, Fraunces } from "next/font/google";
+import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import { Toaster } from "sonner";
 import { Navbar } from "@/components/navbar";
@@ -8,15 +8,11 @@ import { AnnouncementPopup } from "@/components/announcement-popup";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
-// Editorial pairing: a warm high-contrast serif for display, a clean modern
-// grotesque for everything else. Distinct enough to not read as a template.
-const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-serif",
-  display: "swap",
-  axes: ["opsz", "SOFT", "WONK"],
-});
+// A deliberate, slightly technical pairing — Space Grotesk for everything on
+// screen, JetBrains Mono for the small labels and figures. Reads as a real
+// product built by a person, not a serif template.
+const grotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://saasgrave.org";
 
@@ -54,7 +50,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${manrope.variable} ${fraunces.variable}`}>
+    <html lang="en" className={`${grotesk.variable} ${mono.variable}`}>
       <body className="min-h-screen bg-ink-950 font-sans antialiased">
         {/* Structured data — lets Google show the brand name + logo, and
             understand the site's search action. Logo points at the generated icon. */}

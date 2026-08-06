@@ -69,8 +69,10 @@ export default async function Image({ params }: { params: { slug: string } }) {
     metric = { label: "Users left behind", value: (s!.total_users as number).toLocaleString() };
   }
 
-  const gold = "#c79a3a";
-  const bone = "#e9e6df";
+  const ink = "#14151a";
+  const paper = "#f6f5f1";
+  const muted = "#5b5c63";
+  const mono = "ui-monospace, SFMono-Regular, Menlo, monospace";
 
   return new ImageResponse(
     (
@@ -82,41 +84,29 @@ export default async function Image({ params }: { params: { slug: string } }) {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "radial-gradient(120% 120% at 50% 0%, #14161b 0%, #0a0b0e 60%, #060708 100%)",
+          background: paper,
+          color: ink,
           padding: 56,
           position: "relative",
         }}
       >
-        {/* engraved frame */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 26,
-            border: `2px solid ${gold}66`,
-            borderRadius: 24,
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            inset: 36,
-            border: `1px solid ${gold}33`,
-            borderRadius: 18,
-          }}
-        />
+        {/* certificate frame */}
+        <div style={{ position: "absolute", inset: 24, border: `1.5px solid ${ink}` }} />
+        <div style={{ position: "absolute", inset: 34, border: `1px solid ${ink}22` }} />
 
         <div
           style={{
             display: "flex",
             alignItems: "center",
             gap: 12,
-            color: gold,
+            fontFamily: mono,
             fontSize: 22,
             letterSpacing: 8,
             textTransform: "uppercase",
+            color: muted,
           }}
         >
-          <span style={{ fontSize: 30, fontWeight: 700 }}>†</span> In loving memory
+          Certificate of death
         </div>
 
         <div
@@ -124,7 +114,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
             marginTop: 26,
             display: "flex",
             textAlign: "center",
-            color: bone,
+            color: ink,
             fontSize: nameSize,
             fontWeight: 700,
             letterSpacing: -2,
@@ -135,40 +125,15 @@ export default async function Image({ params }: { params: { slug: string } }) {
           {name}
         </div>
 
-        <div style={{ marginTop: 20, color: "#9aa0ab", fontSize: 30, letterSpacing: 2 }}>{lifespan}</div>
+        <div style={{ marginTop: 18, fontFamily: mono, color: muted, fontSize: 28, letterSpacing: 2 }}>{lifespan}</div>
 
-        <div
-          style={{
-            marginTop: 28,
-            display: "flex",
-            gap: 12,
-            alignItems: "center",
-          }}
-        >
+        <div style={{ marginTop: 26, display: "flex", gap: 12, alignItems: "center" }}>
           {s?.category ? (
-            <div
-              style={{
-                display: "flex",
-                color: "#c8ccd3",
-                fontSize: 24,
-                border: "1px solid #2a2e36",
-                borderRadius: 999,
-                padding: "8px 20px",
-              }}
-            >
+            <div style={{ display: "flex", color: ink, fontSize: 22, border: `1px solid ${ink}55`, padding: "7px 18px" }}>
               {s.category}
             </div>
           ) : null}
-          <div
-            style={{
-              display: "flex",
-              color: pivoted ? gold : "#c8ccd3",
-              fontSize: 24,
-              border: `1px solid ${pivoted ? gold + "55" : "#2a2e36"}`,
-              borderRadius: 999,
-              padding: "8px 20px",
-            }}
-          >
+          <div style={{ display: "flex", color: ink, fontSize: 22, border: `1px solid ${ink}55`, padding: "7px 18px" }}>
             {pivoted ? "Pivoted" : "Shut down"}
           </div>
         </div>
@@ -178,7 +143,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
             marginTop: 30,
             display: "flex",
             textAlign: "center",
-            color: "#aeb4bf",
+            color: "#3a3b42",
             fontSize: 30,
             fontStyle: "italic",
             maxWidth: 900,
@@ -189,9 +154,9 @@ export default async function Image({ params }: { params: { slug: string } }) {
         </div>
 
         {metric ? (
-          <div style={{ marginTop: 24, display: "flex", alignItems: "baseline", gap: 12 }}>
-            <span style={{ color: gold, fontSize: 38, fontWeight: 700 }}>{metric.value}</span>
-            <span style={{ color: "#7d828c", fontSize: 23 }}>{metric.label}</span>
+          <div style={{ marginTop: 22, display: "flex", alignItems: "baseline", gap: 12 }}>
+            <span style={{ fontFamily: mono, color: ink, fontSize: 36, fontWeight: 700 }}>{metric.value}</span>
+            <span style={{ color: muted, fontSize: 22 }}>{metric.label}</span>
           </div>
         ) : null}
 
@@ -202,15 +167,17 @@ export default async function Image({ params }: { params: { slug: string } }) {
             display: "flex",
             width: "100%",
             justifyContent: "space-between",
-            paddingLeft: 30,
-            paddingRight: 30,
-            color: "#6b7078",
-            fontSize: 24,
+            paddingLeft: 34,
+            paddingRight: 34,
+            fontFamily: mono,
+            fontSize: 20,
             letterSpacing: 3,
+            textTransform: "uppercase",
+            color: muted,
           }}
         >
-          <span style={{ color: gold, letterSpacing: 4 }}>SAASGRAVE.ORG</span>
-          <span>Rest in production.</span>
+          <span style={{ color: ink }}>saasgrave.org</span>
+          <span>Rest in production</span>
         </div>
       </div>
     ),

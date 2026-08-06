@@ -27,11 +27,12 @@ function status(s: LedgerStartup) {
   return { label: "Resting", tone: "text-bone-400 border-black/10 bg-black/[0.02]" };
 }
 
-// Medal styling for the podium.
+// Podium ranks — monochrome. The top grave is solid ink; the rest step down
+// through greys. No colour, just weight.
 function rankStyle(rank: number) {
-  if (rank === 1) return "bg-[#e8c766] text-[#5a4510] shadow-[0_2px_8px_-2px_rgba(180,140,40,0.6)]";
-  if (rank === 2) return "bg-[#d7d9dd] text-[#4a4d52]";
-  if (rank === 3) return "bg-[#e2b487] text-[#5c3b1e]";
+  if (rank === 1) return "bg-bone-100 text-white";
+  if (rank === 2) return "bg-bone-400 text-white";
+  if (rank === 3) return "bg-bone-500 text-white";
   return "bg-ink-850 text-bone-400";
 }
 
