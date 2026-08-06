@@ -30,9 +30,9 @@ function status(s: LedgerStartup) {
 // Podium ranks — monochrome. The top grave is solid ink; the rest step down
 // through greys. No colour, just weight.
 function rankStyle(rank: number) {
-  if (rank === 1) return "bg-bone-100 text-white";
-  if (rank === 2) return "bg-bone-400 text-white";
-  if (rank === 3) return "bg-bone-500 text-white";
+  if (rank === 1) return "bg-gradient-to-b from-accent-400 to-accent-500 text-white shadow-glow";
+  if (rank === 2) return "bg-bone-100 text-white";
+  if (rank === 3) return "bg-bone-400 text-white";
   return "bg-ink-850 text-bone-400";
 }
 

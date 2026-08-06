@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --font-sans: "Space Grotesk", system-ui, -apple-system, sans-serif;
+  --font-sans: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
@@ -12,8 +12,8 @@ html {
 }
 
 body {
-  background-color: #f8f9fb;
-  color: #14151a;
+  background-color: #faf8f4;
+  color: #1a1712;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   font-feature-settings: "cv11", "ss01";
@@ -21,8 +21,8 @@ body {
 
 /* Crisp, premium selection */
 ::selection {
-  background: rgba(20, 21, 26, 0.14);
-  color: #14151a;
+  background: rgba(242, 103, 30, 0.22);
+  color: #1a1712;
 }
 
 /* Thin, unobtrusive scrollbars */
@@ -137,9 +137,9 @@ body {
   background: linear-gradient(
     110deg,
     transparent 20%,
-    rgba(20, 21, 26, 0.28) 42%,
-    rgba(20, 21, 26, 0.6) 50%,
-    rgba(20, 21, 26, 0.28) 58%,
+    rgba(242, 103, 30, 0.5) 42%,
+    rgba(251, 139, 61, 0.95) 50%,
+    rgba(242, 103, 30, 0.5) 58%,
     transparent 80%
   );
   background-size: 250% 100%;
