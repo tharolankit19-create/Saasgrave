@@ -2,7 +2,6 @@ import Link from "next/link";
 import {
   ArrowRight,
   Store,
-  Search,
   ShieldCheck,
   Tag,
   BookOpen,
@@ -12,36 +11,27 @@ import {
   Check,
   X,
   Flame,
+  Skull,
   Heart,
   LineChart,
   Rocket,
   Megaphone,
 } from "lucide-react";
 import { LinkButton, Eyebrow, Card } from "@/components/ui";
-import { LinkedInIcon } from "@/components/brand-icons";
-import { GraveyardSearch } from "@/components/graveyard-search";
-import { CountUp } from "@/components/count-up";
 import { LedgerRow } from "@/components/ledger-row";
-import { PromoSlots } from "@/components/promo-slots";
 import { FounderNote } from "@/components/founder-note";
-import { LiveFomoBar } from "@/components/live-fomo";
 import { Reveal, Marquee } from "@/components/motion";
 import { loadGraveyard } from "@/lib/stats";
 import { money } from "@/lib/utils";
+
+function compact(n: number) {
+  return Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(n);
+}
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const { rows, stats } = await loadGraveyard(200);
-
-  const searchItems = rows.map((s) => ({
-    slug: s.slug,
-    name: s.name,
-    category: s.category,
-    tagline: s.tagline,
-    for_sale: s.for_sale,
-    logo_url: s.logo_url,
-  }));
 
   const ledger = rows.slice(0, 12);
   const maxViews = Math.max(1, ...ledger.map((s) => s.view_count ?? 0));
@@ -65,41 +55,18 @@ export default async function Home() {
             The resting place for dead &amp; zero-revenue startups
           </div>
 
-          <h1 className="font-serif text-[2.6rem] leading-[1.04] tracking-tight text-bone-100 sm:text-6xl">
+          <h1 className="text-[2.7rem] font-bold leading-[0.98] tracking-tight text-bone-100 sm:text-[5rem]">
             Your dead startup
             <br className="hidden sm:block" /> is still worth{" "}
-            <span className="underline decoration-accent-500/70 decoration-[3px] underline-offset-[6px]">money</span>.
+            <span className="underline decoration-bone-100 decoration-4 underline-offset-[8px]">money</span>.
           </h1>
 
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-bone-300 sm:text-lg">
-            9 in 10 startups die — and their code, domain, users and lessons get deleted with them.
-            List yours in 3 minutes. Keep it as a public post-mortem, or sell it and keep 100%.
+          <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-bone-400">
+            Nine out of ten startups die. I built one place for all of them — bury yours here with the
+            story intact, or hand it to someone who&apos;ll bring it back.
           </p>
 
-          {/* Live momentum — real, current, urgency without fakes. */}
-          <div className="mt-7 flex justify-center">
-            <LiveFomoBar />
-          </div>
-
-          {/* Show the product before explaining it — visitors search first. */}
-          <div className="mt-8">
-            <GraveyardSearch items={searchItems} />
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs">
-              <span className="text-bone-500">Try:</span>
-              {["AI", "Chrome extension", "For sale", "SaaS", "No-code"].map((c) => (
-                <Link
-                  key={c}
-                  href={`/browse?q=${encodeURIComponent(c)}`}
-                  className="rounded-full border border-black/8 bg-ink-900 px-3 py-1 text-bone-400 shadow-sm transition hover:text-bone-100 hover:shadow-card"
-                >
-                  {c}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* One clear next step (rule #22) — a single primary action, and a
-              quiet secondary link for browsers. */}
+          {/* One clear next step — a single primary action, quiet secondary. */}
           <div className="mt-9 flex flex-col items-center justify-center gap-4">
             <LinkButton href="/sell" size="lg">
               List my dead startup — free <ArrowRight size={17} />
@@ -108,21 +75,22 @@ export default async function Home() {
               or just walk the graveyard →
             </Link>
           </div>
-          <p className="mt-5 font-mono text-[11px] uppercase tracking-wider text-bone-500">
-            Free to list · $9 to sell · 0% commission
+
+          {/* Real proof, in one mono line — no fakes. */}
+          <p className="mt-8 font-mono text-[11px] uppercase tracking-[0.15em] text-bone-500">
+            {hasListings ? (
+              <>
+                {stats.graves} buried · {stats.founders} founders · first 50 free · 0% commission
+              </>
+            ) : (
+              <>Free to list · $9 to sell · 0% commission</>
+            )}
           </p>
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] text-bone-500">
-            <span className="inline-flex items-center gap-1.5">
-              <LinkedInIcon size={12} className="text-[#0A66C2]" /> Launched in public on LinkedIn
-            </span>
-            <span className="text-bone-500/40">·</span>
-            <span>Built by a 16-year-old founder who buried 4 of his own</span>
-          </div>
         </div>
 
         {/* Moving tape — the graveyard, drifting past. */}
         <div className="relative mx-auto max-w-6xl px-5 pb-16">
-          <p className="mb-3 text-center text-[11px] font-medium uppercase tracking-[0.2em] text-bone-500">
+          <p className="mb-3 text-center font-mono text-[10px] uppercase tracking-[0.24em] text-bone-500">
             {hasListings ? "Recently laid to rest" : "What every dead startup leaves behind"}
           </p>
           <Marquee items={marqueeItems} />
@@ -131,26 +99,34 @@ export default async function Home() {
 
       {/* ─── 2 · Live proof, in real numbers ──────────────── */}
       {hasListings && (() => {
-        // Only ever surface real, non-zero stats — a "0 up for sale" cell reads
-        // like a dead marketplace, so we simply don't show a stat until it's true.
-        const cells: { key: string; node: JSX.Element }[] = [
-          { key: "graves", node: <StatCell value={stats.graves} label="startups at rest" /> },
-          { key: "founders", node: <StatCell value={stats.founders} label="founders joined" /> },
+        // Only ever surface real, non-zero stats — no "0 up for sale" deadness.
+        const pills: { key: string; icon: JSX.Element; value: string; label: string }[] = [
+          { key: "graves", icon: <Skull size={16} />, value: String(stats.graves), label: "startups at rest" },
+          { key: "founders", icon: <Users size={16} />, value: String(stats.founders), label: "founders joined" },
         ];
-        if (stats.buriedMrr > 0) cells.push({ key: "mrr", node: <StatCellRaw k={money(stats.buriedMrr)} label="verified revenue buried" /> });
-        if (stats.users > 0) cells.push({ key: "users", node: <StatCell value={stats.users} label="users left behind" /> });
-        if (stats.forSale > 0) cells.push({ key: "sale", node: <StatCell value={stats.forSale} label="open to offers" /> });
-        const show = cells.slice(0, 4);
-        const cols = show.length >= 4 ? "sm:grid-cols-4" : show.length === 3 ? "sm:grid-cols-3" : "sm:grid-cols-2";
+        if (stats.buriedMrr > 0) pills.push({ key: "mrr", icon: <ShieldCheck size={16} />, value: money(stats.buriedMrr), label: "verified revenue buried" });
+        if (stats.users > 0) pills.push({ key: "users", icon: <Heart size={16} />, value: compact(stats.users), label: "users left behind" });
+        if (stats.forSale > 0) pills.push({ key: "sale", icon: <Tag size={16} />, value: String(stats.forSale), label: "open to offers" });
         return (
           <section className="mx-auto max-w-5xl px-5 pb-24">
-            <div className={`grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-black/8 bg-black/8 ${cols}`}>
-              {show.map((c) => (
-                <div key={c.key}>{c.node}</div>
+            <div className="flex flex-wrap justify-center gap-4">
+              {pills.slice(0, 4).map((p) => (
+                <div
+                  key={p.key}
+                  className="flex min-w-[190px] flex-1 items-center gap-4 rounded-2xl border border-black/8 bg-ink-900 p-5 shadow-card"
+                >
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-bone-100 text-white">
+                    {p.icon}
+                  </span>
+                  <div>
+                    <div className="font-mono text-2xl font-bold leading-none tabular-nums text-bone-100">{p.value}</div>
+                    <div className="mt-1.5 text-xs text-bone-500">{p.label}</div>
+                  </div>
+                </div>
               ))}
             </div>
-            <p className="mt-3 text-center text-xs text-bone-500">
-              Live from real listings — not a single seeded or fake startup.
+            <p className="mt-4 text-center font-mono text-[11px] uppercase tracking-wider text-bone-500">
+              Live from real listings — not one seeded or fake startup
             </p>
           </section>
         );
@@ -171,9 +147,6 @@ export default async function Home() {
           doesn&apos;t have to.
         </p>
       </Reveal>
-
-      {/* ─── 3.5 · The founder, for real — the anti-"AI slop" ─ */}
-      <FounderNote />
 
       {/* ─── 4 · The Ledger — real listings as proof ──────── */}
       <section className="mx-auto max-w-4xl px-5 pb-24">
@@ -220,42 +193,46 @@ export default async function Home() {
         )}
       </section>
 
-      {/* ─── 5 · How it works — one screen, three steps ───── */}
-      <section className="mx-auto max-w-6xl px-5 pb-24">
-        <div className="mb-12 text-center">
+      {/* ─── 5 · How it works — numbered stepper ──────────── */}
+      <section className="mx-auto max-w-5xl px-5 pb-24">
+        <div className="mb-14 text-center">
           <Eyebrow>How it works</Eyebrow>
-          <h2 className="font-serif text-3xl tracking-tight text-bone-100 sm:text-4xl">
-            Dead repo to done deal in 3 minutes
+          <h2 className="text-4xl font-bold tracking-tight text-bone-100 sm:text-5xl">
+            Dead repo to done deal in 3 minutes.
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-bone-500">
-            You stay in control the whole way. Nothing goes live until you say so.
-          </p>
         </div>
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="relative grid gap-10 md:grid-cols-3">
+          {/* connector line across the numbers on desktop */}
+          <div className="pointer-events-none absolute left-[16.66%] right-[16.66%] top-6 hidden border-t border-dashed border-black/15 md:block" />
           {[
             {
-              icon: <BookOpen size={18} />,
-              title: "1 · Tell the story",
-              body: "Name, logo, screenshots, metrics, and an honest account of what happened. Detail is what makes buyers trust it.",
+              n: "01",
+              icon: <BookOpen size={16} />,
+              title: "Tell the story",
+              body: "Name, logo, screenshots, real metrics, and an honest account of what actually went wrong. Detail is what makes buyers trust it.",
             },
             {
-              icon: <LineChart size={18} />,
-              title: "2 · Verify & publish",
-              body: "Optionally connect a read-only Stripe key to prove real revenue. Publishing is completely free.",
+              n: "02",
+              icon: <LineChart size={16} />,
+              title: "Verify & publish",
+              body: "Optionally connect a read-only revenue key to prove real MRR. Publishing is completely free — nothing goes live until you say so.",
             },
             {
-              icon: <Tag size={18} />,
-              title: "3 · Sell or keep as a record",
-              body: "Open it for sale for a one-time $9, price it, take offers — or leave it up purely as a public post-mortem.",
+              n: "03",
+              icon: <Tag size={16} />,
+              title: "Sell or keep the record",
+              body: "Open it for sale for a one-time $9, name your price, take offers — or leave it up purely as a public post-mortem.",
             },
           ].map((step) => (
-            <Card key={step.title} className="p-7">
-              <span className="mb-5 grid h-10 w-10 place-items-center rounded-xl border border-black/10 text-accent-400">
-                {step.icon}
+            <div key={step.n} className="relative text-center">
+              <span className="relative z-[1] mx-auto grid h-12 w-12 place-items-center rounded-full bg-bone-100 font-mono text-sm font-bold text-white ring-4 ring-ink-950">
+                {step.n}
               </span>
-              <h3 className="mb-2 font-medium text-bone-100">{step.title}</h3>
-              <p className="text-sm leading-relaxed text-bone-500">{step.body}</p>
-            </Card>
+              <h3 className="mt-5 flex items-center justify-center gap-2 text-lg font-semibold text-bone-100">
+                <span className="text-bone-400">{step.icon}</span> {step.title}
+              </h3>
+              <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-bone-500">{step.body}</p>
+            </div>
           ))}
         </div>
       </section>
@@ -285,9 +262,6 @@ export default async function Home() {
           ))}
         </div>
       </section>
-
-      {/* ─── 8 · Premium placements (real money surface) ──── */}
-      <PromoSlots />
 
       {/* ─── 9 · Comparison — why here, not elsewhere ─────── */}
       <section className="mx-auto max-w-4xl px-5 pb-24">
@@ -440,6 +414,9 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* ─── 12.5 · The founder — real person, at the end ─── */}
+      <FounderNote />
+
       {/* ─── 13 · Final CTA — one action ──────────────────── */}
       <Reveal as="section" className="mx-auto max-w-4xl px-5 pb-24">
         <Card className="relative overflow-hidden bg-bone-100 p-10 text-center sm:p-16">
@@ -487,24 +464,6 @@ export default async function Home() {
           </p>
         </div>
       </footer>
-    </div>
-  );
-}
-
-function StatCell({ value, label }: { value: number; label: string }) {
-  return (
-    <div className="bg-ink-900 p-6 text-center sm:p-7">
-      <CountUp value={value} className="font-serif text-3xl text-bone-100 sm:text-4xl" />
-      <div className="mt-1.5 text-xs text-bone-500 sm:text-sm">{label}</div>
-    </div>
-  );
-}
-
-function StatCellRaw({ k, label }: { k: string; label: string }) {
-  return (
-    <div className="bg-ink-900 p-6 text-center sm:p-7">
-      <div className="font-serif text-3xl text-bone-100 sm:text-4xl">{k}</div>
-      <div className="mt-1.5 text-xs text-bone-500 sm:text-sm">{label}</div>
     </div>
   );
 }
