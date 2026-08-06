@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Megaphone, ArrowRight, Zap } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Eyebrow } from "@/components/ui";
+import { SpotlightCard } from "@/components/spotlight-card";
 
 // The premium-placement pitch, learned from how canivibecodeit sells its
 // sponsor rail: a fixed number of slots, always visible, scarcity stated in
@@ -25,7 +26,7 @@ export async function PromoSlots() {
 
   return (
     <section className="mx-auto max-w-5xl px-5 pb-24">
-      <div className="relative overflow-hidden rounded-3xl border border-accent-500/25 bg-gradient-to-b from-ink-850 to-ink-900 p-8 sm:p-12">
+      <SpotlightCard className="relative overflow-hidden rounded-3xl border-accent-500/25 bg-gradient-to-b from-ink-850 to-ink-900 p-8 sm:p-12">
         <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-accent-600/15 blur-3xl" />
         <div className="relative grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:items-center">
           <div>
@@ -87,7 +88,7 @@ export async function PromoSlots() {
             })}
           </div>
         </div>
-      </div>
+      </SpotlightCard>
     </section>
   );
 }

@@ -26,6 +26,7 @@ import { CountUp } from "@/components/count-up";
 import { LedgerRow } from "@/components/ledger-row";
 import { GoogleButton } from "@/components/google-button";
 import { PromoSlots } from "@/components/promo-slots";
+import { SpotlightCard } from "@/components/spotlight-card";
 import { LiveFomoBar } from "@/components/live-fomo";
 import { Reveal, Aurora, Marquee } from "@/components/motion";
 import { loadGraveyard } from "@/lib/stats";
@@ -46,6 +47,7 @@ export default async function Home() {
   }));
 
   const ledger = rows.slice(0, 12);
+  const maxViews = Math.max(1, ...ledger.map((s) => s.view_count ?? 0));
   const hasListings = rows.length > 0;
 
   // The moving tape under the hero. Real names when we have them; otherwise a
@@ -176,15 +178,16 @@ export default async function Home() {
         </div>
 
         {hasListings ? (
-          <div className="overflow-hidden rounded-2xl border border-black/8 bg-ink-900/50">
-            <div className="hidden grid-cols-[2.5rem_1fr_9rem_auto] gap-4 border-b border-black/8 px-6 py-3 text-[11px] font-medium uppercase tracking-[0.16em] text-bone-500 sm:grid">
-              <span>#</span>
+          <div className="overflow-hidden rounded-2xl border border-black/8 bg-ink-900 shadow-card">
+            <div className="hidden grid-cols-[2.25rem_1fr_7rem_8rem_auto] gap-4 border-b border-black/8 bg-ink-850/50 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-bone-400 sm:grid">
+              <span>Rank</span>
               <span>Startup</span>
               <span>Status</span>
+              <span className="text-right">MRR</span>
               <span className="text-right">Interest</span>
             </div>
             {ledger.map((s, i) => (
-              <LedgerRow key={s.slug} s={s} rank={i + 1} />
+              <LedgerRow key={s.slug} s={s} rank={i + 1} maxViews={maxViews} />
             ))}
           </div>
         ) : (
@@ -271,7 +274,7 @@ export default async function Home() {
 
       {/* ─── 7 · Why sign up — conversion core, one click ─── */}
       <section className="relative mx-auto max-w-6xl px-5 pb-24">
-        <Card className="relative overflow-hidden p-8 sm:p-12">
+        <SpotlightCard className="relative overflow-hidden p-8 sm:p-12">
           <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-accent-600/10 blur-3xl" />
           <div className="relative grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-center">
             <div>
@@ -311,7 +314,7 @@ export default async function Home() {
               ))}
             </div>
           </div>
-        </Card>
+        </SpotlightCard>
       </section>
 
       {/* ─── 8 · Premium placements (real money surface) ──── */}
@@ -452,7 +455,7 @@ export default async function Home() {
           {[
             { q: "Is it really free to list?", a: "Yes — listing a startup is free forever. You only pay if you open it for sale ($9 once) or book a promo slot ($49 / 30 days). We never take commission on a sale." },
             { q: "Do I need an account to look?", a: "No — browsing and search are open to everyone. You only need a free account to make offers, save a watchlist, get death alerts, or list your own startup." },
-            { q: "How is revenue verified?", a: "You paste a restricted, read-only Stripe key. We calculate MRR from active subscriptions and discard the key immediately. Verified listings get a green badge." },
+            { q: "How is revenue verified?", a: "You connect a restricted, read-only key from Stripe, Paddle, Lemon Squeezy or Dodo. We calculate MRR from active subscriptions and discard the key immediately. Only verified listings get the green badge — self-reported MRR shows as unverified." },
             { q: "Who buys dead startups?", a: "Operators and indie hackers who want a head start — a working codebase, a domain, existing users, or simply a market to pivot into." },
             { q: "What if my startup made $0?", a: "That's exactly what Saasgrave is for. Zero-revenue products still have code, a domain, and a lesson worth money to the right buyer." },
             { q: "How does the sale actually happen?", a: "Buyers make an offer through the listing. You accept, reject, or counter, then handle the transfer directly. Escrow and assisted transfers are coming next." },
