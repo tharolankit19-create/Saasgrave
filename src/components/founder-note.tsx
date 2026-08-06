@@ -4,7 +4,7 @@ import { XIcon } from "@/components/brand-icons";
 // The single most "un-AI" thing on the site: a real 16-year-old founder, in his
 // own voice, with his own face. No poetry, no "we", no polish — just the person
 // who built it. Drop a real photo at FOUNDER_PHOTO and it replaces the monogram.
-const FOUNDER_PHOTO = ""; // e.g. "/ankit.jpg" in /public, or a full URL
+const FOUNDER_PHOTO = "/founder.jpg";
 
 export function FounderNote() {
   return (
