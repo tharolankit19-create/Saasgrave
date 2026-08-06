@@ -323,6 +323,121 @@ export const GUIDES: Guide[] = [
       secondaryHref: "/browse",
     },
   },
+  {
+    slug: "how-much-is-my-failed-startup-worth",
+    title: "How much is my failed startup actually worth?",
+    metaTitle: "How Much Is My Failed Startup Worth? (Valuation Guide)",
+    description:
+      "A practical guide to valuing a failed or zero-revenue startup — what buyers actually pay for code, domains, users and revenue, and how to price yours to sell.",
+    keywords: [
+      "how much is my startup worth",
+      "value a failed startup",
+      "sell a failed startup price",
+      "failed startup valuation",
+      "how to price a side project",
+    ],
+    updated: "2026-08-06",
+    readMins: 6,
+    intro: [
+      "A failed startup rarely sells on a revenue multiple, because there usually isn't much revenue. It sells on what a buyer can skip building — a working codebase, an aged domain, real users, and a clear post-mortem.",
+      "This guide breaks down what each of those is worth in practice, and how to set a price that actually gets an offer instead of silence.",
+    ],
+    sections: [
+      {
+        h: "What buyers actually pay for",
+        p: ["Value comes from time saved and risk removed. Price each asset by what it would cost a buyer to reproduce it."],
+        list: [
+          "Code: a shipped product is worth weeks-to-months of dev time — the single biggest line item for zero-revenue sales.",
+          "Domain: an aged, brandable, indexed domain carries standalone value.",
+          "Users & email list: existing signups and traction shorten a buyer's zero-to-one.",
+          "Revenue: if you can verify even small MRR, buyers will pay a multiple on top — verification is what unlocks it.",
+        ],
+      },
+      {
+        h: "A simple way to price it",
+        p: [
+          "Start from replacement cost, not sunk cost. Nobody pays for the two years you spent — they pay for what they get to skip. Add a modest multiple only on verified revenue.",
+          "Zero-revenue products commonly change hands from a few hundred to a few thousand dollars. Priced honestly, they sell; priced on ego, they sit.",
+        ],
+      },
+      {
+        h: "How to raise your price legitimately",
+        p: [
+          "Verify your revenue with a read-only key so the MRR is provable. Write a clear post-mortem so the buyer trusts what they're inheriting. Package the domain, code and users together. Each of these raises offers without inventing anything.",
+        ],
+      },
+    ],
+    faqs: [
+      { q: "Can I sell a startup that makes $0?", a: "Yes. Zero-revenue products still have code, a domain, users and lessons — all of which have real replacement value to the right buyer." },
+      { q: "What multiple do failed startups sell for?", a: "With little or no revenue, price is based on replacement value, not a multiple. Where verifiable revenue exists, small multiples apply on top." },
+      { q: "How do I make my listing sell faster?", a: "Verify revenue, write an honest post-mortem, and price from replacement cost. Listing on Saasgrave is free; opening it for sale is a one-time $9 with 0% commission." },
+    ],
+    cta: {
+      heading: "Find out what yours is worth — list it free.",
+      body: "Publish your startup as a post-mortem in about 3 minutes, then open it for sale for a one-time $9. 0% commission.",
+      primaryLabel: "List my startup",
+      primaryHref: "/sell",
+      secondaryLabel: "See what others priced",
+      secondaryHref: "/sales",
+    },
+  },
+  {
+    slug: "startup-graveyard-where-dead-startups-go",
+    title: "The startup graveyard: where dead startups go (and why they're worth money)",
+    metaTitle: "Startup Graveyard — Where Dead Startups Go | Saasgrave",
+    description:
+      "Every year most startups die and get deleted. A startup graveyard preserves the code, domains, users and lessons — and turns dead products into something a new founder can revive.",
+    keywords: [
+      "startup graveyard",
+      "dead startups",
+      "startup obituary",
+      "where do dead startups go",
+      "revive a dead startup",
+    ],
+    updated: "2026-08-06",
+    readMins: 5,
+    intro: [
+      "Nine in ten startups die. Most disappear quietly — the repo goes private, the domain lapses, the users scatter, and years of real work vanish.",
+      "A startup graveyard is the opposite of that erasure: a public place where a dead product is laid to rest with its story intact, so it can be studied, remembered, or revived by someone else.",
+    ],
+    sections: [
+      {
+        h: "Why dead startups shouldn't be deleted",
+        p: ["A dead product is not worthless — it's unfinished. Deleting it destroys value that a different founder, with different timing, could use."],
+        list: [
+          "The code already works and shipped.",
+          "The domain is aged and often indexed.",
+          "The users and email list are real traction.",
+          "The post-mortem is a map of exactly what not to repeat.",
+        ],
+      },
+      {
+        h: "What a graveyard does that a delete button can't",
+        p: [
+          "It keeps the record public, so the lessons help other founders. It keeps the assets alive, so a buyer can pick them up. And it gives the founder a dignified close instead of a silent deletion.",
+        ],
+      },
+      {
+        h: "How revival actually happens",
+        p: [
+          "A buyer browses the graveyard for a codebase, a domain, or a market to pivot into. They make an offer, take over the assets, and give the product a second life — often succeeding where the timing had simply been wrong the first time.",
+        ],
+      },
+    ],
+    faqs: [
+      { q: "What is a startup graveyard?", a: "A public marketplace and record of failed and zero-revenue startups, where founders lay their products to rest with the story, metrics and assets intact — and buyers can revive them." },
+      { q: "Can a dead startup be revived?", a: "Often, yes. Many products fail on timing, not on the idea. A new owner with the working code, domain and users can restart far ahead of zero." },
+      { q: "Where can I list or browse dead startups?", a: "On Saasgrave. Listing is free forever; browsing is open to everyone." },
+    ],
+    cta: {
+      heading: "Lay yours to rest — or revive someone else's.",
+      body: "List a dead startup free in about 3 minutes, or browse the graveyard for a product to bring back.",
+      primaryLabel: "List my startup",
+      primaryHref: "/sell",
+      secondaryLabel: "Walk the graveyard",
+      secondaryHref: "/browse",
+    },
+  },
 ];
 
 export function getGuide(slug: string) {

@@ -24,8 +24,8 @@ export default async function BrowsePage({
   if (searchParams.sale === "1") query = query.eq("for_sale", true);
 
   switch (searchParams.sort) {
-    case "views":
-      query = query.order("view_count", { ascending: false });
+    case "users":
+      query = query.order("total_users", { ascending: false, nullsFirst: false });
       break;
     case "revenue":
       query = query.order("verified_mrr", { ascending: false });

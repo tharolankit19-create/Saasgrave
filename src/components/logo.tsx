@@ -1,24 +1,35 @@
 import { cn } from "@/lib/utils";
 
-// Saasgrave mark — a solid headstone with a gold cross and a small flame at the
-// crown (echoing the site's ember accent), resting on a ground line. Reads
-// crisply at small sizes on the light theme.
+// Saasgrave mark — an arched headstone with an inlaid gold cross and an
+// ascending ember (the "find new life" spark rising off the grave). Engraved,
+// premium, and legible down to favicon size. The same silhouette is reused in
+// the favicon and social cards so the brand reads as one system.
 export function LogoMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 32 32" fill="none" className={className} aria-hidden>
-      {/* tombstone body */}
-      <path d="M8.5 27V14.5a7.5 7.5 0 0 1 15 0V27Z" className="fill-bone-100" />
-      {/* gold cross */}
+      {/* soft plinth shadow */}
+      <ellipse cx="16" cy="28.4" rx="9.5" ry="1.4" className="fill-black/10" />
+      {/* headstone body — arched top, subtle shoulders */}
       <path
-        d="M16 10v7M13 13h6"
-        className="stroke-accent-400"
-        strokeWidth="1.9"
+        d="M8 28V14.2a8 8 0 0 1 16 0V28a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1Z"
+        className="fill-bone-100"
+      />
+      {/* engraved inner bevel */}
+      <path
+        d="M10 27.2V14.4a6 6 0 0 1 12 0v12.8"
+        className="stroke-black/10"
+        strokeWidth="1"
+      />
+      {/* inlaid gold cross */}
+      <path
+        d="M16 9.6v7.6M12.9 12.9h6.2"
+        className="stroke-accent-500"
+        strokeWidth="2"
         strokeLinecap="round"
       />
-      {/* ember at the crown */}
-      <circle cx="16" cy="6" r="1.5" className="fill-accent-500" />
-      {/* ground line */}
-      <path d="M5 27.5h22" className="stroke-bone-400" strokeWidth="1.7" strokeLinecap="round" />
+      {/* ascending ember — the spark of a second life */}
+      <circle cx="16" cy="5.4" r="1.7" className="fill-accent-400" />
+      <circle cx="19.4" cy="7" r="0.7" className="fill-accent-400/70" />
     </svg>
   );
 }
