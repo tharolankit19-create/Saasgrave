@@ -27,6 +27,7 @@ import { CountUp } from "@/components/count-up";
 import { LedgerRow } from "@/components/ledger-row";
 import { GoogleButton } from "@/components/google-button";
 import { PromoSlots } from "@/components/promo-slots";
+import { FounderNote } from "@/components/founder-note";
 import { SpotlightCard } from "@/components/spotlight-card";
 import { LiveFomoBar } from "@/components/live-fomo";
 import { Reveal, Aurora, Marquee } from "@/components/motion";
@@ -61,9 +62,7 @@ export default async function Home() {
     <div>
       {/* ─── 1 · Hero — one idea, sold from here alone ────── */}
       <section className="relative overflow-hidden">
-        <div className="grave-grid pointer-events-none absolute inset-0 opacity-60" />
-        <Aurora className="left-1/2 top-[-120px] h-[520px] w-[880px] -translate-x-1/2" />
-        <Aurora className="right-[-140px] top-[120px] h-[360px] w-[360px]" />
+        <div className="grave-grid pointer-events-none absolute inset-0 opacity-40" />
 
         <div className="relative mx-auto max-w-4xl px-5 pb-16 pt-24 text-center sm:pt-28">
           <div className="mb-6 inline-flex animate-fade-in items-center gap-2 rounded-full border border-black/10 bg-ink-900 px-3.5 py-1.5 text-xs text-bone-500 shadow-card">
@@ -74,7 +73,7 @@ export default async function Home() {
           <h1 className="font-serif text-[2.6rem] leading-[1.04] tracking-tight text-bone-100 sm:text-6xl">
             Your dead startup
             <br className="hidden sm:block" /> is still worth{" "}
-            <span className="text-shimmer animate-shimmer">money.</span>
+            <span className="underline decoration-accent-500/70 decoration-[3px] underline-offset-[6px]">money</span>.
           </h1>
 
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-bone-300 sm:text-lg">
@@ -177,11 +176,14 @@ export default async function Home() {
         </p>
       </Reveal>
 
+      {/* ─── 3.5 · The founder, for real — the anti-"AI slop" ─ */}
+      <FounderNote />
+
       {/* ─── 4 · The Ledger — real listings as proof ──────── */}
       <section className="mx-auto max-w-4xl px-5 pb-24">
         <div className="mb-6 flex items-end justify-between gap-4">
           <div>
-            <Eyebrow>The ledger</Eyebrow>
+            <Eyebrow>Fresh graves</Eyebrow>
             <h2 className="font-serif text-3xl tracking-tight text-bone-100">The latest to rest</h2>
             <p className="mt-2 text-sm text-bone-500">Real founders, honest post-mortems — the record as it grows.</p>
           </div>
@@ -514,7 +516,9 @@ export default async function Home() {
           <p className="font-serif text-2xl tracking-tight text-bone-300">
             Every startup deserves a proper burial.
           </p>
-          <p className="mt-2 text-sm text-bone-500">Rest in production.</p>
+          <p className="mt-2 text-sm text-bone-500">
+            Built in public by a 16-year-old who buried 4 of his own. No investors, no design team — just vibes and a lot of dead startups.
+          </p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-bone-500">
             <Link href="/browse" className="hover:text-bone-300">Browse</Link>
             <Link href="/sales" className="hover:text-bone-300">For sale</Link>
