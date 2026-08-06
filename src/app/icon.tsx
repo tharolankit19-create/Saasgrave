@@ -7,7 +7,7 @@ export const size = { width: 512, height: 512 };
 export const contentType = "image/png";
 
 export default function Icon() {
-  const gold = "#c79a3a";
+  const gold = "#f2efe8"; // no colour — cross reads as clean bone/white on dark
   const bone = "#f2efe8";
   return new ImageResponse(
     (

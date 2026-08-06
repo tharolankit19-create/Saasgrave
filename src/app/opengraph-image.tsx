@@ -1,16 +1,16 @@
 import { ImageResponse } from "next/og";
 
-// The site's social card. Without this, sharing saasgrave.org unfurled to a
-// blank/ugly preview — this gives every link a branded, on-theme card that
-// sells the one idea in a glance.
+// The site's social card — editorial black & white, like a printed register
+// page, not a generic SaaS gradient. Real one-line promise, mono ledger footer.
 export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Saasgrave — Where dead startups find new life";
+export const alt = "Saasgrave — the marketplace for dead startups";
 
 export default function OG() {
-  const gold = "#c79a3a";
-  const bone = "#eae6df";
+  const ink = "#14151a";
+  const paper = "#f6f5f1";
+  const mono = "ui-monospace, SFMono-Regular, Menlo, monospace";
   return new ImageResponse(
     (
       <div
@@ -19,76 +19,71 @@ export default function OG() {
           width: "100%",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
           justifyContent: "center",
-          background: "radial-gradient(130% 130% at 50% -10%, #16181e 0%, #0a0b0e 55%, #060708 100%)",
-          padding: 64,
+          background: paper,
+          color: ink,
+          padding: 72,
           position: "relative",
         }}
       >
-        <div style={{ position: "absolute", inset: 26, border: `2px solid ${gold}55`, borderRadius: 26 }} />
+        <div style={{ position: "absolute", inset: 24, border: `1.5px solid ${ink}` }} />
+        <div style={{ position: "absolute", inset: 32, border: `1px solid ${ink}22` }} />
 
-        {/* brand lockup */}
-        <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 6 }}>
-          <svg width="58" height="58" viewBox="0 0 32 32" fill="none">
-            <path d="M8 28V14.2a8 8 0 0 1 16 0V28a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1Z" fill={bone} />
-            <path d="M16 9.6v7.6M12.9 12.9h6.2" stroke={gold} strokeWidth="2" strokeLinecap="round" />
-            <circle cx="16" cy="5.4" r="1.9" fill={gold} />
+        {/* top ledger rule */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 14,
+            fontFamily: mono,
+            fontSize: 20,
+            letterSpacing: 4,
+            textTransform: "uppercase",
+            color: "#5b5c63",
+          }}
+        >
+          <svg width="30" height="30" viewBox="0 0 32 32" fill="none">
+            <path d="M8 28V14.2a8 8 0 0 1 16 0V28a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1Z" fill={ink} />
+            <path d="M16 10.4v6.6M13.4 13.4h5.2" stroke={paper} strokeWidth="1.8" strokeLinecap="round" />
           </svg>
-          <div style={{ display: "flex", color: bone, fontSize: 40, fontWeight: 700, letterSpacing: -1 }}>
-            Saasgrave
-          </div>
-        </div>
-
-        <div style={{ color: gold, fontSize: 22, letterSpacing: 6, textTransform: "uppercase", marginTop: 22 }}>
-          The marketplace for dead startups
+          Saasgrave — est. graveyard
         </div>
 
         <div
           style={{
             display: "flex",
-            textAlign: "center",
-            color: bone,
-            fontSize: 82,
+            fontSize: 92,
             fontWeight: 700,
-            letterSpacing: -2,
-            lineHeight: 1.05,
-            marginTop: 20,
+            letterSpacing: -3,
+            lineHeight: 1.02,
+            marginTop: 34,
             maxWidth: 980,
           }}
         >
           Your dead startup is still worth money.
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            textAlign: "center",
-            color: "#a7adb8",
-            fontSize: 30,
-            marginTop: 26,
-            maxWidth: 900,
-            lineHeight: 1.4,
-          }}
-        >
-          List it in 3 minutes. Free to list · $9 to sell · 0% commission.
+        <div style={{ display: "flex", fontSize: 30, marginTop: 26, color: "#3a3b42", maxWidth: 900 }}>
+          List it in 3 minutes. It doesn&apos;t have to die twice.
         </div>
 
         <div
           style={{
             position: "absolute",
-            bottom: 50,
+            bottom: 56,
+            left: 72,
+            right: 72,
             display: "flex",
-            width: "100%",
             justifyContent: "space-between",
-            paddingLeft: 34,
-            paddingRight: 34,
-            fontSize: 24,
-            letterSpacing: 3,
+            fontFamily: mono,
+            fontSize: 20,
+            letterSpacing: 2,
+            textTransform: "uppercase",
+            color: ink,
           }}
         >
-          <span style={{ color: gold, letterSpacing: 4 }}>SAASGRAVE.ORG</span>
-          <span style={{ color: "#6b7078" }}>Rest in production.</span>
+          <span>Free to list · $9 to sell · 0% commission</span>
+          <span style={{ color: "#5b5c63" }}>saasgrave.org</span>
         </div>
       </div>
     ),

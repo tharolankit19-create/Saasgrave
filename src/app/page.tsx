@@ -11,9 +11,6 @@ import {
   Users,
   Check,
   X,
-  Bell,
-  Bookmark,
-  Handshake,
   Flame,
   Heart,
   LineChart,
@@ -25,12 +22,10 @@ import { LinkedInIcon } from "@/components/brand-icons";
 import { GraveyardSearch } from "@/components/graveyard-search";
 import { CountUp } from "@/components/count-up";
 import { LedgerRow } from "@/components/ledger-row";
-import { GoogleButton } from "@/components/google-button";
 import { PromoSlots } from "@/components/promo-slots";
 import { FounderNote } from "@/components/founder-note";
-import { SpotlightCard } from "@/components/spotlight-card";
 import { LiveFomoBar } from "@/components/live-fomo";
-import { Reveal, Aurora, Marquee } from "@/components/motion";
+import { Reveal, Marquee } from "@/components/motion";
 import { loadGraveyard } from "@/lib/stats";
 import { money } from "@/lib/utils";
 
@@ -103,17 +98,18 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* One clear next step. */}
-          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          {/* One clear next step (rule #22) — a single primary action, and a
+              quiet secondary link for browsers. */}
+          <div className="mt-9 flex flex-col items-center justify-center gap-4">
             <LinkButton href="/sell" size="lg">
-              List my startup — free <ArrowRight size={17} />
+              List my dead startup — free <ArrowRight size={17} />
             </LinkButton>
-            <LinkButton href="/browse" variant="outline" size="lg">
-              Browse the graveyard
-            </LinkButton>
+            <Link href="/browse" className="text-sm text-bone-400 underline decoration-black/20 underline-offset-4 transition hover:text-bone-100">
+              or just walk the graveyard →
+            </Link>
           </div>
-          <p className="mt-4 text-xs text-bone-500">
-            Free to list, forever · $9 to open it for sale · 0% commission
+          <p className="mt-5 font-mono text-[11px] uppercase tracking-wider text-bone-500">
+            Free to list · $9 to sell · 0% commission
           </p>
           <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] text-bone-500">
             <span className="inline-flex items-center gap-1.5">
@@ -290,51 +286,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ─── 7 · Why sign up — conversion core, one click ─── */}
-      <section className="relative mx-auto max-w-6xl px-5 pb-24">
-        <SpotlightCard className="relative overflow-hidden p-8 sm:p-12">
-          <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-accent-600/10 blur-3xl" />
-          <div className="relative grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-center">
-            <div>
-              <Eyebrow>Why sign up</Eyebrow>
-              <h2 className="font-serif text-3xl tracking-tight text-bone-100 sm:text-4xl">
-                Looking is free.
-                <br /> Acting needs an account.
-              </h2>
-              <p className="mt-4 max-w-md text-sm leading-relaxed text-bone-500">
-                Browse all you like. An account is what lets you move on what you find — and give your
-                own dead work a second life. One click with Google, no password.
-              </p>
-
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <GoogleButton next="/onboarding" label="Continue with Google" />
-                <LinkButton href="/register" variant="outline" size="lg">
-                  Other ways to sign up
-                </LinkButton>
-              </div>
-              <p className="mt-3 text-xs text-bone-500">Free forever · No card · Unsubscribe anytime</p>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              {[
-                { icon: <Bell size={17} />, title: "Death alerts", body: "Get pinged when a product in your niche or stack gets buried — reach it first." },
-                { icon: <Bookmark size={17} />, title: "Watchlist", body: "Save graves you're eyeing and track price drops and new offers." },
-                { icon: <Handshake size={17} />, title: "Make offers", body: "Message founders and bid directly. No middleman, no commission." },
-                { icon: <Store size={17} />, title: "List in minutes", body: "Turn a dead repo into a public post-mortem — or a clean sale." },
-              ].map((b) => (
-                <div key={b.title} className="rounded-xl border border-black/8 bg-ink-950/40 p-5">
-                  <span className="mb-3 grid h-9 w-9 place-items-center rounded-lg border border-black/10 text-accent-400">
-                    {b.icon}
-                  </span>
-                  <h3 className="text-sm font-medium text-bone-100">{b.title}</h3>
-                  <p className="mt-1 text-xs leading-relaxed text-bone-500">{b.body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </SpotlightCard>
-      </section>
-
       {/* ─── 8 · Premium placements (real money surface) ──── */}
       <PromoSlots />
 
@@ -491,19 +442,17 @@ export default async function Home() {
 
       {/* ─── 13 · Final CTA — one action ──────────────────── */}
       <Reveal as="section" className="mx-auto max-w-4xl px-5 pb-24">
-        <Card className="relative overflow-hidden p-10 text-center sm:p-16">
-          <div className="grave-grid pointer-events-none absolute inset-0 opacity-50" />
-          <Aurora className="left-1/2 top-[-60px] h-64 w-[520px] -translate-x-1/2" />
+        <Card className="relative overflow-hidden bg-bone-100 p-10 text-center sm:p-16">
           <div className="relative">
-            <h2 className="font-serif text-3xl leading-tight tracking-tight text-bone-100 sm:text-[42px]">
+            <h2 className="font-serif text-3xl font-bold leading-tight tracking-tight text-white sm:text-[42px]">
               Don&apos;t let it die twice.
             </h2>
-            <p className="mx-auto mt-4 max-w-md text-sm text-bone-500">
+            <p className="mx-auto mt-4 max-w-md text-sm text-white/60">
               It took months to build. It takes 3 minutes to list — and it&apos;s free.
             </p>
             <div className="mt-8 flex justify-center">
-              <LinkButton href="/sell" size="lg">
-                List my startup — free <ArrowRight size={17} />
+              <LinkButton href="/sell" size="lg" className="bg-white text-ink-950 shadow-lift hover:bg-white/90">
+                List my dead startup — free <ArrowRight size={17} />
               </LinkButton>
             </div>
           </div>

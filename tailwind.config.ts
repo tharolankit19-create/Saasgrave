@@ -28,32 +28,39 @@ const config: Config = {
           400: "#63646d", // secondary
           500: "#8a8b94", // muted
         },
-        // Premium gold accent — the single pop of colour on a crisp white page.
+        // No accent colour at all — pure black & white. `accent-*` (and its
+        // `ember-*` alias) resolve to a neutral near-black scale, so every old
+        // "accent" mark becomes clean ink instead of a colour. The only colour
+        // that survives anywhere is the functional green on the Verified badge.
         accent: {
-          400: "#c08a24", // icons / soft accent
-          500: "#a6771a", // primary accent / eyebrow
-          600: "#855c10", // text on white
+          400: "#3a3b42", // softer ink — icons
+          500: "#14151a", // near-black — eyebrow / marks
+          600: "#000000", // pure black — text / hover
         },
         ember: {
-          400: "#c08a24",
-          500: "#a6771a",
-          600: "#855c10",
+          400: "#3a3b42",
+          500: "#14151a",
+          600: "#000000",
         },
-        // Verified / positive — a deep, calm green that holds on white.
+        // Verified / positive — the single functional colour, only on the badge.
         moss: {
           400: "#3f8a5f",
           500: "#2f7a4f",
         },
       },
       fontFamily: {
+        // Space Grotesk everywhere for display + body; JetBrains Mono for the
+        // small labels, eyebrows and figures that give the page a deliberate,
+        // built-by-a-human texture (not template serif).
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
-        serif: ["var(--font-serif)", "Georgia", "serif"],
+        serif: ["var(--font-sans)", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "ui-monospace", "monospace"],
       },
       boxShadow: {
-        // Crisp, layered editorial elevation — cards float cleanly on white.
-        card: "0 1px 2px rgba(20,21,26,0.05), 0 8px 20px -10px rgba(20,21,26,0.12), 0 24px 48px -28px rgba(20,21,26,0.18)",
-        lift: "0 2px 8px rgba(20,21,26,0.07), 0 26px 60px -20px rgba(20,21,26,0.28)",
-        glow: "0 0 0 1px rgba(166,119,26,0.14), 0 24px 70px -22px rgba(166,119,26,0.30)",
+        // Restrained, neutral elevation — minimal, not glowy.
+        card: "0 1px 2px rgba(20,21,26,0.04), 0 6px 16px -10px rgba(20,21,26,0.10), 0 20px 40px -30px rgba(20,21,26,0.14)",
+        lift: "0 2px 8px rgba(20,21,26,0.06), 0 22px 50px -22px rgba(20,21,26,0.20)",
+        glow: "0 0 0 1px rgba(79,70,229,0.12), 0 24px 70px -26px rgba(79,70,229,0.22)",
       },
       keyframes: {
         "fade-up": {
