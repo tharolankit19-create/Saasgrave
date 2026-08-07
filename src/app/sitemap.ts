@@ -39,12 +39,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .limit(5000);
 
     if (data) {
-      startupPaths = data.map((s: any) => ({
-        url: `${base}/startup/${s.slug}`,
-        lastModified: s.updated_at ? new Date(s.updated_at) : now,
-        changeFrequency: "weekly" as const,
-        priority: 0.6,
-      }));
+      startupPaths = data.flatMap((s: any) => [
+        {
+          url: `${base}/startup/${s.slug}`,
+          lastModified: s.updated_at ? new Date(s.updated_at) : now,
+          changeFrequency: "weekly" as const,
+          priority: 0.6,
+        },
+        // The AI-written long-form post-mortem — unique content for search.
+        {
+          url: `${base}/read/${s.slug}`,
+          lastModified: s.updated_at ? new Date(s.updated_at) : now,
+          changeFrequency: "monthly" as const,
+          priority: 0.55,
+        },
+      ]);
       const founders = Array.from(new Set(data.map((s: any) => s.founder_id).filter(Boolean)));
       founderPaths = founders.map((id) => ({
         url: `${base}/profile/${id}`,
