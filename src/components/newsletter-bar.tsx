@@ -66,7 +66,7 @@ export function NewsletterBar() {
             <span className="font-semibold text-bone-100">The Weekly Obituary</span> — new dead startups &amp;
             deals, plus promo slots from{" "}
             <Link href="/promote" className="font-semibold text-accent-600 hover:underline">
-              $9 (up to $49)
+              $19 (up to $49)
             </Link>
             .
           </span>

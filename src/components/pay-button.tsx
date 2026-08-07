@@ -10,7 +10,7 @@ import { startCheckout } from "@/lib/checkout-client";
 export function PayButton({
   slotId,
   directLink,
-  label = "Pay $9 — go live →",
+  label = "Pay $19 — go live →",
 }: {
   slotId: string | null;
   directLink?: string;

@@ -57,7 +57,7 @@ function PromoteSlotCard() {
       </span>
       <span className="text-xs font-bold text-bone-100">Put your product here</span>
       <span className="mt-0.5 text-[11px] font-semibold text-accent-600">
-        <span className="text-bone-500 line-through">$49</span> $9 / 30 days
+        From <span className="font-bold">$19</span> / 30 days
       </span>
     </Link>
   );
@@ -75,7 +75,7 @@ export function AdStrip({ slots }: { slots: AdSlot[] }) {
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-400 opacity-75" />
           <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent-500" />
         </span>
-        Sponsored · your product here for $9
+        Sponsored · your product here from $19
       </div>
       <div className="marquee-mask relative overflow-hidden">
         <div
@@ -111,7 +111,7 @@ export function AdStrip({ slots }: { slots: AdSlot[] }) {
                 </span>
                 <span>
                   <span className="block text-xs font-bold text-bone-100">Your product here</span>
-                  <span className="block text-[11px] font-semibold text-accent-600">$9 / 30 days</span>
+                  <span className="block text-[11px] font-semibold text-accent-600">From $19</span>
                 </span>
               </Link>
             )

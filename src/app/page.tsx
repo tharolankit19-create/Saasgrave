@@ -245,7 +245,7 @@ export default async function Home() {
               n: "03",
               icon: <Tag size={16} />,
               title: "Sell or keep the record",
-              body: "Open it for sale for a one-time $9, name your price, take offers — or leave it up purely as a public post-mortem.",
+              body: "Open it for sale for free, name your price, take offers — or leave it up purely as a public post-mortem.",
             },
           ].map((step) => (
             <div key={step.n} className="relative text-center">
@@ -357,11 +357,11 @@ export default async function Home() {
             },
             {
               icon: <Megaphone size={18} />,
-              price: "from $9",
+              price: "from $19",
               unit: "/ 30 days",
               title: "Promote",
               body: "A premium dofollow ad slot beside every listing — your logo, tagline and link. Only 6 slots; the price rises to $49 as they fill.",
-              cta: "Promote from $9",
+              cta: "Promote from $19",
               href: "/promote",
               highlight: false,
             },
@@ -420,7 +420,7 @@ export default async function Home() {
         </div>
         <div className="divide-y divide-black/8 rounded-2xl border border-black/8">
           {[
-            { q: "Is it really free to list?", a: "Yes — listing is free forever, and opening it for sale is free too. We take a flat 3% only when your startup actually sells. The only upfront option is a promo ad slot (from $9 / 30 days)." },
+            { q: "Is it really free to list?", a: "Yes — listing is free forever, and opening it for sale is free too. We take a flat 3% only when your startup actually sells. The only upfront option is a promo ad slot (from $19 / 30 days)." },
             { q: "Do I need an account to look?", a: "No — browsing and search are open to everyone. You only need a free account to make offers, save a watchlist, get death alerts, or list your own startup." },
             { q: "How is revenue verified?", a: "You connect a restricted, read-only key from Stripe, Paddle, Lemon Squeezy or Dodo. We calculate MRR from active subscriptions and discard the key immediately. Only verified listings get the green badge — self-reported MRR shows as unverified." },
             { q: "Who buys dead startups?", a: "Operators and indie hackers who want a head start — a working codebase, a domain, existing users, or simply a market to pivot into." },

@@ -82,7 +82,7 @@ export default function OG() {
             color: ink,
           }}
         >
-          <span>Free to list · $9 to sell · 0% commission</span>
+          <span>Free to list & sell · just 3% on a sale</span>
           <span style={{ color: "#5b5c63" }}>saasgrave.org</span>
         </div>
       </div>

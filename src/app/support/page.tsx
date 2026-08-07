@@ -14,7 +14,7 @@ const X_HANDLE = "SaasGrave";
 
 const FAQ = [
   { q: "Is it free to list a startup?", a: "Yes — listing is free forever. You only pay to open a listing for sale ($9 one-time) or to book a promo slot ($49 / 30 days). We take 0% commission on any sale." },
-  { q: "How do I sell my startup?", a: "List it, then open it for sale from your dashboard for a one-time $9. Buyers make offers, you accept or decline from your dashboard, and you handle the transfer directly." },
+  { q: "How do I sell my startup?", a: "List it, then open it for sale free from your dashboard. We take just 3% when it sells. Buyers make offers, you accept or decline from your dashboard, and you handle the transfer directly." },
   { q: "How do offers work?", a: "A buyer sends an offer on a for-sale listing. It appears under “Offers received” on your dashboard where you can Accept or Decline it. Accepting doesn't move money — you arrange the transfer with the buyer." },
   { q: "How is revenue verified?", a: "You connect a read-only key from Stripe, Paddle, Lemon Squeezy or Dodo; we compute MRR from active subscriptions, badge the listing as verified, and never store the key. Self-reported MRR is always shown as unverified." },
   { q: "What is the AI story / post-mortem?", a: "When you list, AI turns your answers into a warm, honest post-mortem others can learn from. You can edit it before publishing — nothing is invented." },

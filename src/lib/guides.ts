@@ -63,7 +63,7 @@ export const GUIDES: Guide[] = [
         h: "4. Recover the value instead of deleting it",
         p: [
           "This is the step almost everyone skips. A dead product is not worthless — an operator or indie hacker will pay for a head start: working code, an aged domain, existing users, or simply a market to pivot into.",
-          "You can list a failed startup for free on Saasgrave as a public post-mortem, and optionally open it for sale. If it sells, you keep 100% — there's no commission. Even if it never sells, the listing becomes a credible public record of what you shipped.",
+          "You can list a failed startup for free on Saasgrave as a public post-mortem, and optionally open it for sale. If it sells, we take just 3% — you keep the rest. Even if it never sells, the listing becomes a credible public record of what you shipped.",
         ],
       },
       {
@@ -76,7 +76,7 @@ export const GUIDES: Guide[] = [
     faqs: [
       { q: "Should I tell people my startup failed?", a: "Yes. Founders who close honestly are remembered as trustworthy, and a public post-mortem often does more for your reputation than a quiet disappearance. It also makes your work sellable." },
       { q: "Is a failed startup with no revenue worth anything?", a: "Often, yes. Zero-revenue products still have working code, an aged domain, an email list, and a hard-won lesson — all of which have real value to the right buyer." },
-      { q: "Where can I list a failed startup?", a: "You can list it free on Saasgrave, a marketplace built specifically for dead and zero-revenue startups. Keep it as a public record, or open it for sale with no commission." },
+      { q: "Where can I list a failed startup?", a: "You can list it free on Saasgrave, a marketplace built specifically for dead and zero-revenue startups. Keep it as a public record, or open it for sale — free to list, just 3% when it sells." },
     ],
     cta: {
       heading: "Don't let two years of work disappear.",
@@ -92,7 +92,7 @@ export const GUIDES: Guide[] = [
     title: "How to sell a failed startup (and actually get paid for it)",
     metaTitle: "How to Sell a Failed or Dead Startup — Step by Step",
     description:
-      "A step-by-step guide to selling a failed, dead, or zero-revenue startup: what it's worth, how to price it, who buys these, and how to close the deal with no commission.",
+      "A step-by-step guide to selling a failed, dead, or zero-revenue startup: what it's worth, how to price it, who buys these, and how to close the deal.",
     keywords: ["sell a failed startup", "sell a dead startup", "how to sell a startup", "sell a side project", "acquire failed startup"],
     updated: "2026-08-05",
     readMins: 7,
@@ -133,18 +133,18 @@ export const GUIDES: Guide[] = [
       {
         h: "Close the deal",
         p: [
-          "List it, take offers directly from buyers, accept or counter, then transfer the domain, code, and accounts. On Saasgrave, listing a startup for sale is a one-time $9 fee and there's zero commission on the sale — the money is yours.",
+          "List it, take offers directly from buyers, accept or counter, then transfer the domain, code, and accounts. On Saasgrave, listing and opening for sale is free — we take a flat 3% only when it sells.",
         ],
       },
     ],
     faqs: [
       { q: "Can I sell a startup with no revenue?", a: "Yes. Zero-revenue startups sell on their assets — code, domain, users, and market. Price on what a buyer would otherwise spend to build it." },
-      { q: "How much does it cost to sell on Saasgrave?", a: "Listing a startup is free. Opening it for sale is a one-time $9 fee, and Saasgrave takes 0% commission on the sale itself." },
+      { q: "How much does it cost to sell on Saasgrave?", a: "Listing is free, and opening a startup for sale is free too — Saasgrave takes a flat 3% only when it sells." },
       { q: "How do buyers pay and transfer?", a: "Buyers make an offer through your listing. You accept or counter, then handle the transfer of domain, code, and accounts directly." },
     ],
     cta: {
       heading: "Turn a dead product into a real exit.",
-      body: "List it for sale on Saasgrave — $9 once, 0% commission, and you keep 100% of what it sells for.",
+      body: "List it for sale on Saasgrave — free to list, just 3% when it sells, and you keep the rest.",
       primaryLabel: "List it for sale",
       primaryHref: "/sell",
       secondaryLabel: "Browse the marketplace",
@@ -370,11 +370,11 @@ export const GUIDES: Guide[] = [
     faqs: [
       { q: "Can I sell a startup that makes $0?", a: "Yes. Zero-revenue products still have code, a domain, users and lessons — all of which have real replacement value to the right buyer." },
       { q: "What multiple do failed startups sell for?", a: "With little or no revenue, price is based on replacement value, not a multiple. Where verifiable revenue exists, small multiples apply on top." },
-      { q: "How do I make my listing sell faster?", a: "Verify revenue, write an honest post-mortem, and price from replacement cost. Listing on Saasgrave is free; opening it for sale is a one-time $9 with 0% commission." },
+      { q: "How do I make my listing sell faster?", a: "Verify revenue, write an honest post-mortem, and price from replacement cost. Listing on Saasgrave is free, and opening it for sale is free too — just 3% when it sells." },
     ],
     cta: {
       heading: "Find out what yours is worth — list it free.",
-      body: "Publish your startup as a post-mortem in about 3 minutes, then open it for sale for a one-time $9. 0% commission.",
+      body: "Publish your startup as a post-mortem in about 3 minutes, then open it for sale free. Just 3% when it sells.",
       primaryLabel: "List my startup",
       primaryHref: "/sell",
       secondaryLabel: "See what others priced",

@@ -6,7 +6,7 @@ import { Card } from "@/components/ui";
 import { PayButton } from "@/components/pay-button";
 import { adTier } from "@/lib/ad-pricing";
 
-export const metadata: Metadata = { title: "Promote your product — $9" };
+export const metadata: Metadata = { title: "Promote your product" };
 export const dynamic = "force-dynamic";
 
 export default async function PromotePage() {
@@ -43,7 +43,7 @@ export default async function PromotePage() {
           <div className="relative">
             <div className="flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-b from-accent-400 to-accent-500 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white shadow-glow">
-                <Flame size={11} /> 82% off · launch price
+                <Flame size={11} /> Launch price · rising
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-full border border-moss-500/30 bg-moss-500/10 px-2.5 py-1 text-[11px] font-semibold text-moss-500">
                 <span className="relative flex h-1.5 w-1.5">
