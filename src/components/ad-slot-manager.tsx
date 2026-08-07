@@ -47,7 +47,7 @@ export function AdSlotManager({
             <h3 className="text-sm font-medium text-bone-100">Promote a listing</h3>
             <p className="mt-0.5 text-xs text-bone-500">
               {openCount > 0
-                ? `${openCount} of 6 premium slots open · $9 / 30 days (was $49) · beside every listing`
+                ? `${openCount} of 6 premium slots open · from $19 / 30 days · beside every listing`
                 : "All 6 slots are booked right now — check back soon."}
             </p>
           </div>

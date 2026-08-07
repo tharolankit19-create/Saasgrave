@@ -4,7 +4,7 @@ import { createDodoCheckout, type CheckoutKind } from "@/lib/dodo";
 import { adTier, adProductId } from "@/lib/ad-pricing";
 
 // Creates a Dodo hosted-checkout session. The only paid action is an ad slot,
-// priced dynamically ($9 → $29 → $49 as slots sell). Listing (incl. for-sale)
+// priced dynamically ($19 → $29 → $49 as slots sell). Listing (incl. for-sale)
 // is free — we take 3% only when a startup actually sells.
 // A pending payment row is recorded; the webhook flips it to "paid".
 export async function POST(req: Request) {
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Missing kind or referenceId" }, { status: 400 });
   }
 
-  // Ad slots use dynamic, rising pricing ($9 → $29 → $49 as slots sell).
+  // Ad slots use dynamic, rising pricing ($19 → $29 → $49 as slots sell).
   let amountCents = 900;
   let productId: string | undefined;
   if (kind === "ad_slot") {

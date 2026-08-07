@@ -110,9 +110,9 @@ export function ListingForm() {
         monthly_visitors: Number(f.monthly_visitors) || 0,
         analytics_url: f.analytics_url.trim() || null,
         claimed_mrr: Number(f.claimed_mrr) || 0,
-        // Pricing is captured up front, but the listing only becomes "for sale"
-        // once the $9 fee is paid from the dashboard. So for_sale stays false here.
-        for_sale: false,
+        // Opening for sale is free now — honour the checkbox directly. We take
+        // 3% only when it actually sells.
+        for_sale: !!f.for_sale,
         asking_price: f.for_sale && f.price_mode === "fixed" ? Number(f.asking_price) || null : null,
         price_multiplier:
           f.for_sale && f.price_mode === "multiplier" ? Number(f.price_multiplier) || null : null,
@@ -233,7 +233,7 @@ export function ListingForm() {
           <label className="flex cursor-pointer items-center justify-between rounded-xl border border-black/8 bg-ink-800/50 p-4">
             <div>
               <div className="text-sm font-medium text-bone-100">I want to sell this</div>
-              <div className="text-xs text-bone-500">Set a price now. It goes on sale once you pay the $9 fee from your dashboard.</div>
+              <div className="text-xs text-bone-500">Free to open for sale — buyers can make offers right away. We take just 3% if it sells.</div>
             </div>
             <input
               type="checkbox"
@@ -277,8 +277,8 @@ export function ListingForm() {
                 </>
               )}
               <p className="text-xs text-bone-500">
-                Listing a startup is free. Listing it <span className="text-bone-300">for sale</span> is a
-                one-time <span className="text-bone-300">$9</span> fee, paid from your dashboard.
+                Listing is free, and opening it <span className="text-bone-300">for sale</span> is free too — we
+                take a flat <span className="text-bone-300">3%</span> only when it sells.
               </p>
             </div>
           )}

@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: "%s · Saasgrave",
   },
   description:
-    "List a dead or zero-revenue startup in 3 minutes. Free to list, $9 to sell, 0% commission.",
+    "List a dead or zero-revenue startup in 3 minutes. Free to list & sell — just 3% on a sale.",
   keywords: [
     "failed startups",
     "buy dead startups",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Your dead startup is still worth money.",
     description:
-      "The marketplace for dead & zero-revenue startups. Free to list, $9 to sell, 0% commission.",
+      "The marketplace for dead & zero-revenue startups. Free to list & sell — just 3% on a sale.",
     type: "website",
     siteName: "Saasgrave",
   },
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Your dead startup is still worth money.",
     description:
-      "List a dead or zero-revenue startup in 3 minutes. Free to list, $9 to sell, 0% commission.",
+      "List a dead or zero-revenue startup in 3 minutes. Free to list & sell — just 3% on a sale.",
   },
 };
 
@@ -70,7 +70,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   logo: `${SITE}/icon`,
                   sameAs: ["https://x.com/SaasGrave"],
                   description:
-                    "The marketplace for dead and zero-revenue startups. List a failed startup in 3 minutes — free to list, $9 to sell, 0% commission.",
+                    "The marketplace for dead and zero-revenue startups. List a failed startup in 3 minutes — free to list & sell — just 3% on a sale.",
                 },
                 {
                   "@type": "WebSite",
