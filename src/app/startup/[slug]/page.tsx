@@ -13,12 +13,10 @@ import {
   GitBranch,
   Lightbulb,
   ArrowUpRight,
-  Sparkles,
   AlertTriangle,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Badge, Card, Eyebrow } from "@/components/ui";
-import { Reveal, Aurora } from "@/components/motion";
 import { XIcon, LinkedInIcon } from "@/components/brand-icons";
 import { ShareLaunch } from "@/components/share-launch";
 import { ObituaryCard } from "@/components/obituary-card";
@@ -200,31 +198,10 @@ export default async function StartupPage({ params }: { params: { slug: string }
         </p>
       )}
 
-      {/* AI story mode — the narrative other founders read */}
-      {s.ai_story && (
-        <Reveal className="mt-10">
-          <Card className="relative overflow-hidden border-accent-500/25 p-8 sm:p-10">
-            <div className="grave-grid pointer-events-none absolute inset-0 opacity-40" />
-            <Aurora className="right-[-80px] top-[-80px] h-64 w-64" />
-            <div className="relative">
-              <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-accent-500/30 bg-accent-600/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-accent-600">
-                <Sparkles size={12} /> The story
-              </div>
-              <div className="space-y-4">
-                {s.ai_story.split(/\n{2,}/).map((para: string, i: number) => (
-                  <p
-                    key={i}
-                    className="font-serif text-lg leading-relaxed text-bone-200 sm:text-xl sm:leading-relaxed"
-                  >
-                    {para}
-                  </p>
-                ))}
-              </div>
-              <p className="mt-5 text-xs text-bone-500">Told with a little help from AI, from {s.name}&apos;s own account.</p>
-            </div>
-          </Card>
-        </Reveal>
-      )}
+      {/* Discreet link to the long-form write-up (SEO). */}
+      <Link href={`/read/${s.slug}`} className="mt-6 inline-flex text-xs text-bone-500 underline decoration-black/15 underline-offset-4 transition hover:text-bone-300">
+        Read the full write-up →
+      </Link>
 
       {/* body */}
       <div className="mt-10 grid gap-8 md:grid-cols-3">

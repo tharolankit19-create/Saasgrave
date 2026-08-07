@@ -62,13 +62,18 @@ ${facts}`;
 export async function generateStory(input: StoryInput): Promise<string> {
   if (!input.name?.trim()) throw new Error("Add a name first, then generate.");
   const prompt = buildPrompt(input);
+  return aiComplete(prompt, 600);
+}
 
-  if (process.env.OPENROUTER_API_KEY?.trim()) return viaOpenRouter(prompt);
-  if (process.env.GEMINI_API_KEY?.trim()) return viaGemini(prompt);
+// Generic completion — OpenRouter first, Gemini fallback. Reused by the SEO
+// article generator. Returns "" if no provider is configured (callers decide).
+export async function aiComplete(prompt: string, maxTokens = 900): Promise<string> {
+  if (process.env.OPENROUTER_API_KEY?.trim()) return viaOpenRouter(prompt, maxTokens);
+  if (process.env.GEMINI_API_KEY?.trim()) return viaGemini(prompt, maxTokens);
   throw new Error("AI is not configured — set OPENROUTER_API_KEY (or GEMINI_API_KEY).");
 }
 
-async function viaOpenRouter(prompt: string): Promise<string> {
+async function viaOpenRouter(prompt: string, maxTokens = 600): Promise<string> {
   const key = process.env.OPENROUTER_API_KEY!.trim();
   const model = process.env.OPENROUTER_MODEL?.trim() || "nvidia/llama-3.1-nemotron-70b-instruct";
   const site = process.env.NEXT_PUBLIC_SITE_URL || "https://saasgrave.org";
@@ -85,7 +90,7 @@ async function viaOpenRouter(prompt: string): Promise<string> {
       model,
       messages: [{ role: "user", content: prompt }],
       temperature: 0.8,
-      max_tokens: 600,
+      max_tokens: maxTokens,
     }),
   });
 
@@ -101,7 +106,7 @@ async function viaOpenRouter(prompt: string): Promise<string> {
   return story;
 }
 
-async function viaGemini(prompt: string): Promise<string> {
+async function viaGemini(prompt: string, maxTokens = 512): Promise<string> {
   const key = process.env.GEMINI_API_KEY!.trim();
   const model = process.env.GEMINI_MODEL || "gemini-1.5-flash-latest";
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
@@ -110,7 +115,7 @@ async function viaGemini(prompt: string): Promise<string> {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.8, maxOutputTokens: 512, topP: 0.95 },
+      generationConfig: { temperature: 0.8, maxOutputTokens: maxTokens, topP: 0.95 },
     }),
   });
   if (!res.ok) {

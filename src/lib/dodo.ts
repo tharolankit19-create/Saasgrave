@@ -19,10 +19,13 @@ export type CheckoutKind = "ad_slot" | "sale_listing";
 // newline or space pasted into the env — a very common cause of failures —
 // doesn't break checkout. New names first, old names kept as a fallback.
 function productFor(kind: CheckoutKind): string | undefined {
+  const sale = process.env.DODO_PRODUCT_ID_SALE || process.env.DODO_PRODUCT_SALE_LISTING;
   const raw =
     kind === "ad_slot"
-      ? process.env.DODO_PRODUCT_ID_ADS || process.env.DODO_PRODUCT_AD_SLOT
-      : process.env.DODO_PRODUCT_ID_SALE || process.env.DODO_PRODUCT_SALE_LISTING;
+      ? // Ads are now $9 too — fall back to the $9 sale product so a single
+        // configured $9 product powers both actions.
+        process.env.DODO_PRODUCT_ID_ADS || process.env.DODO_PRODUCT_AD_SLOT || sale
+      : sale;
   return raw?.trim() || undefined;
 }
 
