@@ -45,6 +45,7 @@ interface CreateCheckoutArgs {
   userId: string;
   email?: string;
   successUrl: string;
+  productId?: string; // explicit override (used for the dynamic ad price tiers)
 }
 
 export async function createDodoCheckout({
@@ -53,15 +54,16 @@ export async function createDodoCheckout({
   userId,
   email,
   successUrl,
+  productId: productOverride,
 }: CreateCheckoutArgs) {
   const key = apiKey();
-  const productId = productFor(kind);
+  const productId = productOverride?.trim() || productFor(kind);
 
   if (!key) {
     throw new Error("Payments aren't set up yet — DODO_API_KEY is missing.");
   }
   if (!productId) {
-    const envName = kind === "ad_slot" ? "DODO_PRODUCT_ID_ADS" : "DODO_PRODUCT_ID_SALE";
+    const envName = kind === "ad_slot" ? "DODO_PRODUCT_ID_ADS (or the tier products)" : "DODO_PRODUCT_ID_SALE";
     throw new Error(`Payments aren't set up for this action — set ${envName} to the Dodo product ID.`);
   }
 

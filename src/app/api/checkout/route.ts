@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { createDodoCheckout, type CheckoutKind } from "@/lib/dodo";
+import { adTier, adProductId } from "@/lib/ad-pricing";
 
-// Creates a Dodo hosted-checkout session for one of our paid actions:
-//   ad_slot ($49) · sale_listing ($9).  Listing a startup is free.
+// Creates a Dodo hosted-checkout session. The only paid action is an ad slot,
+// priced dynamically ($9 → $29 → $49 as slots sell). Listing (incl. for-sale)
+// is free — we take 3% only when a startup actually sells.
 // A pending payment row is recorded; the webhook flips it to "paid".
 export async function POST(req: Request) {
   const supabase = createClient();
@@ -24,10 +26,26 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Missing kind or referenceId" }, { status: 400 });
   }
 
-  const amounts: Record<CheckoutKind, number> = {
-    ad_slot: 900, // $9 / 30 days — launch discount (was $49)
-    sale_listing: 900, // $9 one-time fee to list a startup for sale
-  };
+  // Ad slots use dynamic, rising pricing ($9 → $29 → $49 as slots sell).
+  let amountCents = 900;
+  let productId: string | undefined;
+  if (kind === "ad_slot") {
+    let sold = 0;
+    try {
+      const { count } = await supabase
+        .from("ad_slots")
+        .select("id", { count: "exact", head: true })
+        .not("buyer_id", "is", null);
+      sold = count ?? 0;
+    } catch {
+      /* default to the first tier */
+    }
+    const tier = adTier(sold);
+    amountCents = tier.cents;
+    productId = adProductId(tier.dollars);
+  } else {
+    amountCents = 900; // sale_listing (legacy path)
+  }
 
   // Best-effort internal payment record. This must NEVER block checkout: the
   // Dodo webhook is the source of truth for "paid" and reconciles later. If the
@@ -38,7 +56,7 @@ export async function POST(req: Request) {
     const admin = createAdminClient();
     const { data: payment, error } = await admin
       .from("payments")
-      .insert({ user_id: user.id, kind, reference_id: referenceId, amount_cents: amounts[kind], status: "pending" })
+      .insert({ user_id: user.id, kind, reference_id: referenceId, amount_cents: amountCents, status: "pending" })
       .select("id")
       .single();
     if (error) console.error("checkout: payment record insert failed (continuing):", error.message);
@@ -56,6 +74,7 @@ export async function POST(req: Request) {
       userId: user.id,
       email: user.email ?? undefined,
       successUrl,
+      productId,
     });
     return NextResponse.json({ url });
   } catch (e: any) {
