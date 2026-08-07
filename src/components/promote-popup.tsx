@@ -69,7 +69,7 @@ export function PromotePopup() {
               <span className="font-semibold text-accent-600">$9 / 30 days</span> — launch price, 6 slots only.
             </p>
             <Link
-              href="/browse"
+              href="/promote"
               onClick={() => setOpen(false)}
               className="mt-3 inline-flex h-9 items-center gap-2 rounded-full bg-gradient-to-b from-accent-400 to-accent-500 px-4 text-sm font-semibold text-white shadow-glow transition hover:brightness-105"
             >
