@@ -45,7 +45,7 @@ export default async function Home() {
   return (
     <div>
       {/* ─── 1 · Hero — one idea, sold from here alone ────── */}
-      <section className="relative overflow-hidden">
+      <section data-fomo="hero" className="relative overflow-hidden">
         <div className="grave-grid pointer-events-none absolute inset-0 opacity-[0.22]" />
 
         <div className="relative mx-auto max-w-4xl px-5 pb-16 pt-24 text-center sm:pt-28">
@@ -162,7 +162,7 @@ export default async function Home() {
       </Reveal>
 
       {/* ─── 4 · The Ledger — real listings as proof ──────── */}
-      <section className="mx-auto max-w-4xl px-5 pb-24">
+      <section data-fomo="ledger" className="mx-auto max-w-4xl px-5 pb-24">
         <div className="mb-6 flex items-end justify-between gap-4">
           <div>
             <Eyebrow>Fresh graves</Eyebrow>
@@ -218,7 +218,7 @@ export default async function Home() {
       </section>
 
       {/* ─── 5 · How it works — numbered stepper ──────────── */}
-      <section className="mx-auto max-w-5xl px-5 pb-24">
+      <section data-fomo="how" className="mx-auto max-w-5xl px-5 pb-24">
         <div className="mb-14 text-center">
           <Eyebrow>How it works</Eyebrow>
           <h2 className="text-4xl font-bold tracking-tight text-bone-100 sm:text-5xl">
@@ -262,7 +262,7 @@ export default async function Home() {
       </section>
 
       {/* ─── 6 · What you get — sell the outcome ──────────── */}
-      <section className="mx-auto max-w-6xl px-5 pb-24">
+      <section data-fomo="value" className="mx-auto max-w-6xl px-5 pb-24">
         <div className="mb-10 text-center">
           <Eyebrow>What changes hands</Eyebrow>
           <h2 className="font-serif text-3xl tracking-tight text-bone-100 sm:text-4xl">
@@ -323,7 +323,7 @@ export default async function Home() {
       </section>
 
       {/* ─── 10 · Pricing — popcorn: good / better / best ─── */}
-      <section id="pricing" className="mx-auto max-w-6xl px-5 pb-24 scroll-mt-24">
+      <section id="pricing" data-fomo="pricing" className="mx-auto max-w-6xl px-5 pb-24 scroll-mt-24">
         <div className="mb-10 text-center">
           <Eyebrow>Pricing</Eyebrow>
           <h2 className="font-serif text-3xl tracking-tight text-bone-100 sm:text-4xl">
@@ -413,7 +413,7 @@ export default async function Home() {
       </section>
 
       {/* ─── 12 · FAQ ─────────────────────────────────────── */}
-      <section className="mx-auto max-w-3xl px-5 pb-24">
+      <section data-fomo="faq" className="mx-auto max-w-3xl px-5 pb-24">
         <div className="mb-10 text-center">
           <Eyebrow>Questions</Eyebrow>
           <h2 className="font-serif text-3xl tracking-tight text-bone-100">Good to know</h2>
