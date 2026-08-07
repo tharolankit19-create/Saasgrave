@@ -4,6 +4,7 @@ import { Check, Flame, ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Card } from "@/components/ui";
 import { PayButton } from "@/components/pay-button";
+import { adTier } from "@/lib/ad-pricing";
 
 export const metadata: Metadata = { title: "Promote your product — $9" };
 export const dynamic = "force-dynamic";
@@ -15,17 +16,21 @@ export default async function PromotePage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login?next=/promote");
 
-  // First open slot (not active / no creative, not already owned by this user).
+  // First open slot + how many are already sold (drives the rising price).
   let openSlotId: string | null = null;
   let openCount = 0;
+  let sold = 0;
   try {
     const { data } = await supabase.from("ad_slots").select("id, active, headline, buyer_id").order("position");
-    const open = (data || []).filter((s) => !(s.active && s.headline) && s.buyer_id !== user.id);
+    const rows = data || [];
+    sold = rows.filter((s) => s.buyer_id != null).length;
+    const open = rows.filter((s) => !(s.active && s.headline) && s.buyer_id !== user.id);
     openCount = open.length;
     openSlotId = open[0]?.id ?? null;
   } catch {
     /* degrade to disabled button */
   }
+  const tier = adTier(sold);
 
   // Optional: a direct Dodo payment link (skips our API entirely).
   const directLink = process.env.NEXT_PUBLIC_DODO_AD_LINK?.trim() || undefined;
@@ -75,23 +80,28 @@ export default async function PromotePage() {
             ))}
           </ul>
 
-          <div className="mt-6 flex items-end justify-between rounded-2xl border border-accent-500/25 bg-accent-600/[0.06] p-4">
-            <div>
-              <div className="text-xs text-bone-400">
-                <span className="line-through">$49 / mo</span> · launch discount
+          <div className="mt-6 rounded-2xl border border-accent-500/25 bg-accent-600/[0.06] p-4">
+            <div className="flex items-end justify-between">
+              <div>
+                <div className="text-xs text-bone-400">Today&apos;s price · 30 days</div>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-4xl font-bold text-bone-100">${tier.dollars}</span>
+                  <span className="text-xs text-bone-400">/ 30 days</span>
+                </div>
               </div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-bold text-bone-100">$9</span>
-                <span className="text-xs text-bone-400">/ 30 days</span>
-              </div>
+              <span className="text-xs text-bone-500">
+                {openCount > 0 ? `${openCount} of 6 slots open` : "All slots booked"}
+              </span>
             </div>
-            <span className="text-xs text-bone-500">
-              {openCount > 0 ? `${openCount} of 6 slots open` : "All slots booked"}
-            </span>
+            {!tier.isLast && (
+              <div className="mt-3 flex items-center gap-1.5 border-t border-accent-500/15 pt-3 text-[11px] font-medium text-accent-600">
+                <Flame size={12} /> Price jumps to ${tier.nextDollars} the moment this slot sells. It only goes up.
+              </div>
+            )}
           </div>
 
           <div className="mt-5">
-            <PayButton slotId={openSlotId} directLink={directLink} />
+            <PayButton slotId={openSlotId} directLink={directLink} label={`Pay $${tier.dollars} — go live →`} />
           </div>
           <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-xs text-bone-400">
             <ShieldCheck size={13} className="text-moss-500" /> Secure checkout via Dodo · add your creative right after

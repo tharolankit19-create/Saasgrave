@@ -94,9 +94,9 @@ export default async function Home() {
           </p>
           <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.15em] text-bone-500">
             {hasListings ? (
-              <>{stats.graves} buried · first 50 free · 0% commission</>
+              <>{stats.graves} buried · free to list · just 3% when it sells</>
             ) : (
-              <>Free to list · $9 to sell · 0% commission</>
+              <>Free to list · free to sell · just 3% on a sale</>
             )}
           </p>
         </div>
@@ -306,7 +306,7 @@ export default async function Home() {
             { label: "Cost to list", a: "Free", b: "—", c: "Fees to start" },
             { label: "Zero-revenue welcome", a: true, b: false, c: false },
             { label: "Keeps the post-mortem", a: true, b: false, c: false },
-            { label: "Commission on sale", a: "0%", b: "—", c: "Up to ~15%" },
+            { label: "Commission on sale", a: "3%", b: "—", c: "Up to ~15%" },
             { label: "Stays as a public record", a: true, b: false, c: false },
           ].map((row) => (
             <div key={row.label} className="grid grid-cols-4 border-b border-black/[0.06] text-sm last:border-b-0">
@@ -330,7 +330,7 @@ export default async function Home() {
             Free to list. Pay only to go further.
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-sm text-bone-500">
-            No subscriptions. No commission. You pay once, only when you want more reach.
+            No subscriptions. Free to list and to open for sale — we take just 3% when a startup actually sells.
           </p>
         </div>
         <div className="grid gap-5 md:grid-cols-3">
@@ -340,28 +340,28 @@ export default async function Home() {
               price: "Free",
               unit: "forever",
               title: "List",
-              body: "Publish your product as a public post-mortem. Metrics, story, lessons — live immediately.",
+              body: "A public post-mortem page with a dofollow backlink to your site and an AI write-up for search. Live immediately.",
               cta: "List my startup",
               href: "/sell",
               highlight: false,
             },
             {
               icon: <Rocket size={18} />,
-              price: "$9",
-              unit: "one-time",
+              price: "3%",
+              unit: "only when it sells",
               title: "Sell",
-              body: "Open it to buyers, set a price or take offers, and keep 100% of the sale. No commission, ever.",
-              cta: "Open it for sale",
+              body: "Open it to buyers, take offers, keep 97%. Free to list for sale — no upfront fee, no subscription. We earn only when you do.",
+              cta: "Open it for sale — free",
               href: "/sell",
               highlight: true,
             },
             {
               icon: <Megaphone size={18} />,
-              price: "$9",
+              price: "from $9",
               unit: "/ 30 days",
               title: "Promote",
-              body: "Book one of six premium slots beside every listing. Launch price — was $49. Reach buyers with real intent.",
-              cta: "Claim a slot for $9",
+              body: "A premium dofollow ad slot beside every listing — your logo, tagline and link. Only 6 slots; the price rises to $49 as they fill.",
+              cta: "Promote from $9",
               href: "/promote",
               highlight: false,
             },
@@ -420,7 +420,7 @@ export default async function Home() {
         </div>
         <div className="divide-y divide-black/8 rounded-2xl border border-black/8">
           {[
-            { q: "Is it really free to list?", a: "Yes — listing a startup is free forever. You only pay if you open it for sale ($9 once) or book a promo slot ($9 / 30 days). We never take commission on a sale." },
+            { q: "Is it really free to list?", a: "Yes — listing is free forever, and opening it for sale is free too. We take a flat 3% only when your startup actually sells. The only upfront option is a promo ad slot (from $9 / 30 days)." },
             { q: "Do I need an account to look?", a: "No — browsing and search are open to everyone. You only need a free account to make offers, save a watchlist, get death alerts, or list your own startup." },
             { q: "How is revenue verified?", a: "You connect a restricted, read-only key from Stripe, Paddle, Lemon Squeezy or Dodo. We calculate MRR from active subscriptions and discard the key immediately. Only verified listings get the green badge — self-reported MRR shows as unverified." },
             { q: "Who buys dead startups?", a: "Operators and indie hackers who want a head start — a working codebase, a domain, existing users, or simply a market to pivot into." },

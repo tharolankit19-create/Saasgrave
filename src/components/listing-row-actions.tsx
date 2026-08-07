@@ -4,14 +4,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ExternalLink, CreditCard, Loader2, Rocket } from "lucide-react";
+import { ExternalLink, Tag, Loader2, Rocket } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { startCheckout } from "@/lib/checkout-client";
 
 // Dashboard row actions. A new listing starts as a draft; here the founder
 // chooses what to do with it:
-//   • Publish free  → goes live on the marketplace at no cost
-//   • List for sale → $9 one-time fee, goes live and marked for sale
+//   • Publish free    → goes live on the marketplace at no cost
+//   • Open for sale   → free to open; we take just 3% only when it sells
 export function ListingRowActions({
   startup,
 }: {
@@ -26,11 +25,11 @@ export function ListingRowActions({
   const supabase = createClient();
   const router = useRouter();
   const [publishing, setPublishing] = useState(false);
-  const [paying, setPaying] = useState(false);
+  const [opening, setOpening] = useState(false);
 
   const isDraft = startup.status === "draft";
   const isListed = startup.status === "listed";
-  const canSell = !startup.sale_listing_paid; // hasn't paid the $9 sale fee yet
+  const canSell = !startup.for_sale; // not open for sale yet
 
   async function publishFree() {
     setPublishing(true);
@@ -44,10 +43,17 @@ export function ListingRowActions({
     router.refresh();
   }
 
-  async function listForSale() {
-    setPaying(true);
-    const ok = await startCheckout("sale_listing", startup.id);
-    if (!ok) setPaying(false);
+  // Opening for sale is free now — no upfront fee. We only take 3% on a sale.
+  async function openForSale() {
+    setOpening(true);
+    const { error } = await supabase
+      .from("startups")
+      .update({ for_sale: true, status: "listed" })
+      .eq("id", startup.id);
+    setOpening(false);
+    if (error) return toast.error(error.message);
+    toast.success("Open for sale — buyers can make offers now.");
+    router.refresh();
   }
 
   return (
@@ -65,12 +71,12 @@ export function ListingRowActions({
 
       {canSell && (
         <button
-          onClick={listForSale}
-          disabled={paying}
-          className="inline-flex h-9 items-center gap-1.5 rounded-full border border-accent-500/40 bg-accent-600/10 px-4 text-sm font-medium text-accent-400 transition hover:bg-accent-600/20 disabled:opacity-50"
+          onClick={openForSale}
+          disabled={opening}
+          className="inline-flex h-9 items-center gap-1.5 rounded-full border border-accent-500/40 bg-accent-600/10 px-4 text-sm font-medium text-accent-600 transition hover:bg-accent-600/20 disabled:opacity-50"
         >
-          {paying ? <Loader2 size={14} className="animate-spin" /> : <CreditCard size={14} />}
-          List for sale · $9
+          {opening ? <Loader2 size={14} className="animate-spin" /> : <Tag size={14} />}
+          Open for sale · free
         </button>
       )}
 
