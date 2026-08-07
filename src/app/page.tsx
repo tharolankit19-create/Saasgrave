@@ -18,7 +18,7 @@ import {
   Megaphone,
 } from "lucide-react";
 import { LinkButton, Eyebrow, Card } from "@/components/ui";
-import { LedgerRow } from "@/components/ledger-row";
+import { LedgerRow, SponsoredRow } from "@/components/ledger-row";
 import { Reveal, Marquee } from "@/components/motion";
 import { loadGraveyard } from "@/lib/stats";
 import { money } from "@/lib/utils";
@@ -173,7 +173,18 @@ export default async function Home() {
               <span className="text-right">Interest</span>
             </div>
             {ledger.map((s, i) => (
-              <LedgerRow key={s.slug} s={s} rank={i + 1} maxViews={maxViews} />
+              <div key={s.slug}>
+                <LedgerRow s={s} rank={i + 1} maxViews={maxViews} />
+                {/* Sponsored placement sits right after the top grave (slot #2). */}
+                {i === 0 && (
+                  <SponsoredRow
+                    name="KryxAI"
+                    tagline="Grow on LinkedIn & X in your own voice"
+                    href="https://x.getkryxai.com"
+                    logo="/kryx.jpg"
+                  />
+                )}
+              </div>
             ))}
           </div>
         ) : (
