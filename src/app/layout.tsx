@@ -7,6 +7,7 @@ import { CommunityBar } from "@/components/community-bar";
 import { AnnouncementPopup } from "@/components/announcement-popup";
 import { PromotePopup } from "@/components/promote-popup";
 import { NewsletterBar } from "@/components/newsletter-bar";
+import { NewsletterFomoPopup } from "@/components/newsletter-fomo-popup";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
@@ -105,6 +106,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main>{children}</main>
         <AnnouncementPopup />
         <PromotePopup />
+        <NewsletterFomoPopup />
         <NewsletterBar />
         <Toaster
           theme="light"

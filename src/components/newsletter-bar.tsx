@@ -5,6 +5,10 @@ import Link from "next/link";
 import { X, Check, Loader2 } from "lucide-react";
 
 const KEY = "sg_newsletter_bar_v1";
+// Shared across every capture surface — a visitor who subscribed anywhere
+// (this bar or the FOMO popup) is never asked again.
+const SUBSCRIBED = "sg_subscribed";
+const EMAIL = "sg_email";
 
 // A slim sticky bar at the bottom: the weekly "obituary" newsletter capture,
 // with a quiet pointer to promotion. Dismissible; hidden once subscribed.
@@ -15,7 +19,9 @@ export function NewsletterBar() {
 
   useEffect(() => {
     try {
-      if (!localStorage.getItem(KEY)) setShow(true);
+      if (!localStorage.getItem(KEY) && !localStorage.getItem(SUBSCRIBED)) setShow(true);
+      const saved = localStorage.getItem(EMAIL);
+      if (saved) setEmail(saved);
     } catch {
       setShow(true);
     }
@@ -38,12 +44,14 @@ export function NewsletterBar() {
       const res = await fetch("/api/newsletter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, source: "bar" }),
       });
       if (!res.ok) throw new Error();
       setState("done");
       try {
         localStorage.setItem(KEY, "1");
+        localStorage.setItem(SUBSCRIBED, "1");
+        localStorage.setItem(EMAIL, email.trim().toLowerCase());
       } catch {
         /* ignore */
       }
