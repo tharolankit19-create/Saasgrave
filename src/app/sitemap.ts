@@ -8,7 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "https://saasgrave.org";
   const now = new Date();
 
-  const staticPaths = ["", "/browse", "/sales", "/sell", "/guides", "/community", "/support", "/login", "/register"].map((path) => ({
+  const staticPaths = ["", "/browse", "/sales", "/sell", "/guides", "/guides/write", "/community", "/support", "/login", "/register"].map((path) => ({
     url: `${base}${path}`,
     lastModified: now,
     changeFrequency: "weekly" as const,
@@ -21,6 +21,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "monthly" as const,
     priority: 0.8,
   }));
+
+  // Founder-written stories — real, unique content that should be indexed.
+  let founderGuidePaths: MetadataRoute.Sitemap = [];
 
   // Every listed startup and its founder — real pages that should be indexed so
   // they rank and pass a link back to each founder's site.
@@ -50,9 +53,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.5,
       }));
     }
+
+    const { data: fg } = await supabase
+      .from("founder_guides")
+      .select("slug, created_at")
+      .eq("published", true)
+      .limit(2000);
+    if (fg) {
+      founderGuidePaths = fg.map((g: any) => ({
+        url: `${base}/guides/f/${g.slug}`,
+        lastModified: g.created_at ? new Date(g.created_at) : now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      }));
+    }
   } catch {
     // No DB configured — ship the static + guide URLs alone.
   }
 
-  return [...staticPaths, ...guidePaths, ...startupPaths, ...founderPaths];
+  return [...staticPaths, ...guidePaths, ...founderGuidePaths, ...startupPaths, ...founderPaths];
 }
