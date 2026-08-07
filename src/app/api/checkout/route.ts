@@ -29,29 +29,33 @@ export async function POST(req: Request) {
     sale_listing: 900, // $9 one-time fee to list a startup for sale
   };
 
-  const admin = createAdminClient();
-  const { data: payment, error } = await admin
-    .from("payments")
-    .insert({
-      user_id: user.id,
-      kind,
-      reference_id: referenceId,
-      amount_cents: amounts[kind],
-      status: "pending",
-    })
-    .select("id")
-    .single();
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  // Best-effort internal payment record. This must NEVER block checkout: the
+  // Dodo webhook is the source of truth for "paid" and reconciles later. If the
+  // service-role insert fails (e.g. SUPABASE_SERVICE_ROLE_KEY missing), we log
+  // and still send the buyer to Dodo so they can actually pay.
+  let paymentId: string | null = null;
+  try {
+    const admin = createAdminClient();
+    const { data: payment, error } = await admin
+      .from("payments")
+      .insert({ user_id: user.id, kind, reference_id: referenceId, amount_cents: amounts[kind], status: "pending" })
+      .select("id")
+      .single();
+    if (error) console.error("checkout: payment record insert failed (continuing):", error.message);
+    paymentId = payment?.id ?? null;
+  } catch (e: any) {
+    console.error("checkout: payment record insert threw (continuing):", e?.message || e);
+  }
 
   const site = process.env.NEXT_PUBLIC_SITE_URL || new URL(req.url).origin;
+  const successUrl = `${site}/checkout/success${paymentId ? `?p=${paymentId}` : ""}`;
   try {
     const url = await createDodoCheckout({
       kind,
       referenceId,
       userId: user.id,
       email: user.email ?? undefined,
-      successUrl: `${site}/checkout/success?p=${payment.id}`,
+      successUrl,
     });
     return NextResponse.json({ url });
   } catch (e: any) {

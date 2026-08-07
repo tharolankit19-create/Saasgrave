@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Megaphone, Pencil, Plus, Loader2, ExternalLink, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui";
-import { startCheckout } from "@/lib/checkout-client";
+import { Button, LinkButton } from "@/components/ui";
 
 export type OwnedSlot = {
   id: string;
@@ -32,15 +31,6 @@ export function AdSlotManager({
   openSlotId: string | null;
   openCount: number;
 }) {
-  const [booking, setBooking] = useState(false);
-
-  async function book() {
-    if (!openSlotId) return;
-    setBooking(true);
-    const ok = await startCheckout("ad_slot", openSlotId);
-    if (!ok) setBooking(false);
-  }
-
   return (
     <div className="grid gap-4">
       {owned.map((slot) => (
@@ -62,10 +52,15 @@ export function AdSlotManager({
             </p>
           </div>
         </div>
-        <Button size="md" onClick={book} disabled={booking || openCount === 0}>
-          {booking ? <Loader2 className="animate-spin" size={16} /> : <Plus size={16} />}
-          {openCount > 0 ? "Book a slot" : "Sold out"}
-        </Button>
+        {openCount > 0 ? (
+          <LinkButton href="/promote" size="md">
+            <Plus size={16} /> Book a slot
+          </LinkButton>
+        ) : (
+          <Button size="md" disabled>
+            Sold out
+          </Button>
+        )}
       </div>
     </div>
   );

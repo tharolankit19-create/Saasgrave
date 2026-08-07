@@ -1,4 +1,5 @@
-import { BuyAdModal } from "@/components/buy-ad-modal";
+import Link from "next/link";
+import { Plus } from "lucide-react";
 
 type AdSlot = {
   id: string;
@@ -37,12 +38,28 @@ export function AdRail({ slots }: { slots: AdSlot[] }) {
             </div>
           </a>
         ) : (
-          <div key={slot.id} className="min-h-[160px]">
-            <BuyAdModal slotId={slot.id} position={slot.position} />
-          </div>
+          <PromoteSlotCard key={slot.id} />
         )
       )}
     </aside>
+  );
+}
+
+// Empty slot → a link straight to the /promote paywall (no popup checkout).
+function PromoteSlotCard() {
+  return (
+    <Link
+      href="/promote"
+      className="group flex min-h-[160px] flex-col items-center justify-center rounded-2xl border border-dashed border-accent-500/40 bg-accent-600/[0.06] p-5 text-center transition hover:border-accent-500/70 hover:bg-accent-600/[0.1] hover:shadow-card"
+    >
+      <span className="mb-2 grid h-9 w-9 place-items-center rounded-full bg-gradient-to-b from-accent-400 to-accent-500 text-white shadow-glow transition group-hover:scale-105">
+        <Plus size={16} />
+      </span>
+      <span className="text-xs font-bold text-bone-100">Put your product here</span>
+      <span className="mt-0.5 text-[11px] font-semibold text-accent-600">
+        <span className="text-bone-500 line-through">$49</span> $9 / 30 days
+      </span>
+    </Link>
   );
 }
 
@@ -84,9 +101,19 @@ export function AdStrip({ slots }: { slots: AdSlot[] }) {
                 </span>
               </a>
             ) : (
-              <div key={`${slot.id}-${i}`} className="min-w-[170px] shrink-0">
-                <BuyAdModal slotId={slot.id} position={slot.position} />
-              </div>
+              <Link
+                key={`${slot.id}-${i}`}
+                href="/promote"
+                className="flex min-w-[170px] shrink-0 items-center gap-2 rounded-xl border border-dashed border-accent-500/40 bg-accent-600/[0.06] p-3"
+              >
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-to-b from-accent-400 to-accent-500 text-white shadow-glow">
+                  <Plus size={15} />
+                </span>
+                <span>
+                  <span className="block text-xs font-bold text-bone-100">Your product here</span>
+                  <span className="block text-[11px] font-semibold text-accent-600">$9 / 30 days</span>
+                </span>
+              </Link>
             )
           )}
         </div>

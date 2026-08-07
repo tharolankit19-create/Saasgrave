@@ -362,7 +362,7 @@ export default async function Home() {
               title: "Promote",
               body: "Book one of six premium slots beside every listing. Launch price — was $49. Reach buyers with real intent.",
               cta: "Claim a slot for $9",
-              href: "/browse",
+              href: "/promote",
               highlight: false,
             },
           ].map((p) => (
