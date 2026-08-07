@@ -1,6 +1,66 @@
 import Link from "next/link";
-import { Eye, ArrowUpRight, BadgeCheck } from "lucide-react";
+import { Eye, ArrowUpRight, BadgeCheck, Sparkles } from "lucide-react";
 import { money } from "@/lib/utils";
+
+// A single sponsored placement dropped into the dead list (e.g. at rank #2).
+// Bigger than a normal row, minimal details, one clear outbound click. Real ad,
+// clearly labelled — not disguised as a listing.
+export function SponsoredRow({
+  name,
+  tagline,
+  href,
+  logo,
+}: {
+  name: string;
+  tagline: string;
+  href: string;
+  logo?: string | null;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer sponsored"
+      className="group grid grid-cols-[2rem_1fr_auto] items-center gap-3 border-y border-accent-500/25 bg-accent-600/[0.05] px-4 py-4 transition-colors hover:bg-accent-600/[0.09] sm:grid-cols-[2.25rem_1fr_7rem_8rem_auto] sm:gap-4 sm:px-6"
+    >
+      <span className="grid h-7 w-7 place-items-center rounded-full bg-accent-500/15 text-accent-600">
+        <Sparkles size={13} />
+      </span>
+
+      <span className="flex min-w-0 items-center gap-3">
+        {logo ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={logo} alt="" className="h-11 w-11 shrink-0 rounded-lg border border-black/10 bg-white object-contain p-1" />
+        ) : (
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg border border-black/10 bg-ink-850 text-base font-bold text-bone-300">
+            {name.charAt(0)}
+          </span>
+        )}
+        <span className="min-w-0">
+          <span className="flex items-center gap-1.5">
+            <span className="truncate text-[15px] font-bold text-bone-100 group-hover:text-accent-600">{name}</span>
+            <ArrowUpRight size={13} className="shrink-0 text-accent-600" />
+          </span>
+          <span className="block truncate text-xs text-bone-400">{tagline}</span>
+        </span>
+      </span>
+
+      <span className="hidden sm:block">
+        <span className="inline-flex items-center rounded-full border border-black/10 bg-black/[0.03] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-bone-500">
+          Sponsored
+        </span>
+      </span>
+
+      <span className="hidden sm:block" />
+
+      <span className="flex w-20 justify-end">
+        <span className="inline-flex items-center gap-1 text-xs font-semibold text-accent-600">
+          Visit <ArrowUpRight size={12} />
+        </span>
+      </span>
+    </a>
+  );
+}
 
 export type LedgerStartup = {
   slug: string;
