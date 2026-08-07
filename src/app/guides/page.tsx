@@ -33,19 +33,19 @@ export default async function GuidesIndex() {
   return (
     <div className="mx-auto max-w-4xl px-5 py-14">
       <div className="text-center">
-        <Eyebrow>Guides</Eyebrow>
-        <h1 className="font-serif text-4xl tracking-tight text-bone-100 sm:text-5xl">
-          The honest playbook for what comes after
+        <Eyebrow>Stories</Eyebrow>
+        <h1 className="text-4xl font-bold tracking-tight text-bone-100 sm:text-5xl">
+          Founder stories &amp; the honest playbooks
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-bone-400">
-          Failing, pivoting, selling, buying — the parts of the startup journey nobody writes about,
-          written plainly for founders who are in it right now.
+          Real stories from founders who failed, pivoted, sold and started again — plus practical
+          playbooks for the parts of the journey nobody writes about. Share yours.
         </p>
         <Link
           href="/guides/write"
-          className="mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-bone-100 px-6 text-sm font-medium text-ink-950 shadow-card transition hover:shadow-lift"
+          className="mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-gradient-to-b from-accent-400 to-accent-500 px-6 text-sm font-semibold text-white shadow-glow transition hover:brightness-105"
         >
-          <PenLine size={15} /> Write your own guide
+          <PenLine size={15} /> Share your story
         </Link>
       </div>
 
@@ -73,7 +73,7 @@ export default async function GuidesIndex() {
       {founderGuides.length > 0 && (
         <div className="mt-16">
           <div className="mb-6 flex items-center justify-between">
-            <h2 className="font-serif text-2xl tracking-tight text-bone-100">From founders</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-bone-100">Founder stories</h2>
             <Link href="/guides/write" className="text-sm font-medium text-accent-600 hover:underline">
               Add yours →
             </Link>
@@ -82,7 +82,7 @@ export default async function GuidesIndex() {
             {founderGuides.map((g) => (
               <Link key={g.slug} href={`/guides/f/${g.slug}`} className="group">
                 <Card className="flex h-full flex-col p-6 transition hover:shadow-lift">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-accent-600">Founder guide</span>
+                  <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-accent-600">Founder story</span>
                   <h3 className="mt-2 font-medium leading-snug text-bone-100 group-hover:text-accent-600">{g.title}</h3>
                   {g.summary && <p className="mt-1.5 flex-1 text-sm leading-relaxed text-bone-400">{g.summary}</p>}
                   <span className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-accent-600">

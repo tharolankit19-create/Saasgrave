@@ -30,7 +30,7 @@ export default async function FounderGuidePage({ params }: { params: { slug: str
       <nav className="mb-6 flex items-center gap-2 text-sm text-bone-500">
         <Link href="/" className="hover:text-bone-300">Saasgrave</Link>
         <span>›</span>
-        <Link href="/guides" className="hover:text-bone-300">Guides</Link>
+        <Link href="/guides" className="hover:text-bone-300">Stories</Link>
       </nav>
 
       <header>

@@ -343,11 +343,11 @@ export default async function Home() {
             },
             {
               icon: <Megaphone size={18} />,
-              price: "$49",
+              price: "$9",
               unit: "/ 30 days",
               title: "Promote",
-              body: "Book one of six premium slots beside every listing. Reach buyers with real intent.",
-              cta: "Claim a slot",
+              body: "Book one of six premium slots beside every listing. Launch price — was $49. Reach buyers with real intent.",
+              cta: "Claim a slot for $9",
               href: "/browse",
               highlight: false,
             },
@@ -406,7 +406,7 @@ export default async function Home() {
         </div>
         <div className="divide-y divide-black/8 rounded-2xl border border-black/8">
           {[
-            { q: "Is it really free to list?", a: "Yes — listing a startup is free forever. You only pay if you open it for sale ($9 once) or book a promo slot ($49 / 30 days). We never take commission on a sale." },
+            { q: "Is it really free to list?", a: "Yes — listing a startup is free forever. You only pay if you open it for sale ($9 once) or book a promo slot ($9 / 30 days). We never take commission on a sale." },
             { q: "Do I need an account to look?", a: "No — browsing and search are open to everyone. You only need a free account to make offers, save a watchlist, get death alerts, or list your own startup." },
             { q: "How is revenue verified?", a: "You connect a restricted, read-only key from Stripe, Paddle, Lemon Squeezy or Dodo. We calculate MRR from active subscriptions and discard the key immediately. Only verified listings get the green badge — self-reported MRR shows as unverified." },
             { q: "Who buys dead startups?", a: "Operators and indie hackers who want a head start — a working codebase, a domain, existing users, or simply a market to pivot into." },
@@ -456,7 +456,7 @@ export default async function Home() {
             <Link href="/browse" className="hover:text-bone-300">Browse</Link>
             <Link href="/sales" className="hover:text-bone-300">For sale</Link>
             <Link href="/#pricing" className="hover:text-bone-300">Pricing</Link>
-            <Link href="/guides" className="hover:text-bone-300">Guides</Link>
+            <Link href="/guides" className="hover:text-bone-300">Stories</Link>
             <Link href="/community" className="hover:text-bone-300">Community</Link>
             <Link href="/sell" className="hover:text-bone-300">List a startup</Link>
             <Link href="/support" className="hover:text-bone-300">Support</Link>

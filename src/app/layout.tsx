@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import { Navbar } from "@/components/navbar";
 import { CommunityBar } from "@/components/community-bar";
 import { AnnouncementPopup } from "@/components/announcement-popup";
+import { PromotePopup } from "@/components/promote-popup";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
@@ -102,6 +103,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
         <main>{children}</main>
         <AnnouncementPopup />
+        <PromotePopup />
         <Toaster
           theme="light"
           position="bottom-right"

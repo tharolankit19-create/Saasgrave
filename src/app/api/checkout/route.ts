@@ -25,7 +25,7 @@ export async function POST(req: Request) {
   }
 
   const amounts: Record<CheckoutKind, number> = {
-    ad_slot: 4900, // $49 / 30 days
+    ad_slot: 900, // $9 / 30 days — launch discount (was $49)
     sale_listing: 900, // $9 one-time fee to list a startup for sale
   };
 
