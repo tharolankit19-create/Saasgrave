@@ -46,12 +46,25 @@ export default async function Home() {
     <div>
       {/* ─── 1 · Hero — one idea, sold from here alone ────── */}
       <section className="relative overflow-hidden">
-        <div className="grave-grid pointer-events-none absolute inset-0 opacity-40" />
+        <div className="grave-grid pointer-events-none absolute inset-0 opacity-[0.22]" />
 
         <div className="relative mx-auto max-w-4xl px-5 pb-16 pt-24 text-center sm:pt-28">
-          <div className="mb-6 inline-flex animate-fade-in items-center gap-2 rounded-full border border-black/10 bg-ink-900 px-3.5 py-1.5 text-xs text-bone-500 shadow-card">
-            <Flame size={12} className="text-accent-500" />
-            The resting place for dead &amp; zero-revenue startups
+          <div className="mb-6 inline-flex animate-fade-in items-center gap-2 rounded-full border border-black/10 bg-ink-900 px-3.5 py-1.5 text-xs font-medium text-bone-300 shadow-card">
+            {hasListings ? (
+              <>
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-moss-400 opacity-75" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-moss-500" />
+                </span>
+                <span className="text-bone-100">{stats.founders}+ founders</span> joined ·{" "}
+                <span className="text-bone-100">{stats.graves}</span> startups buried
+              </>
+            ) : (
+              <>
+                <Flame size={12} className="text-accent-500" />
+                The resting place for dead &amp; zero-revenue startups
+              </>
+            )}
           </div>
 
           <h1 className="text-[2.7rem] font-bold leading-[0.98] tracking-tight text-bone-100 sm:text-[5rem]">
@@ -75,12 +88,13 @@ export default async function Home() {
             </Link>
           </div>
 
-          {/* Real proof, in one mono line — no fakes. */}
-          <p className="mt-8 font-mono text-[11px] uppercase tracking-[0.15em] text-bone-500">
+          {/* Friction-killers right under the CTA — the reasons to sign up now. */}
+          <p className="mt-4 text-xs text-bone-500">
+            Free forever · No card · Lists in 3 minutes
+          </p>
+          <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.15em] text-bone-500">
             {hasListings ? (
-              <>
-                {stats.graves} buried · {stats.founders} founders · first 50 free · 0% commission
-              </>
+              <>{stats.graves} buried · first 50 free · 0% commission</>
             ) : (
               <>Free to list · $9 to sell · 0% commission</>
             )}

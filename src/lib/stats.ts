@@ -48,17 +48,27 @@ export async function loadGraveyard(limit = 200): Promise<{ rows: GraveyardRow[]
     if (error || !data) return { rows: [], stats: EMPTY };
 
     const rows = data as GraveyardRow[];
-    const founders = new Set<string>();
+    const listers = new Set<string>();
     let buriedMrr = 0;
     let users = 0;
     let forSale = 0;
 
     for (const r of rows) {
-      founders.add(r.founder_id);
+      listers.add(r.founder_id);
       // Only verified revenue counts — we never aggregate self-reported MRR.
       buriedMrr += r.revenue_verified ? r.verified_mrr ?? 0 : 0;
       users += r.total_users ?? 0;
       if (r.for_sale) forSale += 1;
+    }
+
+    // "Founders joined" = every registered founder (real signups), not only the
+    // ones who've already listed — the previous count under-reported the community.
+    let founders = listers.size;
+    try {
+      const { count } = await supabase.from("profiles").select("id", { count: "exact", head: true });
+      if (typeof count === "number" && count > founders) founders = count;
+    } catch {
+      /* fall back to distinct listers */
     }
 
     return {
@@ -67,7 +77,7 @@ export async function loadGraveyard(limit = 200): Promise<{ rows: GraveyardRow[]
         graves: rows.length,
         buriedMrr: Math.round(buriedMrr),
         users,
-        founders: founders.size,
+        founders,
         forSale,
       },
     };
