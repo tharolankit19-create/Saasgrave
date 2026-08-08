@@ -15,17 +15,16 @@ import {
   Heart,
   LineChart,
   Rocket,
-  Megaphone,
   Sparkles,
-  Rows3,
-  Mail,
+  Link2,
 } from "lucide-react";
 import { LinkButton, Eyebrow, Card } from "@/components/ui";
-import { PLACEMENTS, PLACEMENT_ORDER } from "@/lib/ad-pricing";
+import { PRODUCTS } from "@/lib/ad-pricing";
 import { LedgerRow, SponsoredRow } from "@/components/ledger-row";
 import { Reveal, Marquee } from "@/components/motion";
 import { loadGraveyard } from "@/lib/stats";
 import { loadSponsored } from "@/lib/sponsored";
+import { getLiveStats } from "@/lib/live";
 import { money } from "@/lib/utils";
 
 function compact(n: number) {
@@ -35,12 +34,19 @@ function compact(n: number) {
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [{ rows, stats }, sponsored] = await Promise.all([loadGraveyard(200), loadSponsored()]);
+  const [{ rows, stats }, sponsored, liveStats] = await Promise.all([
+    loadGraveyard(200),
+    loadSponsored(),
+    getLiveStats(),
+  ]);
 
   // Paid Featured Launches lead the ledger; everything else keeps its order.
   const live = (r: { featured: boolean | null; featured_until: string | null }) =>
     !!r.featured && (!r.featured_until || new Date(r.featured_until) > new Date());
   const ledger = [...rows.filter(live), ...rows.filter((r) => !live(r))].slice(0, 12);
+  const featured = rows.filter(live).slice(0, 6);
+  // Only ever shown when analytics is actually configured — never an invented number.
+  const liveVisitors = liveStats.visitors7d;
   const maxViews = Math.max(1, ...ledger.map((s) => s.view_count ?? 0));
   const hasListings = rows.length > 0;
 
@@ -323,18 +329,19 @@ export default async function Home() {
         </p>
       </section>
 
-      {/* ─── 10 · Pricing — popcorn: good / better / best ─── */}
-      <section id="pricing" data-fomo="pricing" className="mx-auto max-w-6xl px-5 pb-24 scroll-mt-24">
-        <div className="mb-10 text-center">
+      {/* ─── 10 · Pricing teaser — the detail lives on /pricing ─ */}
+      <section id="pricing" className="mx-auto max-w-5xl px-5 pb-24 scroll-mt-24">
+        <div className="mb-9 text-center">
           <Eyebrow>Pricing</Eyebrow>
-          <h2 className="font-serif text-3xl tracking-tight text-bone-100 sm:text-4xl">
+          <h2 className="text-3xl font-bold tracking-tight text-bone-100 sm:text-4xl">
             Free to list. Pay only to go further.
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-sm text-bone-500">
-            No subscriptions. Free to list and to open for sale — we take just 3% when a startup actually sells.
+            No subscriptions. Listing and opening for sale are free — we take just 3% when a startup
+            actually sells.
           </p>
         </div>
-        {/* Core: listing and selling. Both free — we earn on the sale. */}
+
         <div className="mx-auto grid max-w-3xl gap-5 md:grid-cols-2">
           {[
             {
@@ -352,7 +359,7 @@ export default async function Home() {
               price: "3%",
               unit: "only when it sells",
               title: "Sell",
-              body: "Open it to buyers, take offers, keep 97%. Free to list for sale — no upfront fee, no subscription. We earn only when you do.",
+              body: "Open it to buyers, take offers, keep 97%. No upfront fee, no subscription. We earn only when you do.",
               cta: "Open it for sale — free",
               href: "/sell",
               highlight: true,
@@ -388,60 +395,134 @@ export default async function Home() {
           ))}
         </div>
 
-        {/* Paid promotion — flat price per placement, 30 days, all dofollow. */}
-        <div className="mt-16">
-          <div className="mb-8 text-center">
-            <h3 className="text-2xl font-bold tracking-tight text-bone-100">
-              Want to be seen? Pick a placement.
-            </h3>
-            <p className="mx-auto mt-2 max-w-lg text-sm text-bone-500">
-              Flat price, 30 days, no auctions or CPC — and{" "}
-              <span className="font-medium text-moss-500">every one includes a dofollow backlink</span>.
+        {/* Everything paid lives on its own page — one line, one link. */}
+        <Link
+          href="/pricing"
+          className="group mx-auto mt-6 flex max-w-3xl flex-wrap items-center justify-between gap-4 rounded-2xl border border-dashed border-accent-500/30 bg-accent-600/[0.04] px-6 py-5 transition hover:border-accent-500/60 hover:bg-accent-600/[0.08]"
+        >
+          <div>
+            <p className="text-sm font-semibold text-bone-100">
+              Want to be seen? Promotion starts at ${PRODUCTS.featured.dollars}.
+            </p>
+            <p className="mt-0.5 text-xs text-bone-500">
+              Featured launches, sidebar slots, sponsored rows, newsletter mentions and a 100+
+              directory blast — every one with a dofollow backlink.
             </p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {PLACEMENT_ORDER.map((key) => {
-              const spec = PLACEMENTS[key];
-              const icons = {
-                featured: <Sparkles size={16} />,
-                sidebar: <Megaphone size={16} />,
-                sponsored: <Rows3 size={16} />,
-                newsletter: <Mail size={16} />,
-              } as const;
-              return (
-                <Link key={key} href="/promote" className="group block">
-                  <Card className="flex h-full flex-col p-5 transition-all duration-300 hover:border-accent-500/40 hover:bg-ink-850">
-                    <div className="flex items-center justify-between">
-                      <span className="grid h-9 w-9 place-items-center rounded-xl border border-black/10 text-accent-400">
-                        {icons[key]}
-                      </span>
-                      <span className="font-mono text-[10px] uppercase tracking-wider text-bone-500">
-                        {spec.slots} slot{spec.slots > 1 ? "s" : ""}
-                      </span>
-                    </div>
-                    <div className="mt-4 flex items-baseline gap-1">
-                      <span className="text-2xl font-bold text-bone-100">${spec.dollars}</span>
-                      <span className="text-[11px] text-bone-500">/ 30 days</span>
-                    </div>
-                    <h4 className="mt-1.5 text-sm font-semibold text-bone-100 group-hover:text-accent-600">
-                      {spec.name}
-                    </h4>
-                    <p className="mt-1 flex-1 text-xs leading-relaxed text-bone-500">{spec.tagline}</p>
-                    <span className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-accent-600">
-                      Get it <ArrowRight size={12} />
-                    </span>
-                  </Card>
-                </Link>
-              );
-            })}
-          </div>
-          <p className="mt-6 text-center text-xs text-bone-500">
-            Launch with Featured and you also get an embeddable{" "}
-            <span className="font-medium text-bone-300">“Featured on Saasgrave”</span> badge for your
-            own site.
+          <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-accent-600">
+            See all pricing <ArrowRight size={15} className="transition group-hover:translate-x-0.5" />
+          </span>
+        </Link>
+      </section>
+      {/* ─── 10b · The payoff — what listing actually buys you ─ */}
+      <Reveal as="section" className="mx-auto max-w-6xl px-5 pb-24">
+        <div className="mb-10 text-center">
+          <Eyebrow>What you get</Eyebrow>
+          <h2 className="text-3xl font-bold tracking-tight text-bone-100 sm:text-4xl">
+            A dead repo earns you nothing. A listing earns you this.
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-bone-500">
+            Even if nobody ever buys it, the listing keeps working for you.
           </p>
         </div>
-      </section>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            {
+              icon: <Link2 size={18} />,
+              stat: "Dofollow",
+              title: "A permanent backlink",
+              body: "Your listing links straight to your site, and Google follows it. Share your launch and you earn a second one — free.",
+            },
+            {
+              icon: <Users size={18} />,
+              stat: liveVisitors ? compact(liveVisitors) : `${stats.founders}+`,
+              title: liveVisitors ? "People browsed last week" : "Founders already here",
+              body: "Operators, indie hackers and acquirers come here hunting for code, domains and users to take over.",
+            },
+            {
+              icon: <BookOpen size={18} />,
+              stat: "AI",
+              title: "A write-up built for search",
+              body: "Every listing gets a long-form article written for the terms buyers actually search — so it keeps pulling traffic on its own.",
+            },
+            {
+              icon: <Tag size={18} />,
+              stat: "3%",
+              title: "A real shot at a sale",
+              body: "Zero-revenue products still sell on the code, the domain and the audience. You keep 97% of whatever it goes for.",
+            },
+          ].map((b) => (
+            <Card key={b.title} className="flex flex-col p-6">
+              <span className="mb-4 grid h-10 w-10 place-items-center rounded-xl bg-accent-500/10 text-accent-600">
+                {b.icon}
+              </span>
+              <div className="font-mono text-2xl font-bold leading-none tabular-nums text-bone-100">
+                {b.stat}
+              </div>
+              <h3 className="mt-2 text-sm font-semibold text-bone-100">{b.title}</h3>
+              <p className="mt-1.5 flex-1 text-xs leading-relaxed text-bone-500">{b.body}</p>
+            </Card>
+          ))}
+        </div>
+      </Reveal>
+
+      {/* ─── 10c · Featured so far — proof the placement works ─ */}
+      {featured.length > 0 && (
+        <section className="mx-auto max-w-6xl px-5 pb-24">
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <Eyebrow>Featured so far</Eyebrow>
+              <h2 className="text-2xl font-bold tracking-tight text-bone-100 sm:text-3xl">
+                Currently pinned to the top
+              </h2>
+              <p className="mt-2 text-sm text-bone-500">
+                Founders who took a Featured Launch — and where it put them.
+              </p>
+            </div>
+            <Link
+              href="/pricing"
+              className="shrink-0 text-sm font-medium text-accent-600 hover:underline"
+            >
+              Get featured from ${PRODUCTS.featured.dollars} →
+            </Link>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {featured.map((s) => (
+              <Link key={s.slug} href={`/startup/${s.slug}`} className="group block">
+                <Card className="flex h-full items-start gap-3 p-5 transition-all duration-300 hover:border-accent-500/40 hover:bg-ink-850">
+                  {s.logo_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={s.logo_url}
+                      alt=""
+                      className="h-11 w-11 shrink-0 rounded-xl border border-black/10 object-cover"
+                    />
+                  ) : (
+                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-black/10 bg-ink-800 font-serif text-lg text-bone-300">
+                      {s.name.charAt(0)}
+                    </span>
+                  )}
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <h3 className="truncate font-semibold text-bone-100 group-hover:text-accent-600">
+                        {s.name}
+                      </h3>
+                      <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-accent-500/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-accent-600">
+                        <Sparkles size={8} /> Featured
+                      </span>
+                    </div>
+                    <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-bone-500">
+                      {s.tagline || "No description yet."}
+                    </p>
+                  </div>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ─── 11 · Trust — numbers you can verify ──────────── */}
       <section className="mx-auto max-w-5xl px-5 pb-24">
@@ -516,8 +597,9 @@ export default async function Home() {
           <div className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-bone-500">
             <Link href="/browse" className="hover:text-bone-300">Browse</Link>
             <Link href="/sales" className="hover:text-bone-300">For sale</Link>
-            <Link href="/#pricing" className="hover:text-bone-300">Pricing</Link>
+            <Link href="/pricing" className="hover:text-bone-300">Pricing</Link>
             <Link href="/guides" className="hover:text-bone-300">Stories</Link>
+            <Link href="/wall" className="hover:text-bone-300">Launch wall</Link>
             <Link href="/community" className="hover:text-bone-300">Community</Link>
             <Link href="/sell" className="hover:text-bone-300">List a startup</Link>
             <Link href="/support" className="hover:text-bone-300">Support</Link>

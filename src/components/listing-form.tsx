@@ -129,7 +129,8 @@ export function ListingForm() {
     }
     if (publish) {
       toast.success("Your listing is live.");
-      router.push(`/startup/${data.slug}`);
+      // ?launched=1 triggers the share prompt on the listing itself.
+      router.push(`/startup/${data.slug}?launched=1`);
     } else {
       toast.success("Saved as a draft — publish it anytime from your dashboard.");
       router.push("/dashboard");

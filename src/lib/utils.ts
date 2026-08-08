@@ -33,3 +33,11 @@ export function monthsBetween(a?: string | null, b?: string | null) {
     (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth())
   );
 }
+
+// Accepts "example.com" as readily as a full URL — founders type both.
+export function normalizeUrl(url?: string | null): string | null {
+  if (!url) return null;
+  const t = url.trim();
+  if (!t) return null;
+  return /^https?:\/\//i.test(t) ? t : `https://${t}`;
+}
