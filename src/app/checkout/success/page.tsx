@@ -133,7 +133,7 @@ export default async function CheckoutSuccess({
       <Shell
         icon={<Sparkles size={28} />}
         title={name ? `${name} is featured.` : "You're featured."}
-        sub="Pinned to the top of the graveyard for the next 30 days. Here's your badge — put it on your site."
+        sub="Pinned to the top of the graveyard for the next week. Here's your badge — put it on your site."
       >
         <BadgeEmbed site={SITE} slug={slug} />
         <div className="mt-6 flex justify-center gap-3">

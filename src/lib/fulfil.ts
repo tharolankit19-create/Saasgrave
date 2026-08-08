@@ -1,7 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/server";
 import type { CheckoutKind } from "@/lib/dodo";
-
-const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+import { isPlacement, runEndsAt, type ProductKey } from "@/lib/ad-pricing";
 
 /**
  * Unlock a purchase. Deliberately idempotent and shared by both paths that can
@@ -38,8 +37,10 @@ export async function fulfilPurchase({
     return false;
   }
 
+  // Each product runs for its own length — a Featured Launch is a week, the
+  // slots are a month — so the end date is always derived from the catalogue.
   const now = new Date();
-  const ends = new Date(now.getTime() + THIRTY_DAYS_MS);
+  const endsFor = (key: ProductKey) => runEndsAt(key, now)?.toISOString() ?? null;
 
   try {
     if (markPaid) {
@@ -57,19 +58,20 @@ export async function fulfilPurchase({
       // already owns.
       const { data: slot } = await admin
         .from("ad_slots")
-        .select("id, buyer_id, price_cents")
+        .select("id, buyer_id, placement")
         .eq("id", referenceId)
         .single();
       if (!slot) return false;
       if (slot.buyer_id && buyerId && slot.buyer_id !== buyerId) return false;
 
+      const placement = isPlacement(slot.placement) ? slot.placement : "sidebar";
       const { error } = await admin
         .from("ad_slots")
         .update({
           active: true,
           buyer_id: buyerId ?? slot.buyer_id ?? null,
           starts_at: now.toISOString(),
-          ends_at: ends.toISOString(),
+          ends_at: endsFor(placement),
         })
         .eq("id", referenceId);
       if (error) {
@@ -82,7 +84,7 @@ export async function fulfilPurchase({
     if (kind === "featured") {
       const { error } = await admin
         .from("startups")
-        .update({ featured: true, featured_until: ends.toISOString() })
+        .update({ featured: true, featured_until: endsFor("featured") })
         .eq("id", referenceId);
       if (error) {
         console.error("fulfil: featured update failed:", error.message);
@@ -105,12 +107,13 @@ export async function fulfilPurchase({
 
     if (kind === "bundle") {
       // Everything at once: feature the startup, queue the directory blast, and
-      // reserve one free slot of each placement for the buyer to fill in.
+      // reserve one free slot of each placement for the buyer to fill in. Each
+      // part keeps its own run length rather than sharing one.
       const { error } = await admin
         .from("startups")
         .update({
           featured: true,
-          featured_until: ends.toISOString(),
+          featured_until: endsFor("featured"),
           directory_status: "paid",
         })
         .eq("id", referenceId);
@@ -136,7 +139,7 @@ export async function fulfilPurchase({
               active: true,
               buyer_id: buyerId,
               starts_at: now.toISOString(),
-              ends_at: ends.toISOString(),
+              ends_at: endsFor(placement),
             })
             .eq("id", slotId)
             .is("buyer_id", null); // don't race another buyer

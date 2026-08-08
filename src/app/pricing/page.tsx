@@ -19,6 +19,9 @@ import {
   BUNDLE_LIST_PRICE,
   BUNDLE_SAVING,
   PLACEMENT_ORDER,
+  ONSITE_ORDER,
+  REACH_ORDER,
+  MOST_POPULAR,
   type Placement,
   type ProductKey,
 } from "@/lib/ad-pricing";
@@ -108,9 +111,11 @@ export default async function PricingPage() {
             </LinkButton>
           </Card>
 
+          {/* Highlighted, but deliberately not badged "Most popular" — that
+              badge belongs to the one paid product we steer people towards. */}
           <Card className="shine-border relative flex flex-col border-accent-500/40 p-7 shadow-lift">
-            <span className="absolute -top-2.5 left-7 z-[3] rounded-full bg-accent-500 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white shadow-sm">
-              Most popular
+            <span className="absolute -top-2.5 left-7 z-[3] rounded-full bg-moss-500 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white shadow-sm">
+              No upfront fee
             </span>
             <span className="mb-5 grid h-10 w-10 place-items-center rounded-xl border border-black/10 text-accent-400">
               <Rocket size={18} />
@@ -138,41 +143,37 @@ export default async function PricingPage() {
         sub="Buyers, operators and indie hackers browse here looking for products to acquire. Put yours in their path."
       >
         <div className="grid gap-5 md:grid-cols-3">
-          {(["featured", "sidebar", "sponsored"] as ProductKey[]).map((key) => (
+          {ONSITE_ORDER.map((key) => (
             <ProductCard key={key} product={key} left={left[key as Placement]} />
           ))}
         </div>
       </Section>
 
-      {/* ── 3 · Newsletter ──────────────────────────────── */}
-      <Section
-        eyebrow="Land in inboxes"
-        title="The Weekly Obituary"
-        sub="Site traffic is one thing — an inbox is another. A dedicated block in the weekly email, sent to every subscriber."
-      >
-        <div className="mx-auto max-w-3xl">
-          <ProductCard product="newsletter" left={left.newsletter} wide />
-        </div>
-      </Section>
+      {/* ── 3 · Beyond the site — newsletter + directory, side by side ─
+             Kept well clear of the on-site placements above: these reach
+             people who will never scroll our list at all. */}
+      <div className="border-t border-black/8 pt-20">
+        <Section
+          eyebrow="Reach beyond the site"
+          title="Go further than the graveyard"
+          sub="Inboxes and other people's directories — where the people who'll never scroll our list still find you."
+        >
+          <div className="mx-auto grid max-w-4xl gap-5 md:grid-cols-2">
+            {REACH_ORDER.map((key) => (
+              <ProductCard key={key} product={key} left={left[key as Placement]} />
+            ))}
+          </div>
+        </Section>
+      </div>
 
-      {/* ── 4 · Directory blast ─────────────────────────── */}
-      <Section
-        eyebrow="Build backlinks"
-        title="Directory Blast — 100+ submissions"
-        sub="The unglamorous SEO work nobody wants to do. We submit your product by hand to more than a hundred startup and SaaS directories."
-      >
-        <div className="mx-auto max-w-3xl">
-          <ProductCard product="directory" wide />
-        </div>
-      </Section>
-
-      {/* ── 5 · Bundle ──────────────────────────────────── */}
+      {/* ── 4 · Bundle — full width, the last thing you see ─ */}
+      <div className="border-t border-black/8 pt-20">
       <Section
         eyebrow="Everything at once"
         title={`Take the lot and save $${BUNDLE_SAVING}`}
         sub={`Every placement we sell, plus the directory blast. Bought separately it comes to $${BUNDLE_LIST_PRICE}.`}
       >
-        <Card className="shine-border relative mx-auto max-w-4xl border-accent-500/40 p-8 shadow-lift sm:p-10">
+        <Card className="shine-border relative border-accent-500/40 p-8 shadow-lift sm:p-10">
           <span className="absolute -top-3 left-8 z-[3] rounded-full bg-accent-500 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white shadow-sm">
             Save ${BUNDLE_SAVING} · best value
           </span>
@@ -211,7 +212,9 @@ export default async function PricingPage() {
               <div className="mt-1 text-5xl font-bold tracking-tight text-bone-100">
                 ${PRODUCTS.bundle.dollars}
               </div>
-              <div className="mt-1 text-xs text-bone-500">one payment · 30-day run</div>
+              <div className="mt-1 text-xs text-bone-500">
+                one payment · each part runs its own length
+              </div>
               <LinkButton href="/promote" size="lg" className="mt-5 w-full">
                 Get the bundle <ArrowRight size={16} />
               </LinkButton>
@@ -222,8 +225,9 @@ export default async function PricingPage() {
           </div>
         </Card>
       </Section>
+      </div>
 
-      {/* ── 6 · Free extra: share to earn a second link ── */}
+      {/* ── 5 · Free extra: share to earn a second link ── */}
       <Section
         eyebrow="Free extra"
         title="Share your launch, earn a second backlink"
@@ -270,8 +274,8 @@ export default async function PricingPage() {
               a: "We submit your product by hand to more than a hundred startup and SaaS directories — the slow, boring backlink work. No bots and no spam, and you get a report of where it landed. Turnaround is within 7 days.",
             },
             {
-              q: "How long does a placement run?",
-              a: "30 days from the moment you pay. The Directory Blast is a one-off — the submissions stay up permanently.",
+              q: "How long does each one run?",
+              a: "A Featured Launch runs for 1 week — it's the top spot, so it rotates fast. The sidebar slot, the sponsored row and the newsletter mention each run for a full month. The Directory Blast is a one-off: the submissions stay up permanently.",
             },
             {
               q: "Can I change my ad after buying?",
@@ -279,7 +283,7 @@ export default async function PricingPage() {
             },
             {
               q: "What happens if a placement is sold out?",
-              a: "Slot counts are hard caps — 6 sidebar slots, 2 sponsored rows, 4 newsletter mentions, 3 featured spots. When they're gone you have to wait for one to expire. Join the newsletter and we'll tell you the moment one frees up.",
+              a: "Slot counts are hard caps — 6 sidebar slots, 2 sponsored rows, 4 newsletter mentions, 3 featured spots. When they're gone you have to wait for one to expire. Featured spots turn over weekly, the rest monthly. Join the newsletter and we'll tell you the moment one frees up.",
             },
           ].map((item) => (
             <details key={item.q} className="group px-5 py-4">
@@ -339,9 +343,19 @@ function ProductCard({
 }) {
   const spec = PRODUCTS[product];
   const soldOut = left === 0;
+  const popular = product === MOST_POPULAR;
 
   return (
-    <Card className={`flex flex-col p-6 ${wide ? "sm:flex-row sm:items-center sm:gap-8" : ""}`}>
+    <Card
+      className={`relative flex flex-col p-6 ${
+        popular ? "shine-border border-accent-500/40 shadow-lift" : ""
+      } ${wide ? "sm:flex-row sm:items-center sm:gap-8" : ""}`}
+    >
+      {popular && (
+        <span className="absolute -top-2.5 left-6 z-[3] rounded-full bg-accent-500 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white shadow-sm">
+          Most popular
+        </span>
+      )}
       <div className={wide ? "flex-1" : ""}>
         <div className="flex items-center justify-between">
           <span className="grid h-10 w-10 place-items-center rounded-xl border border-black/10 text-accent-400">
@@ -356,9 +370,7 @@ function ProductCard({
 
         <div className="mt-4 flex items-baseline gap-1.5">
           <span className="text-3xl font-bold text-bone-100">${spec.dollars}</span>
-          <span className="text-xs text-bone-500">
-            {product === "directory" ? "one-off" : "/ 30 days"}
-          </span>
+          <span className="text-xs text-bone-500">{spec.unit}</span>
         </div>
         <h3 className="mt-2 font-semibold text-bone-100">{spec.name}</h3>
         <p className="mt-1 text-sm leading-relaxed text-bone-500">{spec.tagline}</p>
@@ -376,7 +388,12 @@ function ProductCard({
       </div>
 
       <div className={`mt-5 space-y-2 ${wide ? "sm:mt-0 sm:w-52 sm:shrink-0" : ""}`}>
-        <LinkButton href="/promote" variant="outline" size="md" className="w-full">
+        <LinkButton
+          href="/promote"
+          variant={popular ? "primary" : "outline"}
+          size="md"
+          className="w-full"
+        >
           {soldOut ? "Join the waitlist" : `Get it — $${spec.dollars}`}
         </LinkButton>
         {left != null && (

@@ -13,7 +13,7 @@ const SUPPORT_EMAIL = "ankittharol7@gmail.com";
 const X_HANDLE = "SaasGrave";
 
 const FAQ = [
-  { q: "Is it free to list a startup?", a: "Yes — listing is free forever, and opening it for sale is free too. We take a flat 3% only when your startup actually sells. The only paid extras are promotion placements: Featured Launch ($9), a sidebar slot ($19), a sponsored row ($29) or a newsletter mention ($49), each running 30 days." },
+  { q: "Is it free to list a startup?", a: "Yes — listing is free forever, and opening it for sale is free too. We take a flat 3% only when your startup actually sells. The only paid extras are promotion placements: Featured Launch ($9), a sidebar slot ($19), a sponsored row ($29), a newsletter mention ($49) or a 100+ directory blast ($99). A Featured Launch runs a week, the rest run a month." },
   { q: "How do I sell my startup?", a: "List it, then open it for sale free from your dashboard. We take just 3% when it sells. Buyers make offers, you accept or decline from your dashboard, and you handle the transfer directly." },
   { q: "How do offers work?", a: "A buyer sends an offer on a for-sale listing. It appears under “Offers received” on your dashboard where you can Accept or Decline it. Accepting doesn't move money — you arrange the transfer with the buyer." },
   { q: "How is revenue verified?", a: "You connect a read-only key from Stripe, Paddle, Lemon Squeezy or Dodo; we compute MRR from active subscriptions, badge the listing as verified, and never store the key. Self-reported MRR is always shown as unverified." },

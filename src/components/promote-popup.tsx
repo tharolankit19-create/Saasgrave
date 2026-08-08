@@ -65,7 +65,7 @@ export function PromotePopup() {
               Want your product in front of them?
             </h3>
             <p className="mt-1 text-xs leading-relaxed text-bone-500">
-              Get in front of them from <span className="font-semibold text-accent-600">$9 / 30 days</span> — featured launch, sidebar slot, sponsored row or a newsletter mention. Every one includes a dofollow backlink.
+              Get in front of them from <span className="font-semibold text-accent-600">$9</span> — featured launch, sidebar slot, sponsored row or a newsletter mention. Every one includes a dofollow backlink.
             </p>
             <Link
               href="/promote"

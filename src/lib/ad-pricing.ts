@@ -1,7 +1,8 @@
 // ─── Promotion catalogue ────────────────────────────────────
-// Every paid thing on the site, in one place. Prices are flat per product for a
-// 30-day run, and every one carries a dofollow link back to the buyer's site.
-// What's scarce isn't the price — it's the slot counts, which are hard caps.
+// Every paid thing on the site, in one place. Prices are flat, each product
+// runs for its own fixed length, and every one carries a dofollow link back to
+// the buyer's site. What's scarce isn't the price — it's the slot counts,
+// which are hard caps.
 
 /** Products backed by a row in `ad_slots` (the `placement` column). */
 export type Placement = "sidebar" | "sponsored" | "newsletter";
@@ -15,6 +16,10 @@ export type ProductSpec = {
   dollars: number;
   /** Hard cap on how many can run at once. `null` = unlimited (nothing to sell out). */
   slots: number | null;
+  /** How long a purchase runs, in days. `null` = one-off, nothing expires. */
+  days: number | null;
+  /** Short human duration, e.g. "/ 1 week" — what the price is actually per. */
+  unit: string;
   tagline: string;
   perks: string[];
   /** Dodo product env vars, tried in order. */
@@ -27,7 +32,9 @@ export const PRODUCTS: Record<ProductKey, ProductSpec> = {
     name: "Featured Launch",
     dollars: 9,
     slots: 3,
-    tagline: "Pinned to the top of the graveyard for 30 days.",
+    days: 7,
+    unit: "/ 1 week",
+    tagline: "Pinned to the very top of the graveyard for a week.",
     perks: [
       "Pinned above every listing on Browse",
       "A “Featured” badge on your listing",
@@ -41,12 +48,14 @@ export const PRODUCTS: Record<ProductKey, ProductSpec> = {
     name: "Sidebar Slot",
     dollars: 19,
     slots: 6,
-    tagline: "Your product in the rail beside every listing.",
+    days: 30,
+    unit: "/ 1 month",
+    tagline: "Your product in the rail beside every listing, all month.",
     perks: [
       "Your logo, headline and link in the side rail",
       "Shown on Browse and every startup page",
       "Dofollow backlink to your site",
-      "30 days · only 6 slots exist",
+      "A full month · only 6 slots exist",
     ],
     envKeys: ["DODO_PRODUCT_ID_ADS_19", "DODO_PRODUCT_ID_ADS"],
   },
@@ -55,12 +64,14 @@ export const PRODUCTS: Record<ProductKey, ProductSpec> = {
     name: "Sponsored Row",
     dollars: 29,
     slots: 2,
+    days: 30,
+    unit: "/ 1 month",
     tagline: "A highlighted row inside the list itself — impossible to scroll past.",
     perks: [
       "A highlighted row inside the startup list",
       "Sits at position #2, above almost everything",
       "Dofollow backlink to your site",
-      "30 days · only 2 rows exist",
+      "A full month · only 2 rows exist",
     ],
     envKeys: ["DODO_PRODUCT_ID_ADS_29", "DODO_PRODUCT_ID_SPONSORED"],
   },
@@ -69,6 +80,8 @@ export const PRODUCTS: Record<ProductKey, ProductSpec> = {
     name: "Newsletter Mention",
     dollars: 49,
     slots: 4,
+    days: 30,
+    unit: "/ 1 month",
     tagline: "A dedicated mention in The Weekly Obituary, straight to inboxes.",
     perks: [
       "A dedicated block in the weekly email",
@@ -83,6 +96,8 @@ export const PRODUCTS: Record<ProductKey, ProductSpec> = {
     name: "Directory Blast",
     dollars: 99,
     slots: null,
+    days: null,
+    unit: "one-off",
     tagline: "We submit your product to 100+ startup directories by hand.",
     perks: [
       "Submitted to 100+ startup & SaaS directories",
@@ -97,11 +112,13 @@ export const PRODUCTS: Record<ProductKey, ProductSpec> = {
     name: "The Everything Bundle",
     dollars: 149,
     slots: null,
+    days: 30,
+    unit: "one payment",
     tagline: "Every placement we sell, plus the directory blast — at a real discount.",
     perks: [
-      "Featured Launch — pinned to the top",
-      "Sidebar Slot beside every listing",
-      "Sponsored Row inside the list",
+      "Featured Launch — pinned to the top for a week",
+      "Sidebar Slot beside every listing for a month",
+      "Sponsored Row inside the list for a month",
       "Newsletter Mention in The Weekly Obituary",
       "100+ directory submissions",
       "Dofollow backlinks from every one",
@@ -126,15 +143,20 @@ export const BUNDLE_SAVING = BUNDLE_LIST_PRICE - PRODUCTS.bundle.dollars;
 /** Ad-slot placements, cheapest first. */
 export const PLACEMENT_ORDER: Placement[] = ["sidebar", "sponsored", "newsletter"];
 
-/** Everything purchasable, cheapest first — the order the pricing page reads. */
-export const PRODUCT_ORDER: ProductKey[] = [
-  "featured",
-  "sidebar",
-  "sponsored",
-  "newsletter",
-  "directory",
-  "bundle",
-];
+/**
+ * Placements that show on the site itself, led by the one we want chosen. The
+ * sidebar slot carries the "Most popular" flag, so it comes first.
+ */
+export const ONSITE_ORDER: ProductKey[] = ["sidebar", "featured", "sponsored"];
+
+/** Reach that goes beyond the site — shown together, below the on-site ones. */
+export const REACH_ORDER: ProductKey[] = ["newsletter", "directory"];
+
+/** The single product we steer people towards. */
+export const MOST_POPULAR: ProductKey = "sidebar";
+
+/** Everything purchasable — on-site placements first, led by the popular one. */
+export const PRODUCT_ORDER: ProductKey[] = [...ONSITE_ORDER, ...REACH_ORDER, "bundle"];
 
 const PLACEMENTS_SET = new Set<string>(PLACEMENT_ORDER);
 
@@ -148,6 +170,17 @@ export function productSpec(key: ProductKey): ProductSpec {
 
 export function productCents(key: ProductKey): number {
   return PRODUCTS[key].dollars * 100;
+}
+
+/** How long a purchase runs, in days — `null` for one-off products. */
+export function productDays(key: ProductKey): number | null {
+  return PRODUCTS[key].days;
+}
+
+/** When a purchase made now would end, or `null` if it never expires. */
+export function runEndsAt(key: ProductKey, from = new Date()): Date | null {
+  const days = PRODUCTS[key].days;
+  return days == null ? null : new Date(from.getTime() + days * 24 * 60 * 60 * 1000);
 }
 
 /**
