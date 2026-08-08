@@ -1,26 +1,105 @@
-// Dynamic ad-slot pricing (server-only). The price of the NEXT slot rises as
-// slots sell — pure FOMO: $19 → $29 → $49, then holds at $49. `soldCount` is
-// how many of the 6 slots are already booked.
-export const AD_PRICE_LADDER = [19, 29, 49, 49, 49, 49]; // dollars, indexed by soldCount
+// ─── Promotion catalogue ────────────────────────────────────
+// Four placements, each a flat price for a 30-day run. Every one carries a
+// dofollow link back to the buyer's site. Prices are fixed per placement (no
+// auctions, no CPC) — what rises is scarcity, since the slot counts are hard caps.
 
-export type AdTier = { dollars: number; cents: number; nextDollars: number; isLast: boolean };
+export type Placement = "featured" | "sidebar" | "sponsored" | "newsletter";
 
-export function adTier(soldCount: number): AdTier {
-  const n = AD_PRICE_LADDER.length;
-  const i = Math.min(Math.max(soldCount || 0, 0), n - 1);
-  const dollars = AD_PRICE_LADDER[i];
-  const nextDollars = AD_PRICE_LADDER[Math.min(i + 1, n - 1)];
-  return { dollars, cents: dollars * 100, nextDollars, isLast: dollars >= 49 };
+export type PlacementSpec = {
+  key: Placement;
+  name: string;
+  dollars: number;
+  /** Hard cap on how many of this placement can ever be sold at once. */
+  slots: number;
+  tagline: string;
+  /** What the buyer actually gets — used on /promote and the pricing section. */
+  perks: string[];
+  /** Which Dodo product to charge. */
+  envKeys: string[];
+};
+
+export const PLACEMENTS: Record<Placement, PlacementSpec> = {
+  featured: {
+    key: "featured",
+    name: "Featured Launch",
+    dollars: 9,
+    slots: 3,
+    tagline: "Pinned to the top of the graveyard for 30 days.",
+    perks: [
+      "Pinned above every listing on Browse",
+      "A “Featured” badge on your listing",
+      "Dofollow backlink to your site",
+      "An embeddable “Featured on Saasgrave” badge",
+    ],
+    envKeys: ["DODO_PRODUCT_ID_FEATURED_9", "DODO_PRODUCT_ID_FEATURED"],
+  },
+  sidebar: {
+    key: "sidebar",
+    name: "Sidebar Slot",
+    dollars: 19,
+    slots: 6,
+    tagline: "Your product in the rail beside every listing.",
+    perks: [
+      "Your logo, headline and link in the side rail",
+      "Shown on Browse and every startup page",
+      "Dofollow backlink to your site",
+      "30 days · only 6 slots exist",
+    ],
+    envKeys: ["DODO_PRODUCT_ID_ADS_19", "DODO_PRODUCT_ID_ADS"],
+  },
+  sponsored: {
+    key: "sponsored",
+    name: "Sponsored Row",
+    dollars: 29,
+    slots: 2,
+    tagline: "A highlighted row inside the list itself — impossible to scroll past.",
+    perks: [
+      "A highlighted row inside the startup list",
+      "Sits at position #2, above almost everything",
+      "Dofollow backlink to your site",
+      "30 days · only 2 rows exist",
+    ],
+    envKeys: ["DODO_PRODUCT_ID_ADS_29", "DODO_PRODUCT_ID_SPONSORED"],
+  },
+  newsletter: {
+    key: "newsletter",
+    name: "Newsletter Mention",
+    dollars: 49,
+    slots: 4,
+    tagline: "A dedicated mention in The Weekly Obituary, straight to inboxes.",
+    perks: [
+      "A dedicated block in the weekly email",
+      "Goes to every subscriber, not just site visitors",
+      "Dofollow backlink to your site",
+      "Includes a sidebar slot for the same week",
+    ],
+    envKeys: ["DODO_PRODUCT_ID_ADS_49", "DODO_PRODUCT_ID_NEWSLETTER"],
+  },
+};
+
+/** Display order — cheapest first, the way the pricing section reads. */
+export const PLACEMENT_ORDER: Placement[] = ["featured", "sidebar", "sponsored", "newsletter"];
+
+export function isPlacement(v: unknown): v is Placement {
+  return typeof v === "string" && v in PLACEMENTS;
 }
 
-// Which Dodo product to charge for a given price tier. Create one product per
-// price ($19 / $29 / $49) and set these env vars.
-export function adProductId(dollars: number): string | undefined {
-  const pick =
-    dollars <= 19
-      ? process.env.DODO_PRODUCT_ID_ADS_19 || process.env.DODO_PRODUCT_ID_ADS
-      : dollars <= 29
-        ? process.env.DODO_PRODUCT_ID_ADS_29
-        : process.env.DODO_PRODUCT_ID_ADS_49;
-  return pick?.trim() || undefined;
+export function placementSpec(p: Placement): PlacementSpec {
+  return PLACEMENTS[p];
+}
+
+export function placementCents(p: Placement): number {
+  return PLACEMENTS[p].dollars * 100;
+}
+
+/**
+ * Which Dodo product to charge for a placement. Create one fixed-price product
+ * per price point and set the matching env var; the first one set wins.
+ */
+export function placementProductId(p: Placement): string | undefined {
+  for (const key of PLACEMENTS[p].envKeys) {
+    const v = process.env[key]?.trim();
+    if (v) return v;
+  }
+  return undefined;
 }

@@ -41,8 +41,8 @@ const FOMO: Record<string, Copy> = {
   },
   pricing: {
     badge: "Promo watch",
-    title: "Ad slots start at $19 and only go up.",
-    sub: "Be the first to hear when a promo slot opens at today's price — before it climbs to $49.",
+    title: "There are only 15 promo slots in total.",
+    sub: "Featured launches, sidebar slots, sponsored rows and newsletter mentions — hear the moment one frees up, before someone else takes it.",
     cta: "Watch the slots",
   },
   faq: {

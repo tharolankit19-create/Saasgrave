@@ -24,6 +24,8 @@ export type GraveyardRow = {
   view_count: number | null;
   total_users: number | null;
   founder_id: string;
+  featured: boolean | null;
+  featured_until: string | null;
 };
 
 const EMPTY: GraveyardStats = { graves: 0, buriedMrr: 0, users: 0, founders: 0, forSale: 0 };
@@ -38,7 +40,7 @@ export async function loadGraveyard(limit = 200): Promise<{ rows: GraveyardRow[]
     const { data, error } = await supabase
       .from("startups")
       .select(
-        "slug, name, logo_url, category, tagline, for_sale, outcome, asking_price, price_multiplier, verified_mrr, claimed_mrr, revenue_verified, view_count, total_users, founder_id"
+        "slug, name, logo_url, category, tagline, for_sale, outcome, asking_price, price_multiplier, verified_mrr, claimed_mrr, revenue_verified, view_count, total_users, founder_id, featured, featured_until"
       )
       .eq("status", "listed")
       .order("view_count", { ascending: false })

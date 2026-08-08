@@ -1,8 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { AdRail, AdStrip } from "@/components/ad-rail";
-import { StartupCard } from "@/components/startup-card";
+import { StartupRow, StartupRowHeader, isFeatured, type RowStartup } from "@/components/startup-row";
+import { SponsoredRow } from "@/components/ledger-row";
 import { BrowseFilters } from "@/components/browse-filters";
 import { Eyebrow } from "@/components/ui";
+import { loadSponsored } from "@/lib/sponsored";
 
 export const metadata = { title: "Browse the graveyard" };
 export const dynamic = "force-dynamic";
@@ -34,8 +36,16 @@ export default async function BrowsePage({
       query = query.order("created_at", { ascending: false });
   }
 
-  const { data: startups } = await query.limit(48);
-  const { data: ads } = await supabase.from("ad_slots").select("*").order("position");
+  const [{ data: startups }, { data: ads }, sponsored] = await Promise.all([
+    query.limit(48),
+    supabase.from("ad_slots").select("*").eq("placement", "sidebar").order("position"),
+    loadSponsored(),
+  ]);
+
+  // Paid Featured Launches sit above everything else, in whatever order the
+  // visitor's chosen sort produced.
+  const rows: RowStartup[] = (startups || []) as RowStartup[];
+  const ordered = [...rows.filter(isFeatured), ...rows.filter((s) => !isFeatured(s))];
 
   const left = (ads || []).filter((a) => a.position.startsWith("left"));
   const right = (ads || []).filter((a) => a.position.startsWith("right"));
@@ -56,10 +66,17 @@ export default async function BrowsePage({
         <div className="min-w-0 flex-1">
           <AdStrip slots={[...left, ...right]} />
           <BrowseFilters />
-          {startups && startups.length > 0 ? (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {startups.map((s: any) => (
-                <StartupCard key={s.id} startup={s} />
+
+          {ordered.length > 0 ? (
+            <div className="overflow-hidden rounded-2xl border border-black/8 bg-ink-900 shadow-card">
+              <StartupRowHeader />
+              {ordered.map((s, i) => (
+                <div key={s.id}>
+                  <StartupRow startup={s} rank={i + 1} />
+                  {/* The paid $29 placement sits at #2 — high enough to be seen,
+                      low enough that the real listing still leads. */}
+                  {i === 0 && <SponsoredRow {...sponsored} />}
+                </div>
               ))}
             </div>
           ) : (

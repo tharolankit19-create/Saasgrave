@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
-import { Plus, Tag, FileText, TrendingUp, Megaphone } from "lucide-react";
+import { Plus, Tag, FileText, TrendingUp, Megaphone, Code2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Card, LinkButton, Badge } from "@/components/ui";
 import { money } from "@/lib/utils";
 import { ListingRowActions } from "@/components/listing-row-actions";
 import { AdSlotManager, type OwnedSlot } from "@/components/ad-slot-manager";
+import { BadgeEmbed } from "@/components/badge-embed";
 import { ShareLaunch } from "@/components/share-launch";
 import { OfferActions } from "@/components/offer-actions";
 
@@ -42,8 +43,7 @@ export default async function Dashboard() {
   const { data: allSlots } = await supabase.from("ad_slots").select("*").order("position");
   const slots = allSlots || [];
   const ownedSlots = slots.filter((s) => s.buyer_id === user.id) as OwnedSlot[];
-  const openSlots = slots.filter((s) => !(s.active && s.headline) && s.buyer_id !== user.id);
-  const openSlotId = openSlots[0]?.id ?? null;
+  const openSlots = slots.filter((s) => !s.buyer_id && !(s.active && s.headline));
 
   const host = headers().get("host") || "localhost:3000";
   const origin = `${host.includes("localhost") ? "http" : "https"}://${host}`;
@@ -138,7 +138,20 @@ export default async function Dashboard() {
       <h2 className="mb-4 mt-12 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-accent-600">
         <Megaphone size={13} /> Promotions
       </h2>
-      <AdSlotManager owned={ownedSlots} openSlotId={openSlotId} openCount={openSlots.length} />
+      <AdSlotManager owned={ownedSlots} openCount={openSlots.length} />
+
+      {/* embeddable badge — a dofollow link back, and free promotion for both sides */}
+      {list.some((s: any) => s.status === "listed") && (
+        <>
+          <h2 className="mb-4 mt-12 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-accent-600">
+            <Code2 size={13} /> Your badge
+          </h2>
+          <BadgeEmbed
+            site={origin}
+            slug={list.find((s: any) => s.status === "listed")?.slug ?? null}
+          />
+        </>
+      )}
 
       {/* offers */}
       <h2 className="mb-4 mt-12 font-mono text-[11px] uppercase tracking-[0.18em] text-accent-600">
