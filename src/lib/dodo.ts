@@ -17,24 +17,14 @@ const LIVE_BASE = "https://live.dodopayments.com";
 //   sale_listing → legacy; listing and selling are free (we take 3% on a sale)
 export type CheckoutKind = "ad_slot" | "featured" | "directory" | "bundle" | "sale_listing";
 
-// Resolve product IDs at call time (not import time) and trim, so a stray
-// newline or space pasted into the env — a very common cause of failures —
-// doesn't break checkout. Callers normally pass an explicit productId; this is
-// only the fallback.
-function productFor(kind: CheckoutKind): string | undefined {
-  const sale = process.env.DODO_PRODUCT_ID_SALE || process.env.DODO_PRODUCT_SALE_LISTING;
-  const raw =
-    kind === "ad_slot"
-      ? process.env.DODO_PRODUCT_ID_ADS || process.env.DODO_PRODUCT_AD_SLOT || sale
-      : kind === "featured"
-        ? process.env.DODO_PRODUCT_ID_FEATURED_9 || process.env.DODO_PRODUCT_ID_FEATURED || sale
-        : kind === "directory"
-          ? process.env.DODO_PRODUCT_ID_DIRECTORY_99 || process.env.DODO_PRODUCT_ID_DIRECTORY
-          : kind === "bundle"
-            ? process.env.DODO_PRODUCT_ID_BUNDLE_149 || process.env.DODO_PRODUCT_ID_BUNDLE
-            : sale;
-  return raw?.trim() || undefined;
-}
+// NOTE: there is deliberately no "default" product here.
+//
+// This used to fall back to a shared product whenever a specific one wasn't
+// configured, which meant a $99 Directory Blast and a $9 Featured Launch both
+// silently charged whatever the fallback product cost. Every price now has to
+// come from its own Dodo product, resolved by the caller from the catalogue —
+// and if that product isn't configured, checkout fails loudly rather than
+// charging the wrong amount.
 
 // Strip whitespace and an accidental "Bearer " prefix from the key.
 function apiKey(): string | undefined {
@@ -52,7 +42,10 @@ interface CreateCheckoutArgs {
   userId: string;
   email?: string;
   successUrl: string;
-  productId?: string; // explicit override (used for the dynamic ad price tiers)
+  /** Required. The Dodo product for exactly this price — resolved from the catalogue. */
+  productId?: string;
+  /** Env var name to quote if productId is missing, so the error is actionable. */
+  productEnvName?: string;
 }
 
 export async function createDodoCheckout({
@@ -61,21 +54,25 @@ export async function createDodoCheckout({
   userId,
   email,
   successUrl,
-  productId: productOverride,
+  productId,
+  productEnvName,
 }: CreateCheckoutArgs) {
   const key = apiKey();
-  const productId = productOverride?.trim() || productFor(kind);
+  const resolved = productId?.trim();
 
   if (!key) {
     throw new Error("Payments aren't set up yet — DODO_API_KEY is missing.");
   }
-  if (!productId) {
-    const envName = kind === "ad_slot" ? "DODO_PRODUCT_ID_ADS (or the tier products)" : "DODO_PRODUCT_ID_SALE";
-    throw new Error(`Payments aren't set up for this action — set ${envName} to the Dodo product ID.`);
+  if (!resolved) {
+    // Never guess: charging the wrong product is worse than not charging at all.
+    throw new Error(
+      `This isn't set up for payment yet — ${productEnvName || "its Dodo product ID"} is missing. ` +
+        `Create a Dodo product at the right price and set that environment variable.`
+    );
   }
 
   const payload = {
-    product_cart: [{ product_id: productId, quantity: 1 }],
+    product_cart: [{ product_id: resolved, quantity: 1 }],
     return_url: successUrl,
     customer: email ? { email } : undefined,
     // travels round-trip and comes back on the webhook so we know what was bought

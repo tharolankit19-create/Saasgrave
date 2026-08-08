@@ -22,8 +22,12 @@ export type ProductSpec = {
   unit: string;
   tagline: string;
   perks: string[];
-  /** Dodo product env vars, tried in order. */
-  envKeys: string[];
+  /**
+   * The ONE Dodo product env var for this price. Deliberately a single name
+   * with no fallback — a shared fallback is how every product ended up
+   * charging the same amount.
+   */
+  envKey: string;
 };
 
 export const PRODUCTS: Record<ProductKey, ProductSpec> = {
@@ -41,7 +45,7 @@ export const PRODUCTS: Record<ProductKey, ProductSpec> = {
       "Dofollow backlink to your site",
       "An embeddable “Featured on Saasgrave” badge",
     ],
-    envKeys: ["DODO_PRODUCT_ID_FEATURED_9", "DODO_PRODUCT_ID_FEATURED"],
+    envKey: "DODO_PRODUCT_ID_FEATURED_9",
   },
   sidebar: {
     key: "sidebar",
@@ -57,7 +61,7 @@ export const PRODUCTS: Record<ProductKey, ProductSpec> = {
       "Dofollow backlink to your site",
       "A full month · only 6 slots exist",
     ],
-    envKeys: ["DODO_PRODUCT_ID_ADS_19", "DODO_PRODUCT_ID_ADS"],
+    envKey: "DODO_PRODUCT_ID_ADS_19",
   },
   sponsored: {
     key: "sponsored",
@@ -73,7 +77,7 @@ export const PRODUCTS: Record<ProductKey, ProductSpec> = {
       "Dofollow backlink to your site",
       "A full month · only 2 rows exist",
     ],
-    envKeys: ["DODO_PRODUCT_ID_ADS_29", "DODO_PRODUCT_ID_SPONSORED"],
+    envKey: "DODO_PRODUCT_ID_ADS_29",
   },
   newsletter: {
     key: "newsletter",
@@ -89,7 +93,7 @@ export const PRODUCTS: Record<ProductKey, ProductSpec> = {
       "Dofollow backlink to your site",
       "Includes a sidebar slot for the same week",
     ],
-    envKeys: ["DODO_PRODUCT_ID_ADS_49", "DODO_PRODUCT_ID_NEWSLETTER"],
+    envKey: "DODO_PRODUCT_ID_ADS_49",
   },
   directory: {
     key: "directory",
@@ -105,7 +109,7 @@ export const PRODUCTS: Record<ProductKey, ProductSpec> = {
       "A backlink report when it's finished",
       "Turnaround within 7 days",
     ],
-    envKeys: ["DODO_PRODUCT_ID_DIRECTORY_99", "DODO_PRODUCT_ID_DIRECTORY"],
+    envKey: "DODO_PRODUCT_ID_DIRECTORY_99",
   },
   bundle: {
     key: "bundle",
@@ -123,7 +127,7 @@ export const PRODUCTS: Record<ProductKey, ProductSpec> = {
       "100+ directory submissions",
       "Dofollow backlinks from every one",
     ],
-    envKeys: ["DODO_PRODUCT_ID_BUNDLE_149", "DODO_PRODUCT_ID_BUNDLE"],
+    envKey: "DODO_PRODUCT_ID_BUNDLE_149",
   },
 };
 
@@ -144,10 +148,11 @@ export const BUNDLE_SAVING = BUNDLE_LIST_PRICE - PRODUCTS.bundle.dollars;
 export const PLACEMENT_ORDER: Placement[] = ["sidebar", "sponsored", "newsletter"];
 
 /**
- * Placements that show on the site itself, led by the one we want chosen. The
- * sidebar slot carries the "Most popular" flag, so it comes first.
+ * Placements that show on the site itself. The sidebar slot sits in the middle
+ * — where the eye lands first on a three-up row — and carries the only
+ * "Most popular" badge.
  */
-export const ONSITE_ORDER: ProductKey[] = ["sidebar", "featured", "sponsored"];
+export const ONSITE_ORDER: ProductKey[] = ["featured", "sidebar", "sponsored"];
 
 /** Reach that goes beyond the site — shown together, below the on-site ones. */
 export const REACH_ORDER: ProductKey[] = ["newsletter", "directory"];
@@ -184,15 +189,17 @@ export function runEndsAt(key: ProductKey, from = new Date()): Date | null {
 }
 
 /**
- * Which Dodo product to charge. Create one fixed-price product per price point
- * and set the matching env var; the first one set wins.
+ * Which Dodo product to charge. Create one fixed-price Dodo product per price
+ * point and set that product's own env var. Returns undefined when it isn't
+ * configured — callers must fail rather than substitute another product.
  */
 export function productDodoId(key: ProductKey): string | undefined {
-  for (const envKey of PRODUCTS[key].envKeys) {
-    const v = process.env[envKey]?.trim();
-    if (v) return v;
-  }
-  return undefined;
+  return process.env[PRODUCTS[key].envKey]?.trim() || undefined;
+}
+
+/** The env var a product needs, for error messages that tell you what to fix. */
+export function productEnvName(key: ProductKey): string {
+  return PRODUCTS[key].envKey;
 }
 
 // ─── Back-compat aliases used by the ad-slot paths ──────────

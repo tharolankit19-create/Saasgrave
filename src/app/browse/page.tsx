@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { AdRail, AdStrip } from "@/components/ad-rail";
 import { StartupRow, StartupRowHeader, isFeatured, type RowStartup } from "@/components/startup-row";
 import { SponsoredRow } from "@/components/ledger-row";
+import { PromoCtaRow } from "@/components/promo-cta-row";
 import { BrowseFilters } from "@/components/browse-filters";
 import { Eyebrow } from "@/components/ui";
 import { loadSponsored } from "@/lib/sponsored";
@@ -76,6 +77,9 @@ export default async function BrowsePage({
                   {/* The paid $29 placement sits at #2 — high enough to be seen,
                       low enough that the real listing still leads. */}
                   {i === 0 && <SponsoredRow {...sponsored} />}
+                  {/* …and the offer to buy the same spot, once they're deep
+                      enough in the list to want one. */}
+                  {i === 4 && <PromoCtaRow />}
                 </div>
               ))}
             </div>

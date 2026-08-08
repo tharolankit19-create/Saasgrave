@@ -34,7 +34,11 @@ const KIND: Record<ProductKey, "ad_slot" | "featured" | "directory" | "bundle"> 
   bundle: "bundle",
 };
 
-export default async function PromotePage() {
+export default async function PromotePage({
+  searchParams,
+}: {
+  searchParams: { err?: string };
+}) {
   const supabase = createClient();
   const {
     data: { user },
@@ -102,6 +106,13 @@ export default async function PromotePage() {
         <Link href="/pricing" className="mt-4 inline-block text-sm text-accent-600 hover:underline">
           See what each one does →
         </Link>
+
+        {/* Why a one-click buy bounced back here, said plainly. */}
+        {searchParams.err && (
+          <p className="mx-auto mt-6 max-w-md rounded-xl border border-ember-600/30 bg-ember-600/10 px-4 py-3 text-sm text-ember-400">
+            {searchParams.err}
+          </p>
+        )}
       </div>
 
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
