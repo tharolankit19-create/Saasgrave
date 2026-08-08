@@ -1,8 +1,8 @@
 import { ImageResponse } from "next/og";
-import { BrandScene, BRAND } from "@/components/brand-mark";
+import { brandMarkDataUri, BRAND } from "@/components/brand-mark";
 
-// Apple touch icon — iOS rounds the corners itself, so this fills the tile
-// edge-to-edge with the disc colour rather than drawing its own circle.
+// Apple touch icon — iOS rounds the corners itself and doesn't like
+// transparency, so the disc colour fills the tile behind the mark.
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 
@@ -19,9 +19,8 @@ export default function AppleIcon() {
           background: BRAND.disc,
         }}
       >
-        <svg width="180" height="180" viewBox="0 0 128 128" fill="none">
-          <BrandScene />
-        </svg>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={brandMarkDataUri(180)} width={180} height={180} alt="" />
       </div>
     ),
     { ...size }

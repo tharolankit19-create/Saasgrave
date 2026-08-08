@@ -32,10 +32,17 @@ export function ArticleButton({
 
     const d = await res.json().catch(() => ({}));
     if (!res.ok) {
-      toast.error(d.error || "Couldn't generate.");
+      // Show the provider's own words, and keep it up long enough to read.
+      toast.error(d.error || "Couldn't generate.", { duration: 12000 });
       return;
     }
-    toast.success(`Published — ${d.words} words.`);
+    // The point of generating is the page it produces — hand over the link.
+    toast.success(`Published — ${d.words} words.`, {
+      duration: 10000,
+      action: d.url
+        ? { label: "Visit", onClick: () => window.open(d.url, "_blank", "noopener") }
+        : undefined,
+    });
     router.refresh();
   }
 

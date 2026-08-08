@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { brandMarkDataUri } from "@/components/brand-mark";
 import { createClient } from "@supabase/supabase-js";
 
 // The Obituary Card. Every listing gets an auto-generated dark "death
@@ -176,7 +177,12 @@ export default async function Image({ params }: { params: { slug: string } }) {
             color: muted,
           }}
         >
-          <span style={{ color: ink }}>saasgrave.org</span>
+          {/* The mark rides the footer so a shared listing is recognisably ours. */}
+          <span style={{ display: "flex", alignItems: "center", gap: 12, color: ink }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={brandMarkDataUri(36)} width={36} height={36} alt="" />
+            saasgrave.org
+          </span>
           <span>Rest in production</span>
         </div>
       </div>

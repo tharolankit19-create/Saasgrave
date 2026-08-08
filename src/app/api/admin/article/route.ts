@@ -33,13 +33,23 @@ export async function POST(req: Request) {
     .single();
   if (!startup) return NextResponse.json({ error: "No such startup" }, { status: 404 });
 
-  const article = await getOrCreateArticle(startup, { force: !!body.force });
+  // throwOnError: the admin needs the provider's actual complaint, otherwise a
+  // missing key and a retired model look identical.
+  let article: string | null;
+  try {
+    article = await getOrCreateArticle(startup, { force: !!body.force, throwOnError: true });
+  } catch (e: any) {
+    return NextResponse.json({ error: e?.message || "Generation failed." }, { status: 502 });
+  }
   if (!article) {
-    return NextResponse.json(
-      { error: "Couldn't generate — check OPENROUTER_API_KEY (or the Gemini fallback)." },
-      { status: 502 }
-    );
+    return NextResponse.json({ error: "The model returned nothing." }, { status: 502 });
   }
 
-  return NextResponse.json({ ok: true, words: article.split(/\s+/).length, slug: startup.slug });
+  const site = process.env.NEXT_PUBLIC_SITE_URL || new URL(req.url).origin;
+  return NextResponse.json({
+    ok: true,
+    words: article.split(/\s+/).filter(Boolean).length,
+    slug: startup.slug,
+    url: `${site}/read/${startup.slug}`,
+  });
 }

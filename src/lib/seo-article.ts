@@ -46,14 +46,26 @@ function prompt(s: ArticleStartup): string {
     .filter(Boolean)
     .join("\n");
 
-  return `Write an original, SEO-friendly article (about 500-650 words) analysing the post-mortem of a real startup listed on a marketplace for dead and pivoted startups.
+  return `Write an original, in-depth article (900-1200 words) analysing the post-mortem of a real startup listed on Saasgrave, a marketplace for dead and pivoted startups.
 
-Rules:
-- Third person, plain English, genuinely useful to other founders. No hype, no emojis.
-- Use Markdown: a few "## " subheadings and short paragraphs. Do NOT include a top-level H1 (the page adds it).
-- Only use the facts provided. NEVER invent metrics, dates, funding, names or events. If a detail is missing, stay general instead of fabricating.
-- Cover: what it set out to do, what actually went wrong, the concrete lessons, and what an acquirer could still do with the assets (code, domain, users).
-- End with one sentence noting the product is listed on Saasgrave and can be revived or acquired.
+This page has to earn organic search traffic on its own, so write it the way a
+strong human editor would — not as filler.
+
+Structure (Markdown, no top-level H1 — the page supplies it):
+- Open with 2-3 sentences that answer "what was ${s.name} and why did it die?" directly. Someone arriving from a search result should get the answer immediately, not an introduction.
+- Then 4-6 "## " sections with specific, descriptive headings. Write real headings ("Why ${s.name} ran out of users before it ran out of money"), never generic ones ("Introduction", "Conclusion", "Overview").
+- Use short paragraphs. Use a bulleted list only where it genuinely helps.
+- Close with a "## What a buyer gets" section covering the concrete assets — the codebase, the domain, existing users, the lesson — and one sentence saying it's listed on Saasgrave and can be acquired or revived.
+
+Voice:
+- Third person, plain English, concrete and genuinely useful to another founder.
+- No hype, no emojis, no "in today's fast-paced world", no summarising what you're about to say.
+- Name the specific mistake plainly. Founders read these to avoid repeating them.
+
+Accuracy — this matters more than length:
+- Use ONLY the facts below. NEVER invent metrics, dates, funding rounds, investors, customer names or events.
+- If something isn't given, either leave it out or speak generally. Do not guess numbers.
+- If the facts are thin, write a shorter, honest article rather than padding it.
 
 FACTS:
 ${facts}`;
@@ -65,21 +77,38 @@ ${facts}`;
 // panel's "regenerate" uses it; page views never do.
 export async function getOrCreateArticle(
   s: ArticleStartup,
-  { force = false }: { force?: boolean } = {}
+  { force = false, throwOnError = false }: { force?: boolean; throwOnError?: boolean } = {}
 ): Promise<string | null> {
   if (!force && s.seo_article && s.seo_article.trim().length > 200) return s.seo_article;
   try {
-    const body = await aiComplete(prompt(s), 1100);
+    const body = await aiComplete(prompt(s), 2200);
     const text = body?.trim();
-    if (!text || text.length < 200) return s.seo_article || null;
+    if (!text || text.length < 200) {
+      // Too short to be a real article — say so rather than silently keeping
+      // whatever was cached.
+      if (throwOnError) throw new Error("The model returned too little text to publish.");
+      return s.seo_article || null;
+    }
     try {
       const admin = createAdminClient();
-      await admin.from("startups").update({ seo_article: text, seo_article_at: new Date().toISOString() }).eq("id", s.id);
-    } catch {
-      /* cache write is best-effort */
+      const { error } = await admin
+        .from("startups")
+        .update({ seo_article: text, seo_article_at: new Date().toISOString() })
+        .eq("id", s.id);
+      if (error) {
+        console.error("seo-article: save failed:", error.message);
+        if (throwOnError) throw new Error(`Generated, but couldn't save: ${error.message}`);
+      }
+    } catch (e) {
+      if (throwOnError) throw e;
+      /* on a page view the cache write is best-effort */
     }
     return text;
-  } catch {
+  } catch (e) {
+    // A page view degrades quietly; the admin panel needs the real reason, or
+    // there's no way to tell a missing key from a retired model.
+    console.error("seo-article: generation failed:", (e as Error)?.message || e);
+    if (throwOnError) throw e;
     return s.seo_article || null;
   }
 }

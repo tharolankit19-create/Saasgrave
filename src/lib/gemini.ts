@@ -73,37 +73,78 @@ export async function aiComplete(prompt: string, maxTokens = 900): Promise<strin
   throw new Error("AI is not configured — set OPENROUTER_API_KEY (or GEMINI_API_KEY).");
 }
 
+// The model to use when OPENROUTER_MODEL isn't set. Keep this pointed at a
+// model that actually exists — the previous default (llama-3.1-nemotron-70b)
+// was retired by OpenRouter, which made every generation fail with a 404 that
+// the caller then swallowed.
+const DEFAULT_MODEL = "nvidia/nemotron-3-ultra-550b-a55b:free";
+// Tried only if the chosen model is unavailable to this account.
+const BACKUP_MODEL = "nvidia/nemotron-3-super-120b-a12b:free";
+
 async function viaOpenRouter(prompt: string, maxTokens = 600): Promise<string> {
   const key = process.env.OPENROUTER_API_KEY!.trim();
-  const model = process.env.OPENROUTER_MODEL?.trim() || "nvidia/llama-3.1-nemotron-70b-instruct";
+  const chosen = process.env.OPENROUTER_MODEL?.trim() || DEFAULT_MODEL;
   const site = process.env.NEXT_PUBLIC_SITE_URL || "https://saasgrave.org";
 
-  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${key}`,
-      "Content-Type": "application/json",
-      "HTTP-Referer": site,
-      "X-Title": "Saasgrave",
-    },
-    body: JSON.stringify({
-      model,
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.8,
-      max_tokens: maxTokens,
-    }),
-  });
+  const call = (model: string) =>
+    fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${key}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": site,
+        "X-Title": "Saasgrave",
+      },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.8,
+        max_tokens: maxTokens,
+      }),
+    });
+
+  let model = chosen;
+  let res = await call(model);
+
+  // 404 here means "no endpoint for that model on this account" — a retired
+  // model id, or a :free model blocked by the account's data policy. Worth one
+  // try on a known-good model before giving up.
+  if (res.status === 404 && chosen !== BACKUP_MODEL) {
+    const first = await res.text().catch(() => "");
+    console.error(`OpenRouter: ${chosen} unavailable (404): ${first} — retrying with ${BACKUP_MODEL}`);
+    model = BACKUP_MODEL;
+    res = await call(model);
+  }
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    console.error(`OpenRouter failed (${res.status}): ${text}`);
-    if (res.status === 401) throw new Error("AI couldn't run — check OPENROUTER_API_KEY.");
-    throw new Error("AI is busy right now. Please try again in a moment.");
+    console.error(`OpenRouter failed (${res.status}) for ${model}: ${text}`);
+    if (res.status === 401) throw new Error("OpenRouter rejected the key — check OPENROUTER_API_KEY.");
+    // Pass the provider's own words through: "model not found", "requires more
+    // credits", "no endpoints matching your data policy" are all things only
+    // the account owner can fix, and only if they can see them.
+    const detail = extractError(text);
+    throw new Error(
+      `OpenRouter ${res.status} on "${model}"${detail ? ` — ${detail}` : ""}`
+    );
   }
+
   const data = await res.json();
   const story: string = data?.choices?.[0]?.message?.content?.trim() || "";
-  if (!story) throw new Error("AI returned an empty story. Try again.");
+  if (!story) {
+    throw new Error(`"${model}" returned nothing. Try a different OPENROUTER_MODEL.`);
+  }
   return story;
+}
+
+/** Pull the human-readable message out of an OpenRouter error body. */
+function extractError(body: string): string {
+  try {
+    const j = JSON.parse(body);
+    return (j?.error?.message || j?.message || "").toString().slice(0, 300);
+  } catch {
+    return body.slice(0, 300);
+  }
 }
 
 async function viaGemini(prompt: string, maxTokens = 512): Promise<string> {

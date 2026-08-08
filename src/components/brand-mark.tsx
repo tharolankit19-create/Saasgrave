@@ -94,6 +94,19 @@ export function BrandMark({ size = 32, className }: { size?: number; className?:
 }
 
 /**
+ * The mark as a `data:` URI.
+ *
+ * Satori (which renders `next/og` images) only understands a small subset of
+ * SVG and does not expand nested React components inside an `<svg>` — that's
+ * why the favicon and social card came out as a bare red disc. Feeding it an
+ * `<img src={brandMarkDataUri()}>` sidesteps the whole problem: Satori
+ * rasterises the SVG itself.
+ */
+export function brandMarkDataUri(size = 128): string {
+  return `data:image/svg+xml;utf8,${encodeURIComponent(brandMarkSvg(size))}`;
+}
+
+/**
  * The same mark as an SVG string, for contexts that can't render React — the
  * embeddable badge route serves raw SVG to third-party sites.
  */
