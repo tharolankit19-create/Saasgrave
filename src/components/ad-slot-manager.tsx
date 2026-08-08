@@ -51,7 +51,7 @@ export function AdSlotManager({
             <h3 className="text-sm font-medium text-bone-100">Promote your product</h3>
             <p className="mt-0.5 text-xs text-bone-500">
               {openCount > 0
-                ? `${openCount} placements open · featured launch $9, sidebar $19, sponsored row $29, newsletter $49`
+                ? `${openCount} placements open · featured launch $9 a week, sidebar $19, sponsored row $29 and newsletter $49 a month`
                 : "Every placement is booked right now — check back soon."}
             </p>
           </div>

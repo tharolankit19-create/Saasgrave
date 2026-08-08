@@ -10,6 +10,7 @@ import {
   PRODUCTS,
   PRODUCT_ORDER,
   PLACEMENT_ORDER,
+  MOST_POPULAR,
   BUNDLE_LIST_PRICE,
   BUNDLE_SAVING,
   type Placement,
@@ -87,8 +88,8 @@ export default async function PromotePage() {
           Get in front of every buyer.
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-bone-400">
-          Flat price, 30 days, no auctions or CPC. Add your logo, headline and link the moment
-          you&apos;ve paid — nothing waits on approval.
+          Flat price, no auctions or CPC. Add your logo, headline and link the moment you&apos;ve
+          paid — nothing waits on approval.
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-moss-500/30 bg-moss-500/10 px-3 py-1 text-xs font-semibold text-moss-500">
@@ -117,17 +118,22 @@ export default async function PromotePage() {
             : slot?.id ?? null;
           const left = kind === "ad_slot" ? (slot?.left ?? 0) : spec.slots == null ? null : 1;
           const isBundle = key === "bundle";
+          const popular = key === MOST_POPULAR;
 
           return (
             <Card
               key={key}
               className={`relative flex flex-col p-6 ${
-                isBundle ? "shine-border border-accent-500/40 shadow-lift lg:col-span-3" : ""
+                isBundle
+                  ? "shine-border border-accent-500/40 shadow-lift lg:col-span-3"
+                  : popular
+                    ? "shine-border border-accent-500/40 shadow-lift"
+                    : ""
               }`}
             >
-              {isBundle && (
+              {(isBundle || popular) && (
                 <span className="absolute -top-2.5 left-6 z-[3] rounded-full bg-accent-500 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white shadow-sm">
-                  Save ${BUNDLE_SAVING}
+                  {isBundle ? `Save $${BUNDLE_SAVING}` : "Most popular"}
                 </span>
               )}
 
@@ -142,9 +148,7 @@ export default async function PromotePage() {
                     {isBundle && (
                       <span className="text-sm text-bone-500 line-through">${BUNDLE_LIST_PRICE}</span>
                     )}
-                    <span className="text-xs text-bone-500">
-                      {key === "directory" ? "one-off" : "/ 30 days"}
-                    </span>
+                    <span className="text-xs text-bone-500">{spec.unit}</span>
                   </div>
                   <h2 className="mt-2.5 font-semibold text-bone-100">{spec.name}</h2>
                   <p className="mt-1 text-sm leading-relaxed text-bone-500">{spec.tagline}</p>

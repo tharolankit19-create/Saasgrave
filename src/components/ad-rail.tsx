@@ -63,7 +63,7 @@ function PromoteSlotCard() {
       </span>
       <span className="text-xs font-bold text-bone-100">Put your product here</span>
       <span className="mt-0.5 text-[11px] font-semibold text-accent-600">
-        <span className="font-bold">$19</span> / 30 days
+        <span className="font-bold">$19</span> / 1 month
       </span>
     </Link>
   );
@@ -117,7 +117,7 @@ export function AdStrip({ slots }: { slots: AdSlot[] }) {
                 </span>
                 <span>
                   <span className="block text-xs font-bold text-bone-100">Your product here</span>
-                  <span className="block text-[11px] font-semibold text-accent-600">$19 / 30 days</span>
+                  <span className="block text-[11px] font-semibold text-accent-600">$19 / 1 month</span>
                 </span>
               </Link>
             )
