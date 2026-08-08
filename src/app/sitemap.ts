@@ -8,7 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "https://saasgrave.org";
   const now = new Date();
 
-  const staticPaths = ["", "/browse", "/sales", "/sell", "/guides", "/guides/write", "/community", "/support", "/login", "/register"].map((path) => ({
+  const staticPaths = ["", "/browse", "/sales", "/sell", "/pricing", "/wall", "/guides", "/guides/write", "/community", "/support", "/login", "/register"].map((path) => ({
     url: `${base}${path}`,
     lastModified: now,
     changeFrequency: "weekly" as const,

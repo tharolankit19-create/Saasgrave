@@ -91,6 +91,60 @@ export async function fulfilPurchase({
       return true;
     }
 
+    if (kind === "directory") {
+      const { error } = await admin
+        .from("startups")
+        .update({ directory_status: "paid" })
+        .eq("id", referenceId);
+      if (error) {
+        console.error("fulfil: directory update failed:", error.message);
+        return false;
+      }
+      return true;
+    }
+
+    if (kind === "bundle") {
+      // Everything at once: feature the startup, queue the directory blast, and
+      // reserve one free slot of each placement for the buyer to fill in.
+      const { error } = await admin
+        .from("startups")
+        .update({
+          featured: true,
+          featured_until: ends.toISOString(),
+          directory_status: "paid",
+        })
+        .eq("id", referenceId);
+      if (error) {
+        console.error("fulfil: bundle startup update failed:", error.message);
+        return false;
+      }
+
+      if (buyerId) {
+        for (const placement of ["sidebar", "sponsored", "newsletter"] as const) {
+          const { data: free } = await admin
+            .from("ad_slots")
+            .select("id")
+            .eq("placement", placement)
+            .is("buyer_id", null)
+            .order("position")
+            .limit(1);
+          const slotId = free?.[0]?.id;
+          if (!slotId) continue; // that placement is sold out — the rest still land
+          await admin
+            .from("ad_slots")
+            .update({
+              active: true,
+              buyer_id: buyerId,
+              starts_at: now.toISOString(),
+              ends_at: ends.toISOString(),
+            })
+            .eq("id", slotId)
+            .is("buyer_id", null); // don't race another buyer
+        }
+      }
+      return true;
+    }
+
     if (kind === "sale_listing") {
       await admin
         .from("startups")

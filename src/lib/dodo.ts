@@ -10,10 +10,12 @@ const TEST_BASE = "https://test.dodopayments.com";
 const LIVE_BASE = "https://live.dodopayments.com";
 
 // The paid actions. Each resolves to a fixed-price Dodo product:
-//   ad_slot  → a promotion placement (sidebar $19 / sponsored $29 / newsletter $49)
-//   featured → Featured Launch ($9), pins a startup to the top of Browse
+//   ad_slot   → a promotion placement (sidebar $19 / sponsored $29 / newsletter $49)
+//   featured  → Featured Launch ($9), pins a startup to the top of Browse
+//   directory → Directory Blast ($99), 100+ hand-made directory submissions
+//   bundle    → everything above, discounted ($149)
 //   sale_listing → legacy; listing and selling are free (we take 3% on a sale)
-export type CheckoutKind = "ad_slot" | "featured" | "sale_listing";
+export type CheckoutKind = "ad_slot" | "featured" | "directory" | "bundle" | "sale_listing";
 
 // Resolve product IDs at call time (not import time) and trim, so a stray
 // newline or space pasted into the env — a very common cause of failures —
@@ -26,7 +28,11 @@ function productFor(kind: CheckoutKind): string | undefined {
       ? process.env.DODO_PRODUCT_ID_ADS || process.env.DODO_PRODUCT_AD_SLOT || sale
       : kind === "featured"
         ? process.env.DODO_PRODUCT_ID_FEATURED_9 || process.env.DODO_PRODUCT_ID_FEATURED || sale
-        : sale;
+        : kind === "directory"
+          ? process.env.DODO_PRODUCT_ID_DIRECTORY_99 || process.env.DODO_PRODUCT_ID_DIRECTORY
+          : kind === "bundle"
+            ? process.env.DODO_PRODUCT_ID_BUNDLE_149 || process.env.DODO_PRODUCT_ID_BUNDLE
+            : sale;
   return raw?.trim() || undefined;
 }
 

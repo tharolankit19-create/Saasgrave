@@ -1,24 +1,27 @@
 // ─── Promotion catalogue ────────────────────────────────────
-// Four placements, each a flat price for a 30-day run. Every one carries a
-// dofollow link back to the buyer's site. Prices are fixed per placement (no
-// auctions, no CPC) — what rises is scarcity, since the slot counts are hard caps.
+// Every paid thing on the site, in one place. Prices are flat per product for a
+// 30-day run, and every one carries a dofollow link back to the buyer's site.
+// What's scarce isn't the price — it's the slot counts, which are hard caps.
 
-export type Placement = "featured" | "sidebar" | "sponsored" | "newsletter";
+/** Products backed by a row in `ad_slots` (the `placement` column). */
+export type Placement = "sidebar" | "sponsored" | "newsletter";
 
-export type PlacementSpec = {
-  key: Placement;
+/** Everything that can be bought. */
+export type ProductKey = "featured" | Placement | "directory" | "bundle";
+
+export type ProductSpec = {
+  key: ProductKey;
   name: string;
   dollars: number;
-  /** Hard cap on how many of this placement can ever be sold at once. */
-  slots: number;
+  /** Hard cap on how many can run at once. `null` = unlimited (nothing to sell out). */
+  slots: number | null;
   tagline: string;
-  /** What the buyer actually gets — used on /promote and the pricing section. */
   perks: string[];
-  /** Which Dodo product to charge. */
+  /** Dodo product env vars, tried in order. */
   envKeys: string[];
 };
 
-export const PLACEMENTS: Record<Placement, PlacementSpec> = {
+export const PRODUCTS: Record<ProductKey, ProductSpec> = {
   featured: {
     key: "featured",
     name: "Featured Launch",
@@ -75,31 +78,91 @@ export const PLACEMENTS: Record<Placement, PlacementSpec> = {
     ],
     envKeys: ["DODO_PRODUCT_ID_ADS_49", "DODO_PRODUCT_ID_NEWSLETTER"],
   },
+  directory: {
+    key: "directory",
+    name: "Directory Blast",
+    dollars: 99,
+    slots: null,
+    tagline: "We submit your product to 100+ startup directories by hand.",
+    perks: [
+      "Submitted to 100+ startup & SaaS directories",
+      "Done manually — no spam, no bots",
+      "A backlink report when it's finished",
+      "Turnaround within 7 days",
+    ],
+    envKeys: ["DODO_PRODUCT_ID_DIRECTORY_99", "DODO_PRODUCT_ID_DIRECTORY"],
+  },
+  bundle: {
+    key: "bundle",
+    name: "The Everything Bundle",
+    dollars: 149,
+    slots: null,
+    tagline: "Every placement we sell, plus the directory blast — at a real discount.",
+    perks: [
+      "Featured Launch — pinned to the top",
+      "Sidebar Slot beside every listing",
+      "Sponsored Row inside the list",
+      "Newsletter Mention in The Weekly Obituary",
+      "100+ directory submissions",
+      "Dofollow backlinks from every one",
+    ],
+    envKeys: ["DODO_PRODUCT_ID_BUNDLE_149", "DODO_PRODUCT_ID_BUNDLE"],
+  },
 };
 
-/** Display order — cheapest first, the way the pricing section reads. */
-export const PLACEMENT_ORDER: Placement[] = ["featured", "sidebar", "sponsored", "newsletter"];
+/** What the bundle grants, and therefore what it's compared against. */
+export const BUNDLE_INCLUDES: ProductKey[] = [
+  "featured",
+  "sidebar",
+  "sponsored",
+  "newsletter",
+  "directory",
+];
+
+/** Full price of the bundle's contents bought separately. */
+export const BUNDLE_LIST_PRICE = BUNDLE_INCLUDES.reduce((sum, k) => sum + PRODUCTS[k].dollars, 0);
+export const BUNDLE_SAVING = BUNDLE_LIST_PRICE - PRODUCTS.bundle.dollars;
+
+/** Ad-slot placements, cheapest first. */
+export const PLACEMENT_ORDER: Placement[] = ["sidebar", "sponsored", "newsletter"];
+
+/** Everything purchasable, cheapest first — the order the pricing page reads. */
+export const PRODUCT_ORDER: ProductKey[] = [
+  "featured",
+  "sidebar",
+  "sponsored",
+  "newsletter",
+  "directory",
+  "bundle",
+];
+
+const PLACEMENTS_SET = new Set<string>(PLACEMENT_ORDER);
 
 export function isPlacement(v: unknown): v is Placement {
-  return typeof v === "string" && v in PLACEMENTS;
+  return typeof v === "string" && PLACEMENTS_SET.has(v);
 }
 
-export function placementSpec(p: Placement): PlacementSpec {
-  return PLACEMENTS[p];
+export function productSpec(key: ProductKey): ProductSpec {
+  return PRODUCTS[key];
 }
 
-export function placementCents(p: Placement): number {
-  return PLACEMENTS[p].dollars * 100;
+export function productCents(key: ProductKey): number {
+  return PRODUCTS[key].dollars * 100;
 }
 
 /**
- * Which Dodo product to charge for a placement. Create one fixed-price product
- * per price point and set the matching env var; the first one set wins.
+ * Which Dodo product to charge. Create one fixed-price product per price point
+ * and set the matching env var; the first one set wins.
  */
-export function placementProductId(p: Placement): string | undefined {
-  for (const key of PLACEMENTS[p].envKeys) {
-    const v = process.env[key]?.trim();
+export function productDodoId(key: ProductKey): string | undefined {
+  for (const envKey of PRODUCTS[key].envKeys) {
+    const v = process.env[envKey]?.trim();
     if (v) return v;
   }
   return undefined;
 }
+
+// ─── Back-compat aliases used by the ad-slot paths ──────────
+export const PLACEMENTS = PRODUCTS;
+export const placementCents = productCents;
+export const placementProductId = productDodoId;

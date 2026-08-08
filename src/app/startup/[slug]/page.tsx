@@ -18,9 +18,10 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { Badge, Card, Eyebrow } from "@/components/ui";
 import { XIcon, LinkedInIcon } from "@/components/brand-icons";
+import { LaunchShareModal } from "@/components/launch-share-modal";
 import { ShareLaunch } from "@/components/share-launch";
 import { ObituaryCard } from "@/components/obituary-card";
-import { money, monthsBetween } from "@/lib/utils";
+import { money, monthsBetween, normalizeUrl } from "@/lib/utils";
 import { MakeOfferButton } from "@/components/make-offer-button";
 import { VerifyRevenueButton } from "@/components/verify-revenue-button";
 import { ViewTracker } from "@/components/view-tracker";
@@ -42,14 +43,13 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 export const dynamic = "force-dynamic";
 
-function normalizeUrl(url?: string | null): string | null {
-  if (!url) return null;
-  const t = url.trim();
-  if (!t) return null;
-  return /^https?:\/\//i.test(t) ? t : `https://${t}`;
-}
-
-export default async function StartupPage({ params }: { params: { slug: string } }) {
+export default async function StartupPage({
+  params,
+  searchParams,
+}: {
+  params: { slug: string };
+  searchParams: { launched?: string };
+}) {
   const supabase = createClient();
   const {
     data: { user },
@@ -75,6 +75,19 @@ export default async function StartupPage({ params }: { params: { slug: string }
 
   return (
     <div className="mx-auto max-w-4xl px-5 py-10">
+      {/* Just published → prompt the founder to share it, and offer the second
+          dofollow link in return. Owner-only, and only once. */}
+      {isOwner && searchParams.launched && (
+        <LaunchShareModal
+          startupId={s.id}
+          name={s.name}
+          tagline={s.tagline}
+          url={listingUrl}
+          forSale={s.for_sale}
+          alreadyShared={!!s.share_verified}
+        />
+      )}
+
       {/* SEO: the post-mortem as a structured Article so search + assistants
           can surface this listing and the founder's story. */}
       <script

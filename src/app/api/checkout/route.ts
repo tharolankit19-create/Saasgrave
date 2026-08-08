@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { createDodoCheckout, type CheckoutKind } from "@/lib/dodo";
-import { isPlacement, placementCents, placementProductId, type Placement } from "@/lib/ad-pricing";
+import { isPlacement, productCents, productDodoId, type Placement } from "@/lib/ad-pricing";
 
 // Creates a Dodo hosted-checkout session for a promotion:
 //   ad_slot  → sidebar $19 / sponsored $29 / newsletter $49 (price comes from
@@ -42,10 +42,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "That slot has just been taken." }, { status: 409 });
     }
     const placement: Placement = isPlacement(slot.placement) ? slot.placement : "sidebar";
-    amountCents = placementCents(placement);
-    productId = placementProductId(placement);
-  } else if (kind === "featured") {
-    // referenceId is a startup — only its owner may feature it.
+    amountCents = productCents(placement);
+    productId = productDodoId(placement);
+  } else if (kind === "featured" || kind === "directory" || kind === "bundle") {
+    // referenceId is a startup — only its owner may buy promotion for it.
     const { data: startup } = await supabase
       .from("startups")
       .select("id, founder_id")
@@ -55,8 +55,8 @@ export async function POST(req: Request) {
     if (startup.founder_id !== user.id) {
       return NextResponse.json({ error: "That isn't your startup." }, { status: 403 });
     }
-    amountCents = placementCents("featured");
-    productId = placementProductId("featured");
+    amountCents = productCents(kind);
+    productId = productDodoId(kind);
   } else {
     amountCents = 900; // sale_listing (legacy path)
   }
