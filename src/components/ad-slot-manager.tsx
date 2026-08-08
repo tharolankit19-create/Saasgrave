@@ -1,16 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import * as Dialog from "@radix-ui/react-dialog";
-import { Megaphone, Pencil, Plus, Loader2, ExternalLink, CheckCircle2 } from "lucide-react";
-import { toast } from "sonner";
+import { Megaphone, Pencil, Plus, ExternalLink, CheckCircle2, AlertCircle } from "lucide-react";
 import { Button, LinkButton } from "@/components/ui";
+import { AdCreativeForm } from "@/components/ad-creative-form";
 
 export type OwnedSlot = {
   id: string;
   position: string;
+  placement?: string | null;
   active: boolean;
+  name: string | null;
   headline: string | null;
   body: string | null;
   cta_label: string | null;
@@ -19,16 +20,19 @@ export type OwnedSlot = {
   ends_at: string | null;
 };
 
-// The founder-facing promotions panel: manage the ad slots you've bought and
-// book a new one. Editing writes through /api/ad-slot (ownership-checked);
-// booking kicks off a Dodo checkout for a specific open slot.
+const PLACEMENT_LABEL: Record<string, string> = {
+  sidebar: "Sidebar slot",
+  sponsored: "Sponsored row",
+  newsletter: "Newsletter mention",
+};
+
+// The founder-facing promotions panel: manage the placements you've bought and
+// book a new one. Editing writes through /api/ad-slot (ownership-checked).
 export function AdSlotManager({
   owned,
-  openSlotId,
   openCount,
 }: {
   owned: OwnedSlot[];
-  openSlotId: string | null;
   openCount: number;
 }) {
   return (
@@ -44,17 +48,17 @@ export function AdSlotManager({
             <Megaphone size={18} />
           </span>
           <div>
-            <h3 className="text-sm font-medium text-bone-100">Promote a listing</h3>
+            <h3 className="text-sm font-medium text-bone-100">Promote your product</h3>
             <p className="mt-0.5 text-xs text-bone-500">
               {openCount > 0
-                ? `${openCount} of 6 premium slots open · from $19 / 30 days · beside every listing`
-                : "All 6 slots are booked right now — check back soon."}
+                ? `${openCount} placements open · featured launch $9, sidebar $19, sponsored row $29, newsletter $49`
+                : "Every placement is booked right now — check back soon."}
             </p>
           </div>
         </div>
         {openCount > 0 ? (
           <LinkButton href="/promote" size="md">
-            <Plus size={16} /> Book a slot
+            <Plus size={16} /> Book a placement
           </LinkButton>
         ) : (
           <Button size="md" disabled>
@@ -67,149 +71,106 @@ export function AdSlotManager({
 }
 
 function SlotCard({ slot }: { slot: OwnedSlot }) {
-  const live = slot.active && slot.headline;
+  const ready = !!(slot.headline && slot.cta_url);
+  const live = slot.active && ready;
   const ends = slot.ends_at ? new Date(slot.ends_at) : null;
   const daysLeft = ends ? Math.max(0, Math.ceil((ends.getTime() - Date.now()) / 86_400_000)) : null;
+  const label = PLACEMENT_LABEL[slot.placement || "sidebar"] || "Placement";
 
   return (
-    <div className="rounded-2xl border border-black/8 bg-ink-900 p-5 shadow-card">
+    <div
+      className={`rounded-2xl border bg-ink-900 p-5 shadow-card ${
+        ready ? "border-black/8" : "border-accent-500/40"
+      }`}
+    >
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-moss-500/10 px-2.5 py-1 text-xs font-medium text-moss-400">
-            <CheckCircle2 size={12} /> {live ? "Live" : "Ready to set up"}
+          {live ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-moss-500/10 px-2.5 py-1 text-xs font-medium text-moss-400">
+              <CheckCircle2 size={12} /> Live
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-500/15 px-2.5 py-1 text-xs font-semibold text-accent-600">
+              <AlertCircle size={12} /> Add your product to go live
+            </span>
+          )}
+          <span className="text-xs text-bone-500">
+            {label} · {slot.position}
           </span>
-          <span className="text-xs text-bone-500">Slot {slot.position}</span>
         </div>
-        {daysLeft != null && (
-          <span className="text-xs text-bone-500">{daysLeft} days left</span>
-        )}
+        {daysLeft != null && <span className="text-xs text-bone-500">{daysLeft} days left</span>}
       </div>
 
       <div className="mt-4 flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          {slot.headline ? (
-            <>
-              <p className="truncate font-medium text-bone-100">{slot.headline}</p>
-              {slot.body && <p className="mt-0.5 line-clamp-2 text-sm text-bone-500">{slot.body}</p>}
-              {slot.cta_url && (
-                <a
-                  href={slot.cta_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-1.5 inline-flex items-center gap-1 text-xs text-accent-500 hover:text-accent-600"
-                >
-                  {slot.cta_label || "Visit"} <ExternalLink size={11} />
-                </a>
-              )}
-            </>
-          ) : (
-            <p className="text-sm text-bone-500">
-              No creative yet — add a headline and link so it goes live beside every listing.
-            </p>
+        <div className="flex min-w-0 items-start gap-3">
+          {slot.image_url && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={slot.image_url}
+              alt=""
+              className="h-11 w-11 shrink-0 rounded-lg border border-black/10 bg-white object-contain p-1"
+            />
           )}
+          <div className="min-w-0">
+            {ready ? (
+              <>
+                {slot.name && <p className="truncate text-sm font-semibold text-bone-100">{slot.name}</p>}
+                <p className="truncate text-sm text-bone-300">{slot.headline}</p>
+                {slot.body && <p className="mt-0.5 line-clamp-2 text-xs text-bone-500">{slot.body}</p>}
+                {slot.cta_url && (
+                  <a
+                    href={slot.cta_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1.5 inline-flex items-center gap-1 text-xs text-accent-500 hover:text-accent-600"
+                  >
+                    {slot.cta_url.replace(/^https?:\/\//, "")} <ExternalLink size={11} />
+                  </a>
+                )}
+              </>
+            ) : (
+              <p className="text-sm text-bone-500">
+                You&apos;ve paid for this placement — add your logo, name, headline and link and it
+                goes live immediately.
+              </p>
+            )}
+          </div>
         </div>
-        <EditSlotDialog slot={slot} />
+        <EditSlotDialog slot={slot} ready={ready} />
       </div>
     </div>
   );
 }
 
-function EditSlotDialog({ slot }: { slot: OwnedSlot }) {
-  const router = useRouter();
+function EditSlotDialog({ slot, ready }: { slot: OwnedSlot; ready: boolean }) {
   const [open, setOpen] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({
-    headline: slot.headline ?? "",
-    body: slot.body ?? "",
-    cta_label: slot.cta_label ?? "",
-    cta_url: slot.cta_url ?? "",
-    image_url: slot.image_url ?? "",
-  });
-
-  function set(k: keyof typeof form, v: string) {
-    setForm((f) => ({ ...f, [k]: v }));
-  }
-
-  async function save() {
-    setSaving(true);
-    const res = await fetch("/api/ad-slot", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slotId: slot.id, ...form }),
-    });
-    setSaving(false);
-    if (!res.ok) {
-      const d = await res.json().catch(() => ({}));
-      toast.error(d.error || "Couldn't save.");
-      return;
-    }
-    toast.success("Creative updated — it's live beside every listing.");
-    setOpen(false);
-    router.refresh();
-  }
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <button className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-black/12 bg-ink-900 px-3.5 py-2 text-xs font-medium text-bone-300 transition hover:border-black/25 hover:text-bone-100">
-          <Pencil size={12} /> Edit
-        </button>
+        {ready ? (
+          <button className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-black/12 bg-ink-900 px-3.5 py-2 text-xs font-medium text-bone-300 transition hover:border-black/25 hover:text-bone-100">
+            <Pencil size={12} /> Edit
+          </button>
+        ) : (
+          <button className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-gradient-to-b from-accent-400 to-accent-500 px-4 text-xs font-semibold text-white shadow-glow transition hover:brightness-105">
+            <Plus size={13} /> Set it up
+          </button>
+        )}
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm data-[state=open]:animate-fade-in" />
         <Dialog.Content className="fixed left-1/2 top-1/2 z-50 max-h-[90vh] w-[92vw] max-w-md -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl border border-black/10 bg-ink-900 p-6 shadow-lift focus:outline-none">
-          <Dialog.Title className="font-serif text-xl text-bone-100">Edit your ad</Dialog.Title>
+          <Dialog.Title className="font-serif text-xl text-bone-100">Your ad</Dialog.Title>
           <Dialog.Description className="mt-1 text-sm text-bone-500">
-            Slot {slot.position} · shown beside every listing on the graveyard.
+            {PLACEMENT_LABEL[slot.placement || "sidebar"] || "Placement"} · {slot.position}
           </Dialog.Description>
 
-          <div className="mt-5 space-y-3">
-            <Field label="Headline" value={form.headline} onChange={(v) => set("headline", v)} placeholder="Ship your SaaS in a weekend" max={60} />
-            <Field label="One line of body" value={form.body} onChange={(v) => set("body", v)} placeholder="The boilerplate that saves you 40 hours." max={140} />
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="Button label" value={form.cta_label} onChange={(v) => set("cta_label", v)} placeholder="Try it" max={24} />
-              <Field label="Link URL" value={form.cta_url} onChange={(v) => set("cta_url", v)} placeholder="https://…" max={300} />
-            </div>
-            <Field label="Image URL (optional)" value={form.image_url} onChange={(v) => set("image_url", v)} placeholder="https://…/banner.png" max={500} />
-          </div>
-
-          <div className="mt-6 flex justify-end gap-2">
-            <Dialog.Close asChild>
-              <Button variant="outline" size="md">Cancel</Button>
-            </Dialog.Close>
-            <Button size="md" onClick={save} disabled={saving}>
-              {saving ? <Loader2 className="animate-spin" size={16} /> : "Save creative"}
-            </Button>
+          <div className="mt-5">
+            <AdCreativeForm slot={slot} onSaved={() => setOpen(false)} compact />
           </div>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
-  );
-}
-
-function Field({
-  label,
-  value,
-  onChange,
-  placeholder,
-  max,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-  max?: number;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-1 block text-xs font-medium text-bone-500">{label}</span>
-      <input
-        value={value}
-        maxLength={max}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="h-10 w-full rounded-xl border border-black/10 bg-ink-950 px-3.5 text-sm text-bone-100 placeholder:text-bone-500/60 outline-none transition focus:border-accent-500/50"
-      />
-    </label>
   );
 }

@@ -65,14 +65,14 @@ export function PromotePopup() {
               Want your product in front of them?
             </h3>
             <p className="mt-1 text-xs leading-relaxed text-bone-500">
-              Book a premium slot beside every listing. <span className="font-semibold text-accent-600">From $19 / 30 days</span> — price rises as slots fill.
+              Get in front of them from <span className="font-semibold text-accent-600">$9 / 30 days</span> — featured launch, sidebar slot, sponsored row or a newsletter mention. Every one includes a dofollow backlink.
             </p>
             <Link
               href="/promote"
               onClick={() => setOpen(false)}
               className="mt-3 inline-flex h-9 items-center gap-2 rounded-full bg-gradient-to-b from-accent-400 to-accent-500 px-4 text-sm font-semibold text-white shadow-glow transition hover:brightness-105"
             >
-              Promote from $19 <ArrowRight size={15} />
+              Promote from $9 <ArrowRight size={15} />
             </Link>
           </div>
         </div>

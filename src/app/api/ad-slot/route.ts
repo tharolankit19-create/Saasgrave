@@ -13,6 +13,7 @@ export async function POST(req: Request) {
 
   let body: {
     slotId?: string;
+    name?: string;
     headline?: string;
     body?: string;
     cta_label?: string;
@@ -45,6 +46,7 @@ export async function POST(req: Request) {
   const { error } = await admin
     .from("ad_slots")
     .update({
+      name: clip(body.name, 40),
       headline: clip(body.headline, 60),
       body: clip(body.body, 140),
       cta_label: clip(body.cta_label, 24),

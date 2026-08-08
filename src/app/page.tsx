@@ -16,11 +16,16 @@ import {
   LineChart,
   Rocket,
   Megaphone,
+  Sparkles,
+  Rows3,
+  Mail,
 } from "lucide-react";
 import { LinkButton, Eyebrow, Card } from "@/components/ui";
+import { PLACEMENTS, PLACEMENT_ORDER } from "@/lib/ad-pricing";
 import { LedgerRow, SponsoredRow } from "@/components/ledger-row";
 import { Reveal, Marquee } from "@/components/motion";
 import { loadGraveyard } from "@/lib/stats";
+import { loadSponsored } from "@/lib/sponsored";
 import { money } from "@/lib/utils";
 
 function compact(n: number) {
@@ -30,9 +35,12 @@ function compact(n: number) {
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const { rows, stats } = await loadGraveyard(200);
+  const [{ rows, stats }, sponsored] = await Promise.all([loadGraveyard(200), loadSponsored()]);
 
-  const ledger = rows.slice(0, 12);
+  // Paid Featured Launches lead the ledger; everything else keeps its order.
+  const live = (r: { featured: boolean | null; featured_until: string | null }) =>
+    !!r.featured && (!r.featured_until || new Date(r.featured_until) > new Date());
+  const ledger = [...rows.filter(live), ...rows.filter((r) => !live(r))].slice(0, 12);
   const maxViews = Math.max(1, ...ledger.map((s) => s.view_count ?? 0));
   const hasListings = rows.length > 0;
 
@@ -190,14 +198,7 @@ export default async function Home() {
               <div key={s.slug}>
                 <LedgerRow s={s} rank={i + 1} maxViews={maxViews} />
                 {/* Sponsored placement sits right after the top grave (slot #2). */}
-                {i === 0 && (
-                  <SponsoredRow
-                    name="KryxAI"
-                    tagline="Grow on LinkedIn & X in your own voice"
-                    href="https://x.getkryxai.com"
-                    logo="/kryx.jpg"
-                  />
-                )}
+                {i === 0 && <SponsoredRow {...sponsored} />}
               </div>
             ))}
           </div>
@@ -333,7 +334,8 @@ export default async function Home() {
             No subscriptions. Free to list and to open for sale — we take just 3% when a startup actually sells.
           </p>
         </div>
-        <div className="grid gap-5 md:grid-cols-3">
+        {/* Core: listing and selling. Both free — we earn on the sale. */}
+        <div className="mx-auto grid max-w-3xl gap-5 md:grid-cols-2">
           {[
             {
               icon: <Store size={18} />,
@@ -354,16 +356,6 @@ export default async function Home() {
               cta: "Open it for sale — free",
               href: "/sell",
               highlight: true,
-            },
-            {
-              icon: <Megaphone size={18} />,
-              price: "from $19",
-              unit: "/ 30 days",
-              title: "Promote",
-              body: "A premium dofollow ad slot beside every listing — your logo, tagline and link. Only 6 slots; the price rises to $49 as they fill.",
-              cta: "Promote from $19",
-              href: "/promote",
-              highlight: false,
             },
           ].map((p) => (
             <Card
@@ -395,6 +387,60 @@ export default async function Home() {
             </Card>
           ))}
         </div>
+
+        {/* Paid promotion — flat price per placement, 30 days, all dofollow. */}
+        <div className="mt-16">
+          <div className="mb-8 text-center">
+            <h3 className="text-2xl font-bold tracking-tight text-bone-100">
+              Want to be seen? Pick a placement.
+            </h3>
+            <p className="mx-auto mt-2 max-w-lg text-sm text-bone-500">
+              Flat price, 30 days, no auctions or CPC — and{" "}
+              <span className="font-medium text-moss-500">every one includes a dofollow backlink</span>.
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {PLACEMENT_ORDER.map((key) => {
+              const spec = PLACEMENTS[key];
+              const icons = {
+                featured: <Sparkles size={16} />,
+                sidebar: <Megaphone size={16} />,
+                sponsored: <Rows3 size={16} />,
+                newsletter: <Mail size={16} />,
+              } as const;
+              return (
+                <Link key={key} href="/promote" className="group block">
+                  <Card className="flex h-full flex-col p-5 transition-all duration-300 hover:border-accent-500/40 hover:bg-ink-850">
+                    <div className="flex items-center justify-between">
+                      <span className="grid h-9 w-9 place-items-center rounded-xl border border-black/10 text-accent-400">
+                        {icons[key]}
+                      </span>
+                      <span className="font-mono text-[10px] uppercase tracking-wider text-bone-500">
+                        {spec.slots} slot{spec.slots > 1 ? "s" : ""}
+                      </span>
+                    </div>
+                    <div className="mt-4 flex items-baseline gap-1">
+                      <span className="text-2xl font-bold text-bone-100">${spec.dollars}</span>
+                      <span className="text-[11px] text-bone-500">/ 30 days</span>
+                    </div>
+                    <h4 className="mt-1.5 text-sm font-semibold text-bone-100 group-hover:text-accent-600">
+                      {spec.name}
+                    </h4>
+                    <p className="mt-1 flex-1 text-xs leading-relaxed text-bone-500">{spec.tagline}</p>
+                    <span className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-accent-600">
+                      Get it <ArrowRight size={12} />
+                    </span>
+                  </Card>
+                </Link>
+              );
+            })}
+          </div>
+          <p className="mt-6 text-center text-xs text-bone-500">
+            Launch with Featured and you also get an embeddable{" "}
+            <span className="font-medium text-bone-300">“Featured on Saasgrave”</span> badge for your
+            own site.
+          </p>
+        </div>
       </section>
 
       {/* ─── 11 · Trust — numbers you can verify ──────────── */}
@@ -420,7 +466,8 @@ export default async function Home() {
         </div>
         <div className="divide-y divide-black/8 rounded-2xl border border-black/8">
           {[
-            { q: "Is it really free to list?", a: "Yes — listing is free forever, and opening it for sale is free too. We take a flat 3% only when your startup actually sells. The only upfront option is a promo ad slot (from $19 / 30 days)." },
+            { q: "Is it really free to list?", a: "Yes — listing is free forever, and opening it for sale is free too. We take a flat 3% only when your startup actually sells. The only paid options are promotion placements: Featured Launch ($9), a sidebar slot ($19), a sponsored row ($29) or a newsletter mention ($49), each for 30 days." },
+            { q: "Do promotions include a backlink?", a: "Yes — every placement, including the free listing itself, carries a dofollow link to your site. Featured Launch also gives you an embeddable “Featured on Saasgrave” badge for your own landing page." },
             { q: "Do I need an account to look?", a: "No — browsing and search are open to everyone. You only need a free account to make offers, save a watchlist, get death alerts, or list your own startup." },
             { q: "How is revenue verified?", a: "You connect a restricted, read-only key from Stripe, Paddle, Lemon Squeezy or Dodo. We calculate MRR from active subscriptions and discard the key immediately. Only verified listings get the green badge — self-reported MRR shows as unverified." },
             { q: "Who buys dead startups?", a: "Operators and indie hackers who want a head start — a working codebase, a domain, existing users, or simply a market to pivot into." },

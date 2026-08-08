@@ -1,13 +1,25 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
-import { Check, Flame, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { Check, Flame, ShieldCheck, Link2, Sparkles, Megaphone, Rows3, Mail } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { Card } from "@/components/ui";
+import { Card, Eyebrow } from "@/components/ui";
 import { PayButton } from "@/components/pay-button";
-import { adTier } from "@/lib/ad-pricing";
+import { PLACEMENTS, PLACEMENT_ORDER, type Placement } from "@/lib/ad-pricing";
 
-export const metadata: Metadata = { title: "Promote your product" };
+export const metadata: Metadata = {
+  title: "Promote your product",
+  description:
+    "Get in front of founders and buyers browsing the graveyard. Featured Launch from $9, sidebar slots $19, sponsored rows $29, newsletter mentions $49 — every one with a dofollow backlink.",
+};
 export const dynamic = "force-dynamic";
+
+const ICONS: Record<Placement, JSX.Element> = {
+  featured: <Sparkles size={18} />,
+  sidebar: <Megaphone size={18} />,
+  sponsored: <Rows3 size={18} />,
+  newsletter: <Mail size={18} />,
+};
 
 export default async function PromotePage() {
   const supabase = createClient();
@@ -16,98 +28,152 @@ export default async function PromotePage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login?next=/promote");
 
-  // First open slot + how many are already sold (drives the rising price).
-  let openSlotId: string | null = null;
-  let openCount = 0;
-  let sold = 0;
+  // The first open slot of each placement, plus how many are left.
+  const open: Partial<Record<Placement, { id: string | null; left: number }>> = {};
   try {
-    const { data } = await supabase.from("ad_slots").select("id, active, headline, buyer_id").order("position");
-    const rows = data || [];
-    sold = rows.filter((s) => s.buyer_id != null).length;
-    const open = rows.filter((s) => !(s.active && s.headline) && s.buyer_id !== user.id);
-    openCount = open.length;
-    openSlotId = open[0]?.id ?? null;
+    const { data } = await supabase
+      .from("ad_slots")
+      .select("id, placement, active, headline, buyer_id")
+      .order("position");
+    for (const p of PLACEMENT_ORDER) {
+      if (p === "featured") continue; // featured attaches to a startup, not a slot
+      const rows = (data || []).filter((s) => (s.placement || "sidebar") === p);
+      const free = rows.filter((s) => !s.buyer_id && !(s.active && s.headline));
+      open[p] = { id: free[0]?.id ?? null, left: free.length };
+    }
   } catch {
-    /* degrade to disabled button */
+    /* buttons degrade to "sold out" */
   }
-  const tier = adTier(sold);
 
-  // Optional: a direct Dodo payment link (skips our API entirely).
+  // Featured Launch applies to one of the founder's own listings.
+  let myStartup: { id: string; name: string } | null = null;
+  let featuredAlready = false;
+  try {
+    const { data } = await supabase
+      .from("startups")
+      .select("id, name, featured, featured_until")
+      .eq("founder_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(1);
+    const s = data?.[0];
+    if (s) {
+      myStartup = { id: s.id, name: s.name };
+      featuredAlready =
+        !!s.featured && (!s.featured_until || new Date(s.featured_until) > new Date());
+    }
+  } catch {
+    /* handled in the card below */
+  }
+
   const directLink = process.env.NEXT_PUBLIC_DODO_AD_LINK?.trim() || undefined;
 
   return (
-    <div className="mx-auto max-w-lg px-5 py-16">
-      <Card className="shine-border overflow-hidden">
-        <div className="relative overflow-hidden border-b border-black/8 bg-gradient-to-b from-accent-600/[0.1] to-transparent px-7 pb-6 pt-7">
-          <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-accent-500/20 blur-3xl" />
-          <div className="relative">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-b from-accent-400 to-accent-500 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white shadow-glow">
-                <Flame size={11} /> Launch price · rising
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-moss-500/30 bg-moss-500/10 px-2.5 py-1 text-[11px] font-semibold text-moss-500">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-moss-400 opacity-75" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-moss-500" />
-                </span>
-                1,900+ buyers this week
-              </span>
-            </div>
-            <h1 className="mt-3 text-3xl font-bold leading-tight tracking-tight text-bone-100">
-              Get in front of every buyer.
-            </h1>
-            <p className="mt-2 text-sm leading-relaxed text-bone-400">
-              Your product shows beside every listing on the graveyard — the moment operators, acquirers
-              and indie hackers are shopping for tools, code and deals.
-            </p>
-          </div>
+    <div className="mx-auto max-w-6xl px-5 py-16">
+      <div className="mx-auto mb-12 max-w-2xl text-center">
+        <Eyebrow>Promote</Eyebrow>
+        <h1 className="text-4xl font-bold leading-tight tracking-tight text-bone-100 sm:text-5xl">
+          Get in front of every buyer.
+        </h1>
+        <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-bone-400">
+          Founders, operators and acquirers come here shopping for products, code and deals. Put
+          yours where they&apos;re already looking — flat price, 30 days, no auctions or CPC.
+        </p>
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-moss-500/30 bg-moss-500/10 px-3 py-1 text-xs font-semibold text-moss-500">
+            <Link2 size={12} /> Every placement includes a dofollow backlink
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-ink-900 px-3 py-1 text-xs text-bone-400">
+            <ShieldCheck size={12} className="text-moss-500" /> Secure checkout via Dodo
+          </span>
         </div>
+      </div>
 
-        <div className="px-7 py-6">
-          <ul className="space-y-2.5">
-            {[
-              "Beside every listing — where buyers already are",
-              "Real intent traffic, not random impressions",
-              "Add your logo, headline and link right after paying",
-              "Only 6 slots exist. Ever. No auctions, no CPC.",
-            ].map((line) => (
-              <li key={line} className="flex items-start gap-2.5 text-sm text-bone-300">
-                <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-accent-500/15 text-accent-600">
-                  <Check size={11} strokeWidth={3} />
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+        {PLACEMENT_ORDER.map((key) => {
+          const spec = PLACEMENTS[key];
+          const isFeatured = key === "featured";
+          const slot = open[key];
+          const left = isFeatured ? (myStartup && !featuredAlready ? 1 : 0) : (slot?.left ?? 0);
+          const refId = isFeatured ? (featuredAlready ? null : myStartup?.id ?? null) : slot?.id ?? null;
+          const highlight = key === "sidebar";
+
+          return (
+            <Card
+              key={key}
+              className={`relative flex flex-col p-6 ${highlight ? "shine-border border-accent-500/40 shadow-lift" : ""}`}
+            >
+              {highlight && (
+                <span className="absolute -top-2.5 left-6 z-[3] rounded-full bg-accent-500 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white shadow-sm">
+                  Most popular
                 </span>
-                {line}
-              </li>
-            ))}
-          </ul>
+              )}
 
-          <div className="mt-6 rounded-2xl border border-accent-500/25 bg-accent-600/[0.06] p-4">
-            <div className="flex items-end justify-between">
-              <div>
-                <div className="text-xs text-bone-400">Today&apos;s price · 30 days</div>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-bold text-bone-100">${tier.dollars}</span>
-                  <span className="text-xs text-bone-400">/ 30 days</span>
-                </div>
-              </div>
-              <span className="text-xs text-bone-500">
-                {openCount > 0 ? `${openCount} of 6 slots open` : "All slots booked"}
+              <span className="mb-4 grid h-10 w-10 place-items-center rounded-xl border border-black/10 text-accent-400">
+                {ICONS[key]}
               </span>
-            </div>
-            {!tier.isLast && (
-              <div className="mt-3 flex items-center gap-1.5 border-t border-accent-500/15 pt-3 text-[11px] font-medium text-accent-600">
-                <Flame size={12} /> Price jumps to ${tier.nextDollars} the moment this slot sells. It only goes up.
-              </div>
-            )}
-          </div>
 
-          <div className="mt-5">
-            <PayButton slotId={openSlotId} directLink={directLink} label={`Pay $${tier.dollars} — go live →`} />
-          </div>
-          <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-xs text-bone-400">
-            <ShieldCheck size={13} className="text-moss-500" /> Secure checkout via Dodo · add your creative right after
-          </p>
-        </div>
-      </Card>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-3xl font-bold text-bone-100">${spec.dollars}</span>
+                <span className="text-xs text-bone-500">/ 30 days</span>
+              </div>
+              <h2 className="mt-2.5 font-semibold text-bone-100">{spec.name}</h2>
+              <p className="mt-1 text-sm leading-relaxed text-bone-500">{spec.tagline}</p>
+
+              <ul className="mt-4 flex-1 space-y-2">
+                {spec.perks.map((perk) => (
+                  <li key={perk} className="flex items-start gap-2 text-xs leading-relaxed text-bone-300">
+                    <span className="mt-0.5 grid h-3.5 w-3.5 shrink-0 place-items-center rounded-full bg-accent-500/15 text-accent-600">
+                      <Check size={9} strokeWidth={3.5} />
+                    </span>
+                    {perk}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-5 space-y-2.5">
+                {isFeatured && !myStartup ? (
+                  <Link
+                    href="/sell"
+                    className="inline-flex h-11 w-full items-center justify-center rounded-full border border-black/12 px-6 text-sm font-semibold text-bone-100 transition hover:border-black/25"
+                  >
+                    List a startup first →
+                  </Link>
+                ) : (
+                  <PayButton
+                    kind={isFeatured ? "featured" : "ad_slot"}
+                    referenceId={refId}
+                    directLink={key === "sidebar" ? directLink : undefined}
+                    label={`Get it — $${spec.dollars}`}
+                    soldOutLabel={
+                      isFeatured && featuredAlready ? "Already featured" : "Sold out — check back"
+                    }
+                    variant={highlight ? "primary" : "outline"}
+                  />
+                )}
+                <p className="flex items-center justify-center gap-1.5 text-center text-[11px] text-bone-500">
+                  {left > 0 ? (
+                    <>
+                      <Flame size={11} className="text-accent-600" />
+                      {isFeatured
+                        ? `Featuring ${myStartup?.name}`
+                        : `${left} of ${spec.slots} left`}
+                    </>
+                  ) : isFeatured && featuredAlready ? (
+                    "Running right now"
+                  ) : (
+                    "All taken for now"
+                  )}
+                </p>
+              </div>
+            </Card>
+          );
+        })}
+      </div>
+
+      <p className="mx-auto mt-10 max-w-xl text-center text-xs leading-relaxed text-bone-500">
+        Add your logo, headline and link the moment you&apos;ve paid — no waiting on approval. Every
+        placement runs for 30 days and carries a dofollow link back to your site.
+      </p>
     </div>
   );
 }

@@ -5,6 +5,7 @@ type AdSlot = {
   id: string;
   position: string;
   active: boolean;
+  name?: string | null;
   headline: string | null;
   body: string | null;
   cta_label: string | null;
@@ -30,6 +31,11 @@ export function AdRail({ slots }: { slots: AdSlot[] }) {
             {slot.image_url && (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={slot.image_url} alt="" className="mb-3 h-24 w-full rounded-lg border border-black/8 bg-white object-contain p-2" />
+            )}
+            {slot.name && (
+              <div className="mb-0.5 font-mono text-[10px] uppercase tracking-wider text-accent-600">
+                {slot.name}
+              </div>
             )}
             <div className="text-sm font-semibold text-bone-100">{slot.headline}</div>
             {slot.body && <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-bone-400">{slot.body}</p>}
@@ -57,7 +63,7 @@ function PromoteSlotCard() {
       </span>
       <span className="text-xs font-bold text-bone-100">Put your product here</span>
       <span className="mt-0.5 text-[11px] font-semibold text-accent-600">
-        From <span className="font-bold">$19</span> / 30 days
+        <span className="font-bold">$19</span> / 30 days
       </span>
     </Link>
   );
@@ -75,7 +81,7 @@ export function AdStrip({ slots }: { slots: AdSlot[] }) {
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-400 opacity-75" />
           <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent-500" />
         </span>
-        Sponsored · your product here from $19
+        Sponsored · your product here from $9
       </div>
       <div className="marquee-mask relative overflow-hidden">
         <div
@@ -111,7 +117,7 @@ export function AdStrip({ slots }: { slots: AdSlot[] }) {
                 </span>
                 <span>
                   <span className="block text-xs font-bold text-bone-100">Your product here</span>
-                  <span className="block text-[11px] font-semibold text-accent-600">From $19</span>
+                  <span className="block text-[11px] font-semibold text-accent-600">$19 / 30 days</span>
                 </span>
               </Link>
             )
