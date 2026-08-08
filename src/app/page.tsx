@@ -21,6 +21,7 @@ import {
 import { LinkButton, Eyebrow, Card } from "@/components/ui";
 import { PRODUCTS } from "@/lib/ad-pricing";
 import { LedgerRow, SponsoredRow } from "@/components/ledger-row";
+import { PromoCtaRow } from "@/components/promo-cta-row";
 import { Reveal, Marquee } from "@/components/motion";
 import { loadGraveyard } from "@/lib/stats";
 import { loadSponsored } from "@/lib/sponsored";
@@ -205,6 +206,8 @@ export default async function Home() {
                 <LedgerRow s={s} rank={i + 1} maxViews={maxViews} />
                 {/* Sponsored placement sits right after the top grave (slot #2). */}
                 {i === 0 && <SponsoredRow {...sponsored} />}
+                {/* The same spot, offered for sale, once they're 5 deep. */}
+                {i === 4 && <PromoCtaRow />}
               </div>
             ))}
           </div>

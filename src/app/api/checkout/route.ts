@@ -1,7 +1,14 @@
 import { NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { createDodoCheckout, type CheckoutKind } from "@/lib/dodo";
-import { isPlacement, productCents, productDodoId, type Placement } from "@/lib/ad-pricing";
+import {
+  isPlacement,
+  productCents,
+  productDodoId,
+  productEnvName,
+  type Placement,
+  type ProductKey,
+} from "@/lib/ad-pricing";
 
 // Creates a Dodo hosted-checkout session for a promotion:
 //   ad_slot  → sidebar $19 / sponsored $29 / newsletter $49 (price comes from
@@ -30,6 +37,7 @@ export async function POST(req: Request) {
   // Price is always derived server-side from the thing being bought.
   let amountCents: number;
   let productId: string | undefined;
+  let envName: string | undefined;
 
   if (kind === "ad_slot") {
     const { data: slot } = await supabase
@@ -44,6 +52,7 @@ export async function POST(req: Request) {
     const placement: Placement = isPlacement(slot.placement) ? slot.placement : "sidebar";
     amountCents = productCents(placement);
     productId = productDodoId(placement);
+    envName = productEnvName(placement);
   } else if (kind === "featured" || kind === "directory" || kind === "bundle") {
     // referenceId is a startup — only its owner may buy promotion for it.
     const { data: startup } = await supabase
@@ -55,8 +64,9 @@ export async function POST(req: Request) {
     if (startup.founder_id !== user.id) {
       return NextResponse.json({ error: "That isn't your startup." }, { status: 403 });
     }
-    amountCents = productCents(kind);
-    productId = productDodoId(kind);
+    amountCents = productCents(kind as ProductKey);
+    productId = productDodoId(kind as ProductKey);
+    envName = productEnvName(kind as ProductKey);
   } else {
     amountCents = 900; // sale_listing (legacy path)
   }
@@ -94,6 +104,7 @@ export async function POST(req: Request) {
       email: user.email ?? undefined,
       successUrl,
       productId,
+      productEnvName: envName,
     });
     return NextResponse.json({ url });
   } catch (e: any) {

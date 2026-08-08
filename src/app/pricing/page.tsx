@@ -215,7 +215,11 @@ export default async function PricingPage() {
               <div className="mt-1 text-xs text-bone-500">
                 one payment · each part runs its own length
               </div>
-              <LinkButton href="/promote" size="lg" className="mt-5 w-full">
+              <LinkButton
+                href="/api/checkout/start?product=bundle"
+                size="lg"
+                className="mt-5 w-full"
+              >
                 Get the bundle <ArrowRight size={16} />
               </LinkButton>
               <p className="mt-2.5 text-[11px] text-bone-500">
@@ -389,7 +393,7 @@ function ProductCard({
 
       <div className={`mt-5 space-y-2 ${wide ? "sm:mt-0 sm:w-52 sm:shrink-0" : ""}`}>
         <LinkButton
-          href="/promote"
+          href={soldOut ? "/promote" : `/api/checkout/start?product=${product}`}
           variant={popular ? "primary" : "outline"}
           size="md"
           className="w-full"
