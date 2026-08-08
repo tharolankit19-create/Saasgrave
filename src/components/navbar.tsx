@@ -18,6 +18,14 @@ export async function Navbar() {
   const name = user ? meta.full_name || meta.name || user.email || null : null;
   const avatarUrl = user ? meta.avatar_url || meta.picture || null : null;
 
+  // One extra read, and only when someone's signed in — the link is the only
+  // way into /admin, which otherwise 404s.
+  let admin = false;
+  if (user) {
+    const { data } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
+    admin = !!data?.is_admin;
+  }
+
   return (
     <header className="z-40 border-b border-black/[0.06] bg-ink-950/85 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
@@ -47,6 +55,14 @@ export async function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
+          {admin && (
+            <Link
+              href="/admin"
+              className="hidden rounded-full border border-accent-500/30 bg-accent-500/10 px-3 py-1.5 text-xs font-semibold text-accent-600 transition hover:border-accent-500/60 sm:inline-flex"
+            >
+              Admin
+            </Link>
+          )}
           {user ? (
             <UserMenu name={name} avatarUrl={avatarUrl} />
           ) : (

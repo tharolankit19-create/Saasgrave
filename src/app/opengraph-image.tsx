@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { BrandScene, BRAND } from "@/components/brand-mark";
 
 // The site's social card — editorial black & white, like a printed register
 // page, not a generic SaaS gradient. Real one-line promise, mono ledger footer.
@@ -42,9 +43,9 @@ export default function OG() {
             color: "#5b5c63",
           }}
         >
-          <svg width="30" height="30" viewBox="0 0 32 32" fill="none">
-            <path d="M8 28V14.2a8 8 0 0 1 16 0V28a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1Z" fill={ink} />
-            <path d="M16 10.4v6.6M13.4 13.4h5.2" stroke={paper} strokeWidth="1.8" strokeLinecap="round" />
+          <svg width="34" height="34" viewBox="0 0 128 128" fill="none">
+            <circle cx="64" cy="64" r="63" fill={BRAND.disc} />
+            <BrandScene />
           </svg>
           Saasgrave — est. graveyard
         </div>

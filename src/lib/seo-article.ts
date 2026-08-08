@@ -61,8 +61,13 @@ ${facts}`;
 
 // Returns cached article, or generates + persists one. Returns null if AI isn't
 // configured or generation fails (the page then degrades gracefully).
-export async function getOrCreateArticle(s: ArticleStartup): Promise<string | null> {
-  if (s.seo_article && s.seo_article.trim().length > 200) return s.seo_article;
+// `force` re-runs the model even when a cached article exists — the admin
+// panel's "regenerate" uses it; page views never do.
+export async function getOrCreateArticle(
+  s: ArticleStartup,
+  { force = false }: { force?: boolean } = {}
+): Promise<string | null> {
+  if (!force && s.seo_article && s.seo_article.trim().length > 200) return s.seo_article;
   try {
     const body = await aiComplete(prompt(s), 1100);
     const text = body?.trim();
