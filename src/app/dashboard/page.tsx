@@ -8,7 +8,7 @@ import { money } from "@/lib/utils";
 import { ListingRowActions } from "@/components/listing-row-actions";
 import { AdSlotManager, type OwnedSlot } from "@/components/ad-slot-manager";
 import { BadgeEmbed } from "@/components/badge-embed";
-import { ShareLaunch } from "@/components/share-launch";
+import { ShareBacklinkRow } from "@/components/share-backlink-row";
 import { OfferActions } from "@/components/offer-actions";
 
 export const metadata = { title: "Dashboard" };
@@ -123,11 +123,18 @@ export default async function Dashboard() {
                   }}
                 />
               </div>
+              {/* Standing offer — the popup after publishing is only the first
+                  chance to claim this, never the only one. */}
               {s.status === "listed" && (
-                <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-black/8 pt-3">
-                  <span className="text-xs font-medium text-bone-500">Share your launch:</span>
-                  <ShareLaunch name={s.name} tagline={s.tagline} url={`${origin}/startup/${s.slug}`} forSale={s.for_sale} compact />
-                </div>
+                <ShareBacklinkRow
+                  startupId={s.id}
+                  name={s.name}
+                  tagline={s.tagline}
+                  url={`${origin}/startup/${s.slug}`}
+                  forSale={s.for_sale}
+                  claimed={!!s.share_verified}
+                  postUrl={s.share_url}
+                />
               )}
             </div>
           ))}
