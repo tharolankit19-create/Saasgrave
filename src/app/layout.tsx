@@ -141,7 +141,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* DataFast analytics — public website id, safe in client HTML. */}
         <Script
           defer
-          data-website-id="dfid_PMJJEOurjVUlHkZgBfT2z"
+          data-website-id="dfid_nXKa6KcVc448URh3eOsTA"
           data-domain="saasgrave.org"
           src="https://datafa.st/js/script.js"
           strategy="afterInteractive"

@@ -10,6 +10,7 @@ import { AdSlotManager, type OwnedSlot } from "@/components/ad-slot-manager";
 import { BadgeEmbed } from "@/components/badge-embed";
 import { ShareBacklinkRow } from "@/components/share-backlink-row";
 import { OfferActions } from "@/components/offer-actions";
+import { LaunchBanner } from "@/components/revive-cta";
 
 export const metadata = { title: "Dashboard" };
 export const dynamic = "force-dynamic";
@@ -70,6 +71,11 @@ export default async function Dashboard() {
         <LinkButton href="/sell">
           <Plus size={16} /> List a startup
         </LinkButton>
+      </div>
+
+      {/* Launch promo — Saasgrave Launches */}
+      <div className="mb-8">
+        <LaunchBanner />
       </div>
 
       {/* stats */}
