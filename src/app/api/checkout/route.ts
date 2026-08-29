@@ -11,7 +11,7 @@ import {
 } from "@/lib/ad-pricing";
 
 // Creates a Dodo hosted-checkout session for a promotion:
-//   ad_slot  → sidebar $19 / sponsored $29 / newsletter $49 (price comes from
+//   ad_slot  → sponsored $29 / sidebar $49 / newsletter $49 (price comes from
 //              the slot's own placement, never from the client)
 //   featured → Featured Launch $9, pins a startup to the top of Browse
 // Listing and selling are free — we take 3% only when a startup actually sells.

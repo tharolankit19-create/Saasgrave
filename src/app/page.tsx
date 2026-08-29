@@ -550,7 +550,7 @@ export default async function Home() {
         </div>
         <div className="divide-y divide-black/8 rounded-2xl border border-black/8">
           {[
-            { q: "Is it really free to list?", a: "Yes — listing is free forever, and opening it for sale is free too. We take a flat 3% only when your startup actually sells. The only paid options are promotion placements: Featured Launch ($9), a sidebar slot ($19), a sponsored row ($29), a newsletter mention ($49) or a 100+ directory blast ($99). Featured runs a week, the rest a month." },
+            { q: "Is it really free to list?", a: "Yes — listing is free forever, and opening it for sale is free too. We take a flat 3% only when your startup actually sells. The only paid options are promotion placements: Featured Launch ($9), a sponsored row ($29), a sidebar slot ($49), a newsletter mention ($49) or a 100+ directory blast ($99). Featured runs a week, the rest a month." },
             { q: "Do promotions include a backlink?", a: "Yes — every placement, including the free listing itself, carries a dofollow link to your site. Featured Launch also gives you an embeddable “Featured on Saasgrave” badge for your own landing page." },
             { q: "Do I need an account to look?", a: "No — browsing and search are open to everyone. You only need a free account to make offers, save a watchlist, get death alerts, or list your own startup." },
             { q: "How is revenue verified?", a: "You connect a restricted, read-only key from Stripe, Paddle, Lemon Squeezy or Dodo. We calculate MRR from active subscriptions and discard the key immediately. Only verified listings get the green badge — self-reported MRR shows as unverified." },

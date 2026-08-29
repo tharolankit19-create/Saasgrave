@@ -20,7 +20,7 @@ import {
 export const metadata: Metadata = {
   title: "Promote your product",
   description:
-    "Featured Launch $9, sidebar slots $19, sponsored rows $29, newsletter mentions $49, a 100+ directory blast for $99 — or everything bundled. All with dofollow backlinks.",
+    "Featured Launch $9, sponsored rows $29, sidebar slots $49, newsletter mentions $49, a 100+ directory blast for $99 — or everything bundled. All with dofollow backlinks.",
 };
 export const dynamic = "force-dynamic";
 

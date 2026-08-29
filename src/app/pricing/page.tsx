@@ -31,7 +31,7 @@ const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://saasgrave.org";
 export const metadata: Metadata = {
   title: "Pricing",
   description:
-    "Listing is free forever and selling costs 3% only when it sells. Promotion is flat-priced: Featured Launch $9, sidebar slot $19, sponsored row $29, newsletter mention $49, a 100+ directory blast $99 — or everything bundled for $149.",
+    "Listing is free forever and selling costs 3% only when it sells. Promotion is flat-priced: Featured Launch $9, sponsored row $29, sidebar slot $49, newsletter mention $49, a 100+ directory blast $99 — or everything bundled for $149.",
   alternates: { canonical: `${SITE}/pricing` },
   openGraph: {
     title: "Pricing — free to list, flat prices to go further",

@@ -50,7 +50,7 @@ export const PRODUCTS: Record<ProductKey, ProductSpec> = {
   sidebar: {
     key: "sidebar",
     name: "Sidebar Slot",
-    dollars: 19,
+    dollars: 49,
     slots: 6,
     days: 30,
     unit: "/ 1 month",
@@ -61,7 +61,7 @@ export const PRODUCTS: Record<ProductKey, ProductSpec> = {
       "Dofollow backlink to your site",
       "A full month · only 6 slots exist",
     ],
-    envKey: "DODO_PRODUCT_ID_ADS_19",
+    envKey: "DODO_PRODUCT_ID_ADS_49",
   },
   sponsored: {
     key: "sponsored",
@@ -144,7 +144,7 @@ export const BUNDLE_INCLUDES: ProductKey[] = [
 export const BUNDLE_LIST_PRICE = BUNDLE_INCLUDES.reduce((sum, k) => sum + PRODUCTS[k].dollars, 0);
 export const BUNDLE_SAVING = BUNDLE_LIST_PRICE - PRODUCTS.bundle.dollars;
 
-/** Ad-slot placements, cheapest first. */
+/** Ad-slot placements — iteration order for availability counts. */
 export const PLACEMENT_ORDER: Placement[] = ["sidebar", "sponsored", "newsletter"];
 
 /**

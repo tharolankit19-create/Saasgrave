@@ -1,5 +1,10 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { PRODUCTS } from "@/lib/ad-pricing";
+
+// Price and duration come from the catalogue so the rail can never quote a
+// number the checkout won't charge.
+const SIDEBAR = PRODUCTS.sidebar;
 
 type AdSlot = {
   id: string;
@@ -68,7 +73,7 @@ function PromoteSlotCard() {
       </span>
       <span className="text-xs font-bold text-bone-100">Put your product here</span>
       <span className="mt-0.5 text-[11px] font-semibold text-accent-600">
-        <span className="font-bold">$19</span> / 1 month
+        <span className="font-bold">${SIDEBAR.dollars}</span> {SIDEBAR.unit}
       </span>
     </Link>
   );
@@ -122,7 +127,9 @@ export function AdStrip({ slots }: { slots: AdSlot[] }) {
                 </span>
                 <span>
                   <span className="block text-xs font-bold text-bone-100">Your product here</span>
-                  <span className="block text-[11px] font-semibold text-accent-600">$19 / 1 month</span>
+                  <span className="block text-[11px] font-semibold text-accent-600">
+                    ${SIDEBAR.dollars} {SIDEBAR.unit}
+                  </span>
                 </span>
               </Link>
             )
