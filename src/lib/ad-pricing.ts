@@ -131,6 +131,24 @@ export const PRODUCTS: Record<ProductKey, ProductSpec> = {
   },
 };
 
+/**
+ * Opening a listing for sale — a one-off unlock, not a promotion placement, so
+ * it deliberately stays out of PRODUCTS (which drives the promote and pricing
+ * pages). The 3% commission on an actual sale is unchanged.
+ */
+export const SALE_LISTING = {
+  dollars: 9,
+  envKey: "DODO_PRODUCT_ID_SALE_9",
+} as const;
+
+export function saleListingCents(): number {
+  return SALE_LISTING.dollars * 100;
+}
+
+export function saleListingDodoId(): string | undefined {
+  return process.env[SALE_LISTING.envKey]?.trim() || undefined;
+}
+
 /** What the bundle grants, and therefore what it's compared against. */
 export const BUNDLE_INCLUDES: ProductKey[] = [
   "featured",

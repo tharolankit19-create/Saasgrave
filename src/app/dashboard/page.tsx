@@ -123,6 +123,7 @@ export default async function Dashboard() {
                   startup={{
                     id: s.id,
                     slug: s.slug,
+                    name: s.name,
                     status: s.status,
                     for_sale: s.for_sale,
                     sale_listing_paid: s.sale_listing_paid,

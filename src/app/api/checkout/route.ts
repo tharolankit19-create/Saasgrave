@@ -6,6 +6,9 @@ import {
   productCents,
   productDodoId,
   productEnvName,
+  SALE_LISTING,
+  saleListingCents,
+  saleListingDodoId,
   type Placement,
   type ProductKey,
 } from "@/lib/ad-pricing";
@@ -14,7 +17,8 @@ import {
 //   ad_slot  → sponsored $29 / sidebar $49 / newsletter $49 (price comes from
 //              the slot's own placement, never from the client)
 //   featured → Featured Launch $9, pins a startup to the top of Browse
-// Listing and selling are free — we take 3% only when a startup actually sells.
+//   sale_listing → $9 one-off to open a listing for sale
+// Listing stays free; we also take 3% when a startup actually sells.
 export async function POST(req: Request) {
   const supabase = createClient();
   const {
@@ -53,8 +57,10 @@ export async function POST(req: Request) {
     amountCents = productCents(placement);
     productId = productDodoId(placement);
     envName = productEnvName(placement);
-  } else if (kind === "featured" || kind === "directory" || kind === "bundle") {
-    // referenceId is a startup — only its owner may buy promotion for it.
+  } else {
+    // Everything else is bought against a startup — and only its owner may buy
+    // it. sale_listing used to skip this check entirely, which let anyone start
+    // a checkout against someone else's listing.
     const { data: startup } = await supabase
       .from("startups")
       .select("id, founder_id")
@@ -64,11 +70,16 @@ export async function POST(req: Request) {
     if (startup.founder_id !== user.id) {
       return NextResponse.json({ error: "That isn't your startup." }, { status: 403 });
     }
-    amountCents = productCents(kind as ProductKey);
-    productId = productDodoId(kind as ProductKey);
-    envName = productEnvName(kind as ProductKey);
-  } else {
-    amountCents = 900; // sale_listing (legacy path)
+
+    if (kind === "sale_listing") {
+      amountCents = saleListingCents();
+      productId = saleListingDodoId();
+      envName = SALE_LISTING.envKey;
+    } else {
+      amountCents = productCents(kind as ProductKey);
+      productId = productDodoId(kind as ProductKey);
+      envName = productEnvName(kind as ProductKey);
+    }
   }
 
   // Best-effort internal payment record. This must NEVER block checkout: the
