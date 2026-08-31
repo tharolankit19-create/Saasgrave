@@ -1,5 +1,10 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { PRODUCTS } from "@/lib/ad-pricing";
+
+// Price and duration come from the catalogue so the rail can never quote a
+// number the checkout won't charge.
+const SIDEBAR = PRODUCTS.sidebar;
 
 type AdSlot = {
   id: string;
@@ -15,9 +20,14 @@ type AdSlot = {
 
 // One vertical rail of 3 ad slots. Active slots render the ad; empty slots
 // render the premium "buy this slot" upsell.
+//
+// The rail sticks so sponsors stay on screen for the whole scroll, not just the
+// first viewport. `top` clears the sticky header (community bar 36px + navbar
+// 64px), and `self-start` stops the flex parent stretching the aside to full
+// height — a stretched item has nothing to stick within.
 export function AdRail({ slots }: { slots: AdSlot[] }) {
   return (
-    <aside className="hidden w-[200px] shrink-0 flex-col gap-4 lg:flex">
+    <aside className="sticky top-[116px] hidden max-h-[calc(100vh-8rem)] w-[200px] shrink-0 flex-col gap-4 self-start overflow-y-auto pb-4 lg:flex">
       <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-bone-400">Sponsored</div>
       {slots.map((slot) =>
         slot.active && slot.headline ? (
@@ -63,7 +73,7 @@ function PromoteSlotCard() {
       </span>
       <span className="text-xs font-bold text-bone-100">Put your product here</span>
       <span className="mt-0.5 text-[11px] font-semibold text-accent-600">
-        <span className="font-bold">$19</span> / 1 month
+        <span className="font-bold">${SIDEBAR.dollars}</span> {SIDEBAR.unit}
       </span>
     </Link>
   );
@@ -117,7 +127,9 @@ export function AdStrip({ slots }: { slots: AdSlot[] }) {
                 </span>
                 <span>
                   <span className="block text-xs font-bold text-bone-100">Your product here</span>
-                  <span className="block text-[11px] font-semibold text-accent-600">$19 / 1 month</span>
+                  <span className="block text-[11px] font-semibold text-accent-600">
+                    ${SIDEBAR.dollars} {SIDEBAR.unit}
+                  </span>
                 </span>
               </Link>
             )

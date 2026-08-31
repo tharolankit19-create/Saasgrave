@@ -10,7 +10,7 @@ const TEST_BASE = "https://test.dodopayments.com";
 const LIVE_BASE = "https://live.dodopayments.com";
 
 // The paid actions. Each resolves to a fixed-price Dodo product:
-//   ad_slot   → a promotion placement (sidebar $19 / sponsored $29 / newsletter $49)
+//   ad_slot   → a promotion placement (sponsored $29 / sidebar $49 / newsletter $49)
 //   featured  → Featured Launch ($9), pins a startup to the top of Browse
 //   directory → Directory Blast ($99), 100+ hand-made directory submissions
 //   bundle    → everything above, discounted ($149)

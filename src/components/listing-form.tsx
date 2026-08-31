@@ -9,10 +9,11 @@ import { Button } from "@/components/ui";
 import { ImageUpload } from "@/components/image-upload";
 import { GalleryUpload } from "@/components/gallery-upload";
 import { slugify } from "@/lib/utils";
+import { startCheckout } from "@/lib/checkout-client";
+import { SALE_LISTING } from "@/lib/ad-pricing";
+import { CATEGORIES, REASONS, CHANNELS } from "@/lib/listing-options";
+import { AutofillBar, type AutofillFields } from "@/components/autofill-bar";
 
-const CATEGORIES = ["SaaS", "Mobile app", "Chrome extension", "Marketplace", "AI tool", "DevTool", "Consumer", "Other"];
-const REASONS = ["No market need", "Ran out of cash", "Competition", "Wrong team", "Bad timing", "Lost focus", "Other"];
-const CHANNELS = ["SEO", "Twitter/X", "Cold email", "Product Hunt", "Reddit", "Ads", "Content", "Word of mouth"];
 
 const STEPS = ["The product", "What happened", "Money & sale"];
 
@@ -63,6 +64,20 @@ export function ListingForm() {
     );
   }
 
+  function applyAutofill(a: AutofillFields) {
+    setF((prev) => ({
+      ...prev,
+      name: a.name || prev.name,
+      tagline: a.tagline || prev.tagline,
+      about: a.about || prev.about,
+      category: a.category || prev.category,
+      tech_stack: a.tech_stack || prev.tech_stack,
+      website_url: a.website_url || prev.website_url,
+      logo_url: a.logo_url || prev.logo_url,
+    }));
+    setStep(0);
+  }
+
   function next() {
     if (step === 0 && !f.name.trim()) return toast.error("Your startup needs a name.");
     setStep((s) => Math.min(s + 1, STEPS.length - 1));
@@ -110,9 +125,10 @@ export function ListingForm() {
         monthly_visitors: Number(f.monthly_visitors) || 0,
         analytics_url: f.analytics_url.trim() || null,
         claimed_mrr: Number(f.claimed_mrr) || 0,
-        // Opening for sale is free now — honour the checkbox directly. We take
-        // 3% only when it actually sells.
-        for_sale: !!f.for_sale,
+        // The price is captured now, but the listing only becomes "for sale"
+        // once the $9 fee is paid — fulfilment flips `for_sale` on the webhook,
+        // so a checkbox alone can never open the buyer side for free.
+        for_sale: false,
         asking_price: f.for_sale && f.price_mode === "fixed" ? Number(f.asking_price) || null : null,
         price_multiplier:
           f.for_sale && f.price_mode === "multiplier" ? Number(f.price_multiplier) || null : null,
@@ -127,6 +143,13 @@ export function ListingForm() {
       setLoading(false);
       return toast.error(error.message);
     }
+    if (f.for_sale) {
+      // Straight to the $9 checkout; fulfilment publishes it and opens it for
+      // sale, so there's no half-finished state to clean up if they bail.
+      const ok = await startCheckout("sale_listing", data.id);
+      if (!ok) setLoading(false);
+      return;
+    }
     if (publish) {
       toast.success("Your listing is live.");
       // ?launched=1 triggers the share prompt on the listing itself.
@@ -140,6 +163,8 @@ export function ListingForm() {
 
   return (
     <div className="rounded-2xl border border-black/8 bg-ink-900/60 p-7">
+      <AutofillBar onFilled={applyAutofill} />
+
       {/* progress */}
       <div className="mb-7 flex items-center gap-2">
         {STEPS.map((label, i) => (
@@ -234,7 +259,9 @@ export function ListingForm() {
           <label className="flex cursor-pointer items-center justify-between rounded-xl border border-black/8 bg-ink-800/50 p-4">
             <div>
               <div className="text-sm font-medium text-bone-100">I want to sell this</div>
-              <div className="text-xs text-bone-500">Free to open for sale — buyers can make offers right away. We take just 3% if it sells.</div>
+              <div className="text-xs text-bone-500">
+                A one-off ${SALE_LISTING.dollars} opens the buyer side — offers, the For Sale board, the badge.
+              </div>
             </div>
             <input
               type="checkbox"
@@ -278,8 +305,9 @@ export function ListingForm() {
                 </>
               )}
               <p className="text-xs text-bone-500">
-                Listing is free, and opening it <span className="text-bone-300">for sale</span> is free too — we
-                take a flat <span className="text-bone-300">3%</span> only when it sells.
+                Listing is free. Opening it <span className="text-bone-300">for sale</span> is a one-off{" "}
+                <span className="text-bone-300">${SALE_LISTING.dollars}</span>, then a flat{" "}
+                <span className="text-bone-300">3%</span> only when it sells.
               </p>
             </div>
           )}
@@ -306,7 +334,13 @@ export function ListingForm() {
               Save as draft
             </Button>
             <Button onClick={() => submit(true)} disabled={loading}>
-              {loading ? <Loader2 size={16} className="animate-spin" /> : "Publish free"}
+              {loading ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : f.for_sale ? (
+                `List for sale · $${SALE_LISTING.dollars}`
+              ) : (
+                "Publish free"
+              )}
             </Button>
           </div>
         )}

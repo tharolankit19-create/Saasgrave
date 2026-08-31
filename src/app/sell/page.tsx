@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ListingForm } from "@/components/listing-form";
+import { SellIntentBanner } from "@/components/sell-intent-banner";
 
 export const metadata = { title: "List a startup" };
 
@@ -26,6 +27,7 @@ export default async function SellPage() {
             Honest listings sell. The more of the story you share, the more buyers trust it.
           </p>
         </div>
+        <SellIntentBanner />
         <ListingForm />
       </div>
     </div>

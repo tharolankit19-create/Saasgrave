@@ -25,6 +25,7 @@ import { money, monthsBetween, normalizeUrl } from "@/lib/utils";
 import { MakeOfferButton } from "@/components/make-offer-button";
 import { VerifyRevenueButton } from "@/components/verify-revenue-button";
 import { ViewTracker } from "@/components/view-tracker";
+import { ReviveCta } from "@/components/revive-cta";
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const supabase = createClient();
@@ -215,6 +216,11 @@ export default async function StartupPage({
       <Link href={`/read/${s.slug}`} className="mt-6 inline-flex text-xs text-bone-500 underline decoration-black/15 underline-offset-4 transition hover:text-bone-300">
         Read the full write-up →
       </Link>
+
+      {/* Launch / revive CTA — Saasgrave Launches */}
+      <div className="mt-8">
+        <ReviveCta name={s.name} />
+      </div>
 
       {/* body */}
       <div className="mt-10 grid gap-8 md:grid-cols-3">
