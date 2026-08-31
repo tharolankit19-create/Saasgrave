@@ -8,6 +8,7 @@ import { ExternalLink, Tag, Loader2, Rocket } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { SellPaywallModal } from "@/components/sell-paywall-modal";
 import { SALE_LISTING } from "@/lib/ad-pricing";
+import { DeleteListingButton } from "@/components/delete-listing-button";
 
 // Dashboard row actions. A new listing starts as a draft; here the founder
 // chooses what to do with it:
@@ -65,6 +66,8 @@ export function ListingRowActions({
           </button>
         </SellPaywallModal>
       )}
+
+      <DeleteListingButton startupId={startup.id} name={startup.name} forSale={startup.for_sale} />
 
       {isListed && (
         <Link

@@ -11,10 +11,9 @@ import { GalleryUpload } from "@/components/gallery-upload";
 import { slugify } from "@/lib/utils";
 import { startCheckout } from "@/lib/checkout-client";
 import { SALE_LISTING } from "@/lib/ad-pricing";
+import { CATEGORIES, REASONS, CHANNELS } from "@/lib/listing-options";
+import { AutofillBar, type AutofillFields } from "@/components/autofill-bar";
 
-const CATEGORIES = ["SaaS", "Mobile app", "Chrome extension", "Marketplace", "AI tool", "DevTool", "Consumer", "Other"];
-const REASONS = ["No market need", "Ran out of cash", "Competition", "Wrong team", "Bad timing", "Lost focus", "Other"];
-const CHANNELS = ["SEO", "Twitter/X", "Cold email", "Product Hunt", "Reddit", "Ads", "Content", "Word of mouth"];
 
 const STEPS = ["The product", "What happened", "Money & sale"];
 
@@ -63,6 +62,20 @@ export function ListingForm() {
         ? f.marketing_channels.filter((x) => x !== c)
         : [...f.marketing_channels, c]
     );
+  }
+
+  function applyAutofill(a: AutofillFields) {
+    setF((prev) => ({
+      ...prev,
+      name: a.name || prev.name,
+      tagline: a.tagline || prev.tagline,
+      about: a.about || prev.about,
+      category: a.category || prev.category,
+      tech_stack: a.tech_stack || prev.tech_stack,
+      website_url: a.website_url || prev.website_url,
+      logo_url: a.logo_url || prev.logo_url,
+    }));
+    setStep(0);
   }
 
   function next() {
@@ -150,6 +163,8 @@ export function ListingForm() {
 
   return (
     <div className="rounded-2xl border border-black/8 bg-ink-900/60 p-7">
+      <AutofillBar onFilled={applyAutofill} />
+
       {/* progress */}
       <div className="mb-7 flex items-center gap-2">
         {STEPS.map((label, i) => (
