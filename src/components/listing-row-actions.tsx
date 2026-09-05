@@ -24,7 +24,7 @@ export function ListingRowActions({
 }) {
   const supabase = createClient();
   const router = useRouter();
-  const [publishing, setPublishing] = useState(false);
+  const publishing = false;
   const [opening, setOpening] = useState(false);
 
   const isDraft = startup.status === "draft";
@@ -32,15 +32,7 @@ export function ListingRowActions({
   const canSell = !startup.for_sale; // not open for sale yet
 
   async function publishFree() {
-    setPublishing(true);
-    const { error } = await supabase
-      .from("startups")
-      .update({ status: "listed" })
-      .eq("id", startup.id);
-    setPublishing(false);
-    if (error) return toast.error(error.message);
-    toast.success("Your listing is live.");
-    router.refresh();
+    router.push(`/launch/${startup.id}`);
   }
 
   // Opening for sale is free now — no upfront fee. We only take 3% on a sale.
@@ -48,11 +40,12 @@ export function ListingRowActions({
     setOpening(true);
     const { error } = await supabase
       .from("startups")
-      .update({ for_sale: true, status: "listed" })
+      .update({ for_sale: true })
       .eq("id", startup.id);
     setOpening(false);
     if (error) return toast.error(error.message);
-    toast.success("Open for sale — buyers can make offers now.");
+    toast.success(isDraft ? "Sale preferences saved. Complete your launch next." : "Open for sale — buyers can make offers now.");
+    if (isDraft) router.push(`/launch/${startup.id}`);
     router.refresh();
   }
 
@@ -65,7 +58,7 @@ export function ListingRowActions({
           className="inline-flex h-9 items-center gap-1.5 rounded-full bg-bone-100 px-4 text-sm font-medium text-ink-950 transition hover:bg-bone-300 disabled:opacity-50"
         >
           {publishing ? <Loader2 size={14} className="animate-spin" /> : <Rocket size={14} />}
-          Publish free
+          Choose launch plan
         </button>
       )}
 

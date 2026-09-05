@@ -60,21 +60,13 @@ export default async function CheckoutSuccess({
 
   // Ask Dodo directly. `true`/`false` are definitive; `null` means we couldn't
   // tell (no API key, network trouble), which we treat as "not yet confirmed".
-  const verified = dodoPaymentId ? await verifyDodoPayment(dodoPaymentId) : null;
+  const verified = dodoPaymentId && kind && referenceId
+    ? await verifyDodoPayment(dodoPaymentId, { kind, referenceId, userId: user.id }) : null;
 
-  // Unlock when we have a payment record for this buyer and Dodo hasn't told us
-  // the payment failed. The payment row is only stamped "paid" on a definitive
-  // yes, so anything unlocked optimistically stays auditable (an active slot
-  // whose payment is still pending) and the webhook reconciles it later.
-  let unlocked = false;
-  if (kind && referenceId && verified !== false && (paymentRow || verified === true)) {
-    unlocked = await fulfilPurchase({
-      kind,
-      referenceId,
-      buyerId: user.id,
-      dodoPaymentId,
-      markPaid: verified === true,
-    });
+  // The redirect and a pending row are not proof of payment.
+  let unlocked = paymentRow?.status === "paid";
+  if (!unlocked && kind && referenceId && verified === true) {
+    unlocked = await fulfilPurchase({ kind, referenceId, buyerId: user.id, dodoPaymentId });
   }
 
   const failed = verified === false;
@@ -133,7 +125,7 @@ export default async function CheckoutSuccess({
       <Shell
         icon={<Sparkles size={28} />}
         title={name ? `${name} is featured.` : "You're featured."}
-        sub="Pinned to the top of the graveyard for the next week. Here's your badge — put it on your site."
+        sub="Pinned to the top of the graveyard for the next week. Your website badge is optional."
       >
         <BadgeEmbed site={SITE} slug={slug} />
         <div className="mt-6 flex justify-center gap-3">
@@ -168,7 +160,7 @@ export default async function CheckoutSuccess({
   return (
     <Shell
       icon={<CheckCircle2 size={28} />}
-      title="Payment received"
+      title="Confirming your payment"
       sub="We're confirming it with the payment provider. Your purchase will appear on your dashboard within a minute — if it doesn't, email me and I'll sort it immediately."
     >
       <div className="flex justify-center gap-3">

@@ -43,7 +43,7 @@ export const PRODUCTS: Record<ProductKey, ProductSpec> = {
       "Pinned above every listing on Browse",
       "A “Featured” badge on your listing",
       "Dofollow backlink to your site",
-      "An embeddable “Featured on Saasgrave” badge",
+      "No website badge required for this paid launch",
     ],
     envKey: "DODO_PRODUCT_ID_FEATURED_9",
   },

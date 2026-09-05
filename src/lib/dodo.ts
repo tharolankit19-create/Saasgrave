@@ -15,7 +15,7 @@ const LIVE_BASE = "https://live.dodopayments.com";
 //   directory → Directory Blast ($99), 100+ hand-made directory submissions
 //   bundle    → everything above, discounted ($149)
 //   sale_listing → legacy; listing and selling are free (we take 3% on a sale)
-export type CheckoutKind = "ad_slot" | "featured" | "directory" | "bundle" | "sale_listing";
+export type CheckoutKind = "launch" | "ad_slot" | "featured" | "directory" | "bundle" | "sale_listing";
 
 // NOTE: there is deliberately no "default" product here.
 //
@@ -46,6 +46,7 @@ interface CreateCheckoutArgs {
   productId?: string;
   /** Env var name to quote if productId is missing, so the error is actionable. */
   productEnvName?: string;
+  orderId?: string;
 }
 
 export async function createDodoCheckout({
@@ -56,6 +57,7 @@ export async function createDodoCheckout({
   successUrl,
   productId,
   productEnvName,
+  orderId,
 }: CreateCheckoutArgs) {
   const key = apiKey();
   const resolved = productId?.trim();
@@ -76,7 +78,7 @@ export async function createDodoCheckout({
     return_url: successUrl,
     customer: email ? { email } : undefined,
     // travels round-trip and comes back on the webhook so we know what was bought
-    metadata: { kind, reference_id: referenceId, user_id: userId },
+    metadata: { kind, reference_id: referenceId, user_id: userId, ...(orderId ? { order_id: orderId } : {}) },
   };
 
   // Try the configured environment first; on a 401 (the classic "test key on
@@ -114,11 +116,9 @@ export async function createDodoCheckout({
  * and a buyer who has just paid must not be left stranded. The success page
  * calls this to confirm the payment itself and unlock the purchase immediately.
  *
- * Returns `true`/`false` when Dodo gives a clear answer, and `null` when we
- * simply can't tell (no API key, network error, unknown id) — callers treat
- * `null` as "not confirmed yet" rather than "failed".
+ * Returns the authoritative provider object, or null if verification is unavailable.
  */
-export async function verifyDodoPayment(paymentId: string): Promise<boolean | null> {
+export async function retrieveDodoPayment(paymentId: string): Promise<any | null> {
   const key = apiKey();
   if (!key || !paymentId) return null;
 
@@ -131,6 +131,7 @@ export async function verifyDodoPayment(paymentId: string): Promise<boolean | nu
       res = await fetch(`${base}/payments/${encodeURIComponent(paymentId)}`, {
         headers: { Authorization: `Bearer ${key}` },
         cache: "no-store",
+        signal: AbortSignal.timeout(8000),
       });
     } catch {
       continue; // network hiccup — try the other environment
@@ -140,11 +141,7 @@ export async function verifyDodoPayment(paymentId: string): Promise<boolean | nu
 
     const data: any = await res.json().catch(() => null);
     if (!data) return null;
-    const status = String(data.status || data.payment_status || "").toLowerCase();
-    if (!status) return null;
-    if (["succeeded", "success", "paid", "completed", "active"].includes(status)) return true;
-    if (["failed", "cancelled", "canceled", "expired", "refunded"].includes(status)) return false;
-    return null; // e.g. "processing" — not confirmed yet
+    return data;
   }
   return null;
 }
@@ -157,5 +154,15 @@ function postCheckout(base: string, key: string, payload: unknown) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(12000),
   });
+}
+
+export async function verifyDodoPayment(paymentId: string, expected?: { kind: string; referenceId: string; userId: string }): Promise<boolean | null> {
+  const data = await retrieveDodoPayment(paymentId);
+  if (!data) return null;
+  if (expected && (data.metadata?.kind !== expected.kind || data.metadata?.reference_id !== expected.referenceId || data.metadata?.user_id !== expected.userId)) return false;
+  if (data.status === "succeeded") return true;
+  if (["failed", "cancelled"].includes(data.status)) return false;
+  return null;
 }

@@ -26,6 +26,7 @@ export default async function SellPage() {
             Honest listings sell. The more of the story you share, the more buyers trust it.
           </p>
         </div>
+        <p className="mb-4 text-center text-xs text-bone-500">Free launch requires our badge on your landing page. Paid launch starts at $9 and needs no badge. Choose at the final step.</p>
         <ListingForm />
       </div>
     </div>

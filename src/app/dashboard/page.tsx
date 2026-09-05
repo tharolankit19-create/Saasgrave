@@ -48,6 +48,7 @@ export default async function Dashboard() {
   const host = headers().get("host") || "localhost:3000";
   const origin = `${host.includes("localhost") ? "http" : "https"}://${host}`;
 
+  const { data: launchOrders } = await supabase.from("launch_orders").select("id, startup_id, product, status, placement_status").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10);
   const list = startups || [];
   const offerList = offers || [];
   const stats = {
@@ -80,6 +81,7 @@ export default async function Dashboard() {
         <Stat icon={<Megaphone size={16} />} label="Verified MRR" value={stats.mrr > 0 ? money(stats.mrr) : "—"} />
       </div>
 
+      {!!launchOrders?.length && <Card className="mb-8 p-5"><h2 className="mb-3 text-sm font-semibold">Launch orders</h2><ul className="space-y-3 text-sm">{launchOrders.map(order => <li key={order.id}><Link className="text-accent-600 hover:underline" href={`/launch/${order.startup_id}?order=${order.id}`}>{list.find(s => s.id === order.startup_id)?.name || "Your startup"} · {order.product}</Link><span className="ml-2 text-xs text-bone-500">{order.status === "paid" ? order.placement_status === "needs_scheduling" ? "Paid · placement scheduling needed" : "Paid · launched" : "Checkout not confirmed"}</span></li>)}</ul></Card>}
       {/* listings */}
       <h2 className="mb-4 font-mono text-[11px] uppercase tracking-[0.18em] text-accent-600">Your listings</h2>
       {list.length === 0 ? (

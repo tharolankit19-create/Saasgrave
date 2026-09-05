@@ -8,14 +8,16 @@ import { Check, Copy } from "lucide-react";
  * launching. Shows a live preview in both themes and hands over the HTML —
  * a dofollow link back to their listing, which is the point for both sides.
  */
-export function BadgeEmbed({ site, slug }: { site: string; slug?: string | null }) {
+export function BadgeEmbed({ site, slug, launch = false }: { site: string; slug?: string | null; launch?: boolean }) {
+  site = site.replace(/\/$/, "");
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [copied, setCopied] = useState(false);
 
   const href = slug ? `${site}/startup/${slug}` : site;
-  const img = `${site}/api/badge${theme === "light" ? "?theme=light" : ""}`;
+  const img = `${site}/api/badge?theme=${theme}${launch ? "&variant=launch" : ""}`;
+  const label = launch ? "Listed on Saasgrave" : "Featured on Saasgrave";
   const snippet = `<a href="${href}" target="_blank" rel="noopener">
-  <img src="${img}" alt="Featured on Saasgrave" width="232" height="54" />
+  <img src="${img}" alt="${label}" width="232" height="54" />
 </a>`;
 
   async function copy() {
@@ -32,7 +34,7 @@ export function BadgeEmbed({ site, slug }: { site: string; slug?: string | null 
     <div className="rounded-2xl border border-black/8 bg-ink-900 p-5 shadow-card">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h3 className="text-sm font-semibold text-bone-100">Your “Featured on Saasgrave” badge</h3>
+          <h3 className="text-sm font-semibold text-bone-100">Your “{label}” badge</h3>
           <p className="mt-0.5 text-xs text-bone-500">
             Drop it on your site — it links back to your listing.
           </p>
@@ -58,7 +60,7 @@ export function BadgeEmbed({ site, slug }: { site: string; slug?: string | null 
         }`}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={img} alt="Featured on Saasgrave" width={232} height={54} />
+        <img src={img} alt={label} width={232} height={54} />
       </div>
 
       <div className="mt-3 flex items-start gap-2">

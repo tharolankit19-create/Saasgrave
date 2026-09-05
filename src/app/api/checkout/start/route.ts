@@ -34,6 +34,10 @@ export async function GET(req: Request) {
     return back(`/login?next=${next}`);
   }
 
+  // An unpublished listing must complete its launch gate before promotions.
+  const { data: drafts } = await supabase.from("startups").select("id, status").eq("founder_id", user.id).order("created_at", { ascending: false }).limit(1);
+  if (drafts?.[0]?.status === "draft") return back(`/launch/${drafts[0].id}`);
+
   const result = await createPromotionCheckout({
     product: key,
     userId: user.id,
