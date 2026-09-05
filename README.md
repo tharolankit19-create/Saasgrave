@@ -6,6 +6,10 @@ domains, users and pivots. Built with Next.js 14 (App Router), Supabase, and Dod
 
 ---
 
+## Launch plans rollout
+
+New listings now finish at a plan-selection step. Free launch requires a verified landing-page badge; paid launch skips it. Apply the migration before deploying; see [launch flow and rollout](docs/launch-flow.md).
+
 ## What's built
 
 | Area | Route | Notes |
@@ -17,17 +21,19 @@ domains, users and pivots. Built with Next.js 14 (App Router), Supabase, and Dod
 | For-sale board | `/sales` | Leaderboard of startups for sale (price or revenue multiple) |
 | Startup detail | `/startup/[slug]` | Autopsy, metrics, verified-revenue badge, make offer |
 | Founder dashboard | `/dashboard` | Listings, stats, offers received |
-| Listing form | `/sell` | 3-step: identity → autopsy → money & sale |
+| Listing form | `/sell` | Identity → autopsy → money & sale → launch plans |
 | Public profile | `/profile/[id]` | Founder profile + their graveyard |
 | Edit profile | `/profile/edit` | |
 | Payments | `/api/checkout`, `/api/webhooks/dodo` | Dodo hosted checkout for the 3 paid actions |
 | Revenue verify | `/api/verify-revenue` | Read-only Stripe key → real MRR, key never stored |
 
 ### Pricing (via Dodo Payments)
-- **List a startup** — free (goes live immediately)
-- **List a startup for sale** — $9 one-time fee
-- **Ad slot** — $49 / 30 days (6 slots total: 3 left, 3 right on `/browse`)
-- No commission on sales
+- **Free Launch** — $0 with a verified landing-page badge
+- **Featured Launch** — $9 / week, no website badge required
+- **Directory Blast** — $99 one-off
+- **Everything Bundle** — $149, using the included products and durations in the shared catalogue
+- **Placements** — Sidebar $19, Sponsored Row $29, Newsletter $49
+- Opening for sale is free; 3% only when it sells
 
 ---
 
@@ -70,8 +76,7 @@ and the Dodo webhook URL to your production domain.
 ---
 
 ## Notes & next steps (MVP stubs)
-- **Webhook signature verification** is stubbed — add Standard-Webhooks/svix verification with
-  `DODO_WEBHOOK_SECRET` before going live so payments can't be spoofed.
+- Webhook payment details are independently retrieved from Dodo before fulfilment; incoming event metadata is not trusted.
 - **Image uploads** currently take URLs (logo, avatar, screenshots). Wire UploadThing or Supabase
   Storage next for direct uploads.
 - **Offer accept/reject/counter** UI is read-only on the dashboard for now; the `offers` table and

@@ -31,6 +31,7 @@ export default async function AdminPage() {
     admin.from("ad_slots").select("*").order("position"),
   ]);
 
+  const { data: queuedLaunches } = await admin.from("launch_orders").select("id, startup_id, product, queued_placements, created_at").eq("placement_status", "needs_scheduling").order("created_at");
   const list = startups || [];
   const listed = list.filter((s) => s.status === "listed");
   const hasArticle = (s: any) => !!(s.seo_article && s.seo_article.trim().length > 200);
@@ -84,6 +85,8 @@ export default async function AdminPage() {
           </div>
         ))}
       </div>
+
+      {!!queuedLaunches?.length && <Card className="mb-10 p-5"><h2 className="font-semibold">Paid launches awaiting placements</h2><p className="mt-2 text-xs text-bone-500">These launches are paid and live. Arrange the missing placements with each founder and update the order after scheduling.</p><ul className="mt-4 space-y-3">{queuedLaunches.map(order => <li key={order.id} className="text-sm"><strong>{list.find(s => s.id === order.startup_id)?.name || order.startup_id}</strong> · {order.product} · {(order.queued_placements || []).join(", ")}<div className="break-all font-mono text-xs text-bone-500">Order {order.id}</div></li>)}</ul></Card>}
 
       {/* ── Ad slots ────────────────────────────────────── */}
       <h2 className="mb-3 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-accent-600">

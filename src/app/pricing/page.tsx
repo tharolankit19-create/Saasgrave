@@ -73,7 +73,7 @@ export default async function PricingPage() {
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-bone-400 sm:text-lg">
             No subscriptions, no auctions, no CPC. Listing a dead startup costs nothing and always
-            will — everything below is optional.
+            will. Free launch requires our badge on your landing page; paid launch skips the badge.
           </p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-moss-500/30 bg-moss-500/10 px-3 py-1 text-xs font-semibold text-moss-500">
@@ -104,7 +104,7 @@ export default async function PricingPage() {
             <h3 className="mt-3 font-medium text-bone-100">List</h3>
             <p className="mt-1.5 flex-1 text-sm leading-relaxed text-bone-500">
               A public post-mortem page, an AI write-up for search, and a dofollow backlink to your
-              site. Live immediately, no card.
+              site. Add and verify our badge on your landing page to launch — no card.
             </p>
             <LinkButton href="/sell" variant="outline" size="md" className="mt-6 w-full">
               List my startup
@@ -267,11 +267,11 @@ export default async function PricingPage() {
           {[
             {
               q: "Is listing really free?",
-              a: "Yes — free forever, and opening a listing for sale is free too. We take a flat 3% only when your startup actually sells. Everything on this page is optional.",
+              a: "Yes — add our badge to your SaaS landing page and verify it to launch free. Paid launch plans require no website badge. Opening a listing for sale is free too. We take a flat 3% only when your startup actually sells. Everything on this page is optional.",
             },
             {
               q: "Do all the paid plans include a backlink?",
-              a: "Yes, and so does the free listing. Every placement carries a dofollow link to your site. Featured Launch also gives you an embeddable “Featured on Saasgrave” badge, and sharing your launch earns a second dofollow link for free.",
+              a: "Yes, and so does the free listing. Every placement carries a dofollow link to your site. The website badge is required for free launch and optional for paid launch, and sharing your launch earns a second dofollow link for free.",
             },
             {
               q: "What exactly is the Directory Blast?",
@@ -304,7 +304,7 @@ export default async function PricingPage() {
           <LinkButton href="/promote" size="lg">
             Promote my product <ArrowRight size={17} />
           </LinkButton>
-          <p className="mt-3 text-xs text-bone-500">Or just list it — free, in 3 minutes.</p>
+          <p className="mt-3 text-xs text-bone-500">Or launch free with a verified landing-page badge.</p>
         </div>
       </section>
     </div>

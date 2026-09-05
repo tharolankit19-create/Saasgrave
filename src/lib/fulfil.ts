@@ -20,14 +20,11 @@ export async function fulfilPurchase({
   buyerId?: string | null;
   dodoPaymentId?: string | null;
   /**
-   * Only stamp the payment "paid" when the payment is definitively confirmed.
-   * The success page unlocks optimistically while Dodo is still unreachable, and
-   * leaving those rows pending keeps them auditable (an active placement whose
-   * payment never settled) until the webhook reconciles.
+   * Fulfilment requires a confirmed provider payment. Unknown status fails closed.
    */
   markPaid?: boolean;
 }): Promise<boolean> {
-  if (!kind || !referenceId) return false;
+  if (!kind || !referenceId || !markPaid) return false;
 
   let admin;
   try {
@@ -49,7 +46,8 @@ export async function fulfilPurchase({
         .update({ status: "paid", ...(dodoPaymentId ? { dodo_payment_id: dodoPaymentId } : {}) })
         .eq("reference_id", referenceId)
         .eq("kind", kind)
-        .eq("status", "pending");
+        .eq("status", "pending")
+        .eq("user_id", buyerId || "00000000-0000-0000-0000-000000000000");
     }
 
     if (kind === "ad_slot") {

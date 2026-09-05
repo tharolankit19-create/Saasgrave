@@ -69,7 +69,9 @@ export function ListingForm() {
   }
 
   async function submit(publish: boolean) {
+    if (loading) return;
     setLoading(true);
+    try {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -117,8 +119,8 @@ export function ListingForm() {
         price_multiplier:
           f.for_sale && f.price_mode === "multiplier" ? Number(f.price_multiplier) || null : null,
         open_to_offers: f.for_sale ? f.price_mode === "offers" : false,
-        // Publish now → live on the marketplace (free). Otherwise keep as a draft.
-        status: publish ? "listed" : "draft",
+        // Every launch begins as a draft; server verification publishes it.
+        status: "draft",
       })
       .select("id, slug")
       .single();
@@ -128,14 +130,17 @@ export function ListingForm() {
       return toast.error(error.message);
     }
     if (publish) {
-      toast.success("Your listing is live.");
-      // ?launched=1 triggers the share prompt on the listing itself.
-      router.push(`/startup/${data.slug}?launched=1`);
+      toast.success("Draft saved. Choose how to launch.");
+      // The final step offers free badge verification or a paid launch.
+      router.push(`/launch/${data.id}`);
     } else {
       toast.success("Saved as a draft — publish it anytime from your dashboard.");
       router.push("/dashboard");
     }
     router.refresh();
+    } catch {
+      toast.error("Could not save your listing. Your form is still here — please retry.");
+    } finally { setLoading(false); }
   }
 
   return (
@@ -306,7 +311,7 @@ export function ListingForm() {
               Save as draft
             </Button>
             <Button onClick={() => submit(true)} disabled={loading}>
-              {loading ? <Loader2 size={16} className="animate-spin" /> : "Publish free"}
+              {loading ? <Loader2 size={16} className="animate-spin" /> : "Choose launch plan"}
             </Button>
           </div>
         )}
